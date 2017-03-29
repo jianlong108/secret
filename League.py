@@ -13,6 +13,71 @@ from HtmlParser import *
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+
+def getOneGameHandi(soccerId):
+    try:
+        url = 'http://112.91.160.46:8072/phone/Handicap.aspx?ID=' + soccerId + '&an=iosQiuTan&av=5.9&from=2&lang=0'
+        print url
+    except:
+        pass
+
+    response = requests.get(url)
+
+    if response.ok:
+        resultStr = response.content;
+    else:
+        pass
+
+    if resultStr != '':
+        array = resultStr.split('^')
+        # 移除前六个元素
+        # array = array[6:]
+        i = 0
+        company = None
+        companys = []
+        for unit in array:
+            # print unit.decode('utf-8')
+
+            if i % 8 == 0:
+
+                company = LotteryCorporations()
+                company.soccerGameId = soccerId
+                # if isinstance(unit, unicode):
+                #     print 'unit 是 Unicode'
+                # else:
+                #     print 'unit 是 str'
+
+                if '!' in unit:
+                    index = unit.index('!') + 1
+                    company.companyTitle = unit[index:].decode('utf-8')
+                else:
+                    company.companyTitle = unit.decode('utf-8')
+
+            elif i % 8 == 1:
+                pass
+            elif i % 8 == 2:
+                company.orignal_top = float(unit)
+            elif i % 8 == 3:
+                company.orignal = float(unit)
+            elif i % 8 == 4:
+                company.orignal_bottom = float(unit)
+            elif i % 8 == 5:
+                company.now_top = float(unit)
+            elif i % 8 == 6:
+                company.now = float(unit)
+            elif i % 8 == 7:
+                company.now_bottom = float(unit)
+
+            else:
+                pass
+
+            i += 1
+            if i % 8 == 0:
+                companys.append(copy.copy(company))
+                company = None
+
+        return companys
+
 def GetRound(leagueID,round):
     resultStr = ''
     try:
@@ -88,10 +153,10 @@ def GetRound(leagueID,round):
 
         print len(games)
 
-def getOneGameHandi(soccerId):
+def getOneGameODD(soccerId):
 
     try:
-        url = 'http://112.91.160.46:8072/phone/Handicap.aspx?ID='+soccerId+'&an=iosQiuTan&av=5.9&from=2&lang=0'
+        url = 'http://112.91.160.46:8072/phone/1x2.aspx?ID=' + soccerId + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
         print url
     except:
         pass
@@ -123,24 +188,25 @@ def getOneGameHandi(soccerId):
                 #     print 'unit 是 str'
 
                 if '!' in unit:
-                    company.companyTitle = unit[1:].decode('utf-8')
+                    index = unit.index('!')+1
+                    company.companyTitle = unit[index:].decode('utf-8')
                 else:
                     company.companyTitle = unit.decode('utf-8')
 
             elif i%8 == 1:
                 pass
             elif i%8 == 2:
-                company.orignal_top = float(unit)
+                company.orignal_winOdd = float(unit)
             elif i%8 == 3:
-                company.orignal = float(unit)
+                company.orignal_drawOdd = float(unit)
             elif i%8 == 4:
-                company.orignal_bottom = float(unit)
+                company.orignal_loseOdd = float(unit)
             elif i%8 == 5:
-                company.now_top = float(unit)
+                company.winOdd = float(unit)
             elif i%8 == 6:
-                company.now = float(unit)
+                company.drawOdd = float(unit)
             elif i%8 == 7:
-                company.now_bottom = float(unit)
+                company.loseOdd = float(unit)
 
             else:
                 pass
@@ -155,17 +221,23 @@ def getOneGameHandi(soccerId):
 
 
 
+
+
+
 #             英甲
 English_C = League()
 English_C.leagueName = '英甲'
 English_C.teamNumber = 24
 English_C.country = '英格兰'
 # GetRound(135, 1)
-# print getOneGameHandi('1252360')
+# print getOneGameODD('1252359')
 create_database()
 for company in getOneGameHandi('1252360'):
     print (company.soccerGameId,company.companyTitle,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
     insert_Handi((company.soccerGameId,company.companyTitle,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom))
+for company in getOneGameODD('1252360'):
+    print (company.soccerGameId,company.companyTitle,company.orignal_winOdd,company.orignal_drawOdd,company.orignal_loseOdd,company.winOdd,company.drawOdd,company.loseOdd)
+    insert_ODD((company.soccerGameId,company.companyTitle,company.orignal_winOdd,company.orignal_drawOdd,company.orignal_loseOdd,company.winOdd,company.drawOdd,company.loseOdd))
 
 i = 51
 while (i<=46):

@@ -70,8 +70,9 @@ def create_database():
     c.execute(sql1)
 
     sql2 = 'create table if not exists ' + 'CompanyODD' + \
-           '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,gameid INTEGER,company VARCHAR(10),winODD REAL ,' \
-           'drawODD REAL,loseODD REAL)'
+           '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,gameid INTEGER,company VARCHAR(10),' \
+           'ori_winODD REAL ,ori_drawODD REAL,ori_loseODD REAL,'\
+            'winODD REAL ,drawODD REAL,loseODD REAL)'
     c.execute(sql2)
 
     conn.commit()
@@ -118,7 +119,7 @@ def insert_ODD(params):
     c = conn.cursor()
     # sql = 'insert into ' + table_name + '(num, league,soccer,gameurl,otodds,orignalpan,ododds,ntodds,nowpan,ndodds) values (NULL,%s,%s,%s,%s,%s,%s,%s,%s,%s)'%(game.leauge,game.soccer,game.url,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
 
-    c.execute("INSERT INTO CompanyODD VALUES (NULL ,?,?,?,?,?)", params)
+    c.execute("INSERT INTO CompanyODD VALUES (NULL ,?,?,?,?,?,?,?,?)", params)
     # c.execute(sql)
     conn.commit()
     c.close()

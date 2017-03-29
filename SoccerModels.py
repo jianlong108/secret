@@ -48,6 +48,13 @@ class LotteryCorporations:
         # 负赔
         self.loseOdd = 0.00
 
+        # 初胜赔
+        self.orignal_winOdd = 0.00
+        # 初平赔
+        self.orignal_drawOdd = 0.00
+        # 初负赔
+        self.orignal_loseOdd = 0.00
+
         self.falldown = False
         self.rise = False
         self.lowest = False
