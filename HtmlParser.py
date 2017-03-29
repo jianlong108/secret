@@ -48,7 +48,7 @@ def filterList(list, label):
 
     return tempList
 
-location = '/Users/mi/Desktop/Soccer.db'
+location = '/Users/dalong/Desktop/Soccer.db'
 def create_database():
     global conn
     global c
@@ -63,6 +63,17 @@ def create_database():
           '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,league varchar(20),soccer VARCHAR(5),gameurl VARCHAR (30),otodds VARCHAR(5) ,' \
           'orignalpan VARCHAR(5),ododds VARCHAR(5),ntodds VARCHAR(5) ,nowpan VARCHAR(5),ndodds VARCHAR(5))'
     c.execute(sql)
+
+    sql1 = 'create table if not exists ' + 'CompanyHandicap' + \
+          '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,gameid INTEGER,company VARCHAR(10),otodds REAL ,' \
+          'orignalpan REAL,ododds REAL,ntodds REAL ,nowpan REAL,ndodds REAL)'
+    c.execute(sql1)
+
+    sql2 = 'create table if not exists ' + 'CompanyODD' + \
+           '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,gameid INTEGER,company VARCHAR(10),winODD REAL ,' \
+           'drawODD REAL,loseODD REAL)'
+    c.execute(sql2)
+
     conn.commit()
     c.close()
     conn.close()
@@ -74,6 +85,40 @@ def insert_record(params):
     # sql = 'insert into ' + table_name + '(num, league,soccer,gameurl,otodds,orignalpan,ododds,ntodds,nowpan,ndodds) values (NULL,%s,%s,%s,%s,%s,%s,%s,%s,%s)'%(game.leauge,game.soccer,game.url,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
 
     c.execute("INSERT INTO Soccer VALUES (NULL ,?,?,?,?,?,?,?,?,?)", params)
+    # c.execute(sql)
+    conn.commit()
+    c.close()
+    conn.close()
+
+def insert_game(params):
+    conn = sqlite3.connect(location)
+    c = conn.cursor()
+    # sql = 'insert into ' + table_name + '(num, league,soccer,gameurl,otodds,orignalpan,ododds,ntodds,nowpan,ndodds) values (NULL,%s,%s,%s,%s,%s,%s,%s,%s,%s)'%(game.leauge,game.soccer,game.url,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
+
+    c.execute("INSERT INTO Soccer VALUES (NULL ,?,?,?,?,?,?,?,?,?)", params)
+    # c.execute(sql)
+    conn.commit()
+    c.close()
+    conn.close()
+
+
+def insert_Handi(params):
+    conn = sqlite3.connect(location)
+    c = conn.cursor()
+    # sql = 'insert into ' + table_name + '(num, league,soccer,gameurl,otodds,orignalpan,ododds,ntodds,nowpan,ndodds) values (NULL,%s,%s,%s,%s,%s,%s,%s,%s,%s)'%(game.leauge,game.soccer,game.url,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
+
+    c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,?,?,?,?,?,?,?,?)", params)
+    # c.execute(sql)
+    conn.commit()
+    c.close()
+    conn.close()
+
+def insert_ODD(params):
+    conn = sqlite3.connect(location)
+    c = conn.cursor()
+    # sql = 'insert into ' + table_name + '(num, league,soccer,gameurl,otodds,orignalpan,ododds,ntodds,nowpan,ndodds) values (NULL,%s,%s,%s,%s,%s,%s,%s,%s,%s)'%(game.leauge,game.soccer,game.url,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
+
+    c.execute("INSERT INTO CompanyODD VALUES (NULL ,?,?,?,?,?)", params)
     # c.execute(sql)
     conn.commit()
     c.close()

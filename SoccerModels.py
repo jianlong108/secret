@@ -30,15 +30,16 @@ class BetCompany:
 
 class LotteryCorporations:
     def __init__(self):
+        self.soccerGameId = ''
         self.companyTitle = ''
-        self.orignal_top = ''
-        self.orignal_bottom = ''
+        self.orignal_top = 0.0
+        self.orignal_bottom = 0.0
         self.orignal_Handicap = 0.0
-        self.now_top = ''
-        self.now_bottom = ''
+        self.now_top = 0.0
+        self.now_bottom = 0.0
         self.now_Handicap = 0.0
-        self.orignal = ''
-        self.now = ''
+        self.orignal = 0.0
+        self.now = 0.0
 
         # 胜赔
         self.winOdd = 0.00

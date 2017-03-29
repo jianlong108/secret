@@ -3,10 +3,16 @@
 
 import time
 import copy
-import requests
+import sys
 from SoccerModels import *
+
+from HtmlParser import *
 # http://112.91.160.46:8072/phone/txt/analysisheader/cn/1/25/1253496.txt?an=iosQiuTan&av=5.9&from=2&r=1490440206
 # http://112.91.160.46:8072/phone/Handicap.aspx?ID=1252358&an=iosQiuTan&av=5.9&from=2&lang=0&r=1490449083
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 def GetRound(leagueID,round):
     resultStr = ''
     try:
@@ -107,40 +113,42 @@ def getOneGameHandi(soccerId):
         for unit in array:
             print unit.decode('utf-8')
 
-            if company == None:
+            if i%8 == 0:
+
                 company = LotteryCorporations()
-                company.soccerID = soccerId
-            else:
-                pass
+                company.soccerGameId = soccerId
+                # if isinstance(unit, unicode):
+                #     print 'unit 是 Unicode'
+                # else:
+                #     print 'unit 是 str'
 
-            if i == 0:
                 if '!' in unit:
-                    company.companyTitle = unit[1:]
+                    company.companyTitle = unit[1:].decode('utf-8')
                 else:
-                    company.companyTitle = unit
+                    company.companyTitle = unit.decode('utf-8')
 
-            elif i == 1:
+            elif i%8 == 1:
                 pass
-            elif i == 2:
+            elif i%8 == 2:
                 company.orignal_top = float(unit)
-            elif i == 3:
+            elif i%8 == 3:
                 company.orignal = float(unit)
-            elif i == 4:
+            elif i%8 == 4:
                 company.orignal_bottom = float(unit)
-            elif i == 5:
+            elif i%8 == 5:
                 company.now_top = float(unit)
-            elif i == 6:
+            elif i%8 == 6:
                 company.now = float(unit)
-            elif i == 7:
+            elif i%8 == 7:
                 company.now_bottom = float(unit)
-            elif i == 8:
-                i = 0
-                companys.append(copy.copy(company))
-                company = None
+
             else:
                 pass
 
             i += 1
+            if i % 8 == 0:
+                companys.append(copy.copy(company))
+                company = None
 
         return companys
 
@@ -153,7 +161,12 @@ English_C.leagueName = '英甲'
 English_C.teamNumber = 24
 English_C.country = '英格兰'
 # GetRound(135, 1)
-print getOneGameHandi('1252360')
+# print getOneGameHandi('1252360')
+create_database()
+for company in getOneGameHandi('1252360'):
+    print (company.soccerGameId,company.companyTitle,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
+    insert_Handi((company.soccerGameId,company.companyTitle,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom))
+
 i = 51
 while (i<=46):
     GetRound(135, i)
