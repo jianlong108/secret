@@ -61,6 +61,8 @@ class LotteryCorporations:
         self.highest = False
 
 
+
+
 '''
 单场比赛
 '''
@@ -85,11 +87,22 @@ class FootballGame:
         self.friendTeam = ''
         self.friendTeam2 = ''
         # 比分
-        self.soccer = 0
         self.halfHome = 0
         self.halfFriend = 0
         self.allHome = 0
         self.allFriend = 0
+
+
+
+    @property
+    def soccer(self):
+        if self.allFriend == self.allHome:
+            return 1
+        elif self.allFriend < self.allHome:
+            return 3
+        else:
+            return 0
+
 
 '''
 联赛
