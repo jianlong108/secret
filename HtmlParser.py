@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 # from urllib2 import Request
 import requests
 import sqlite3
+import os
 
 
 
@@ -48,7 +49,7 @@ def filterList(list, label):
 
     return tempList
 
-location = '/Users/dalong/Desktop/Soccer.db'
+location = os.path.expanduser('~/Desktop/Soccer.db')
 def create_database():
     global conn
     global c
@@ -59,10 +60,18 @@ def create_database():
     conn = sqlite3.connect(location)
     c = conn.cursor()
 
-    sql = 'create table if not exists ' + 'Soccer' + \
-          '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,league varchar(20),soccer VARCHAR(5),gameurl VARCHAR (30),otodds VARCHAR(5) ,' \
-          'orignalpan VARCHAR(5),ododds VARCHAR(5),ntodds VARCHAR(5) ,nowpan VARCHAR(5),ndodds VARCHAR(5))'
-    c.execute(sql)
+    # sql = 'create table if not exists ' + 'Soccer' + \
+    #       '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,league varchar(20),soccer VARCHAR(5),gameurl VARCHAR (30),otodds VARCHAR(5) ,' \
+    #       'orignalpan VARCHAR(5),ododds VARCHAR(5),ntodds VARCHAR(5) ,nowpan VARCHAR(5),ndodds VARCHAR(5))'
+    # c.execute(sql)
+
+    sql0 = 'create table if not exists ' + 'Games' + \
+          '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,'\
+            'soccerID INTEGER,league varchar(20),time VARCHAR(15),result INTEGER,' \
+          'homeLevel INTEGER,home VARCHAR(20),homeSoccer INTEGER,'\
+            'friendLevel INTEGER,friend VARCHAR(20) ,friendSoccer INTEGER)'
+
+    c.execute(sql0)
 
     sql1 = 'create table if not exists ' + 'CompanyHandicap' + \
           '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,gameid INTEGER,company VARCHAR(10),otodds REAL ,' \
@@ -90,17 +99,17 @@ def insert_record(params):
     conn.commit()
     c.close()
     conn.close()
-
-def insert_game(params):
+def insert_Game(params):
     conn = sqlite3.connect(location)
     c = conn.cursor()
     # sql = 'insert into ' + table_name + '(num, league,soccer,gameurl,otodds,orignalpan,ododds,ntodds,nowpan,ndodds) values (NULL,%s,%s,%s,%s,%s,%s,%s,%s,%s)'%(game.leauge,game.soccer,game.url,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
 
-    c.execute("INSERT INTO Soccer VALUES (NULL ,?,?,?,?,?,?,?,?,?)", params)
+    c.execute("INSERT INTO Games VALUES (NULL ,?,?,?,?,?,?,?,?,?,?)", params)
     # c.execute(sql)
     conn.commit()
     c.close()
     conn.close()
+
 
 
 def insert_Handi(params):

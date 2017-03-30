@@ -75,13 +75,17 @@ class FootballGame:
         # 开赛时间
         self.beginTime = ''
         # 主队
+
+        self.homeTeamLevel = 0
+        self.friendTeamLevel = 0
+
         self.homeTeam = ''
         self.homeTeam2 = ''
         # 客队
         self.friendTeam = ''
         self.friendTeam2 = ''
         # 比分
-        self.soccer = ''
+        self.soccer = 0
         self.halfHome = 0
         self.halfFriend = 0
         self.allHome = 0
