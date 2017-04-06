@@ -19,14 +19,14 @@ sys.setdefaultencoding('utf-8')
 '''
 
 
-def getOneGameHandi(soccerId):
+def getOneGameHandi(game):
     try:
-        url = 'http://112.91.160.46:8072/phone/Handicap.aspx?ID=' + soccerId + '&an=iosQiuTan&av=5.9&from=2&lang=0'
-        print url
+        handiURL = 'http://112.91.160.46:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
+        print handiURL
     except:
         pass
 
-    response = requests.get(url)
+    response = requests.get(handiURL)
 
     if response.ok:
         resultStr = response.content;
@@ -46,7 +46,10 @@ def getOneGameHandi(soccerId):
             if i % 8 == 0:
 
                 company = LotteryCorporations()
-                company.soccerGameId = soccerId
+                company.result = game.soccer
+                company.homeSoccer = game.allHome
+                company.friendSoccer = game.allFriend
+                company.soccerGameId = game.soccerID
                 # if isinstance(unit, unicode):
                 #     print 'unit 是 Unicode'
                 # else:
@@ -87,14 +90,15 @@ def getOneGameHandi(soccerId):
 '''
 获取一场比赛的欧赔数据
 '''
-def getOneGameODD(soccerId):
+def getOneGameODD(game):
+
     try:
-        url = 'http://112.91.160.46:8072/phone/1x2.aspx?ID=' + soccerId + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
-        print url
+        oddURL = 'http://112.91.160.46:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
+        print oddURL
     except:
         pass
 
-    response = requests.get(url)
+    response = requests.get(oddURL)
 
     if response.ok:
         resultStr = response.content;
@@ -114,7 +118,10 @@ def getOneGameODD(soccerId):
             if i % 8 == 0:
 
                 company = LotteryCorporations()
-                company.soccerGameId = soccerId
+                company.result = game.soccer
+                company.homeSoccer = game.allHome
+                company.friendSoccer = game.allFriend
+                company.soccerGameId = game.soccerID
                 # if isinstance(unit, unicode):
                 #     print 'unit 是 Unicode'
                 # else:
@@ -230,13 +237,6 @@ def GetRound(league,leagueID, round, reason):
                 i = 0
                 games.append(copy.copy(game))
 
-
-                companys = getOneGameODD(game.soccerID)
-                insertGameODDList(companys)
-
-                companyHandis = getOneGameHandi(game.soccerID)
-                insertGameHandiList(companyHandis)
-
                 game = None
 
         return games
@@ -249,22 +249,57 @@ def GetRound(league,leagueID, round, reason):
 
 
 
+try:
+    url = "http://121.10.245.46:8072/phone/InfoIndex.aspx?an=iosQiuTan&av=5.9&from=2&lang=0&r=1491480939"
+    print url
+except:
+    pass
+resultStr = ''
+response = requests.get(url)
+if response.ok:
+    resultStr = response.content;
+else:
+    pass
 
+if resultStr != '':
+    array = resultStr.split('!')
+
+    index = 0
+    tempArr = []
+    for str in array:
+        if '$$'in str:
+            tempArr = str.split('$$')
+            index = array.index(str)
+
+    i = 0
+    for str in tempArr:
+        array.insert(index + i, str)
+        i+=1
+
+    for str in array:
+        print str.decode('utf-8')
 
 
 
 
 
 #             英甲
-English_C = League()
-English_C.leagueName = '英甲'
-English_C.teamNumber = 24
-English_C.country = '英格兰'
-create_database()
-for game in GetRound('英甲',135, 1,'2016-2017'):
-    time.sleep(1)
-    print (game.soccerID,game.leauge,game.beginTime,game.soccer,game.homeTeamLevel,game.homeTeam,game.allHome,game.friendTeamLevel,game.friendTeam,game.allFriend)
-    insert_Game((game.soccerID,game.leauge,game.beginTime,game.soccer,game.homeTeamLevel,game.homeTeam,game.allHome,game.friendTeamLevel,game.friendTeam,game.allFriend))
+# English_C = League()
+# English_C.leagueName = '英甲'
+# English_C.teamNumber = 24
+# English_C.country = '英格兰'
+# create_database()
+# for game in GetRound('英甲',135, 1,'2016-2017'):
+#     time.sleep(1)
+#
+#     print (game.soccerID,game.leauge,game.beginTime,game.soccer,game.homeTeamLevel,game.homeTeam,game.allHome,game.friendTeamLevel,game.friendTeam,game.allFriend)
+#     insert_Game(game)
+#
+#     companys = getOneGameODD(game)
+#     insertGameODDList(companys)
+#
+#     companyHandis = getOneGameHandi(game)
+#     insertGameHandiList(companyHandis)
 # print getOneGameODD('1252359')
 
 

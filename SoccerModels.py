@@ -16,6 +16,8 @@ class BetCompany:
         self.orignal = ''
         self.now = ''
 
+
+
         # 胜赔
         self.winOdd = 0.00
         # 平赔
@@ -54,6 +56,10 @@ class LotteryCorporations:
         self.orignal_drawOdd = 0.00
         # 初负赔
         self.orignal_loseOdd = 0.00
+
+        self.result = 0
+        self.homeSoccer = 0
+        self.friendSoccer = 0
 
         self.falldown = False
         self.rise = False
@@ -113,6 +119,23 @@ class League:
         self.leagueID = 0
         # 联赛名称
         self.leagueName = ''
+        # 联赛所属国家
+        self.country = ''
+        # 球队数量
+        self.teamNumber = 0
+        # 当前轮数
+        self.currentRound = 0
+        # 球队
+        self.teams = []
+        # 当前赛季
+        self.currentSeason = ''
+
+class CountryLeague:
+    def __init__(self):
+        # 国家ID
+        self.countryID = 0
+        # 联赛名称
+        self.countryName = ''
         # 联赛所属国家
         self.country = ''
         # 球队数量
