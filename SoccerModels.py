@@ -119,8 +119,12 @@ class League:
         self.leagueID = 0
         # 联赛名称
         self.leagueName = ''
-        # 联赛所属国家
-        self.country = ''
+        # 联赛简称
+        self.breifLeagueName = ''
+        # 联赛所属国家ID
+        self.belongtoCountryID = 0
+        # 可支持查询的赛季列表
+        self.aviableSeasonList = []
         # 球队数量
         self.teamNumber = 0
         # 当前轮数
@@ -129,20 +133,36 @@ class League:
         self.teams = []
         # 当前赛季
         self.currentSeason = ''
+        # self._aviableSeasonStr = ''
 
-class CountryLeague:
+
+    # @property
+    def get_aviableseasonstr(self):
+        return self.aviableseasonstr
+
+    # @aviableseasonstr.setter
+    def set_aviableseasonstr(self, value):
+        array = value.splite(',')
+        self.aviableSeasonList = array
+
+    aviableSeasonStr = property(get_aviableseasonstr, set_aviableseasonstr)
+
+class CountrySoccer:
     def __init__(self):
         # 国家ID
         self.countryID = 0
-        # 联赛名称
+        # 所属洲
+        self.belongtoContinentID = 0
+        # 国家名称
         self.countryName = ''
-        # 联赛所属国家
-        self.country = ''
-        # 球队数量
-        self.teamNumber = 0
-        # 当前轮数
-        self.currentRound = 0
-        # 球队
-        self.teams = []
-        # 当前赛季
-        self.currentSeason = ''
+        # 包含的联赛列表
+        self.leagueList = []
+
+class ContinentSoccer:
+    def __init__(self):
+        # 洲名
+        self.continentName = ''
+        # 洲ID
+        self.continentID = 0
+        # 包含的国家
+        self.countryList = []

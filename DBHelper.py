@@ -41,6 +41,23 @@ def create_database():
             'winODD REAL ,drawODD REAL,loseODD REAL)'
     c.execute(sql2)
 
+    sql3 = 'create table if not exists ' + 'League' + \
+           '(league_ID INTEGER PRIMARY KEY AUTOINCREMENT,leagueID INTEGER,leagueName varchar(15),briefLeagueName varchar(15),season varchar(300))'
+    c.execute(sql3)
+
+    conn.commit()
+    c.close()
+    conn.close()
+
+'''
+插入单条联赛数据
+'''
+def insert_League(league):
+    conn = sqlite3.connect(location)
+    c = conn.cursor()
+    params = (league.leagueID,league.leagueName.decode('utf-8'),league.breifLeagueName.decode('utf-8'),league.aviableSeasonStr.decode('utf-8'))
+    c.execute("INSERT INTO League VALUES (NULL ,?,?,?,?)", params)
+    # c.execute(sql)
     conn.commit()
     c.close()
     conn.close()
