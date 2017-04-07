@@ -167,6 +167,7 @@ def GetRound(league,leagueID, round, reason):
     try:
         url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + '39' + "&season=" + reason + "&subid=" + str(
             leagueID) + "&round=" + str(round) + "&apiversion=1&from=2"
+
         print url
     except:
         pass
@@ -179,9 +180,7 @@ def GetRound(league,leagueID, round, reason):
         pass
 
     if resultStr != '':
-        array = resultStr.split('^')
-        # 移除前六个元素
-        array = array[6:]
+        array = resultStr.split('!')
         i = 0
         games = []
         game = None
@@ -361,14 +360,32 @@ class MainSoccer:
 
 
 
-create_database()
-main = MainSoccer()
-main.getData()
+# create_database()
+# main = MainSoccer()
+# main.getData()
 
 
 
 
+resultStr = ''
+try:
+    url = 'http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=39&season=2016-2017&subid=0&apiversion=1&from=2'
 
+    print url
+except:
+    pass
+
+response = requests.get(url)
+
+if response.ok:
+    resultStr = response.content;
+else:
+    pass
+
+if resultStr != '':
+    array = resultStr.split('!')
+    for str in array:
+        print str.decode('utf-8')
 
 
 
