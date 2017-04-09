@@ -34,55 +34,30 @@ def getOneGameHandi(game):
         pass
 
     if resultStr != '':
-        array = resultStr.split('^')
-        # 移除前六个元素
-        # array = array[6:]
-        i = 0
-        company = None
+        array = resultStr.split('!')
+
         companys = []
         for unit in array:
             # print unit.decode('utf-8')
+            company = LotteryCorporations()
+            company.result = game.soccer
+            company.homeSoccer = game.allHome
+            company.friendSoccer = game.allFriend
+            company.soccerGameId = game.soccerID
+            unitArray = unit.split('^')
 
-            if i % 8 == 0:
+            company.companyTitle = unitArray[0].encode('utf-8')
+            company.orignal_top = float(unitArray[2])
+            company.orignal = float(unitArray[3])
 
-                company = LotteryCorporations()
-                company.result = game.soccer
-                company.homeSoccer = game.allHome
-                company.friendSoccer = game.allFriend
-                company.soccerGameId = game.soccerID
-                # if isinstance(unit, unicode):
-                #     print 'unit 是 Unicode'
-                # else:
-                #     print 'unit 是 str'
+            company.orignal_bottom = float(unitArray[4])
 
-                if '!' in unit:
-                    index = unit.index('!') + 1
-                    company.companyTitle = unit[index:].decode('utf-8')
-                else:
-                    company.companyTitle = unit.decode('utf-8')
+            company.now_top = float(unitArray[5])
 
-            elif i % 8 == 1:
-                pass
-            elif i % 8 == 2:
-                company.orignal_top = float(unit)
-            elif i % 8 == 3:
-                company.orignal = float(unit)
-            elif i % 8 == 4:
-                company.orignal_bottom = float(unit)
-            elif i % 8 == 5:
-                company.now_top = float(unit)
-            elif i % 8 == 6:
-                company.now = float(unit)
-            elif i % 8 == 7:
-                company.now_bottom = float(unit)
+            company.now = float(unitArray[6])
+            company.now_bottom = float(unitArray[7])
 
-            else:
-                pass
-
-            i += 1
-            if i % 8 == 0:
-                companys.append(copy.copy(company))
-                company = None
+            companys.append(company)
 
         return companys
 
@@ -105,56 +80,32 @@ def getOneGameODD(game):
     else:
         pass
 
+
     if resultStr != '':
-        array = resultStr.split('^')
-        # 移除前六个元素
-        # array = array[6:]
-        i = 0
-        company = None
+        array = resultStr.split('!')
+
         companys = []
         for unit in array:
-            print unit.decode('utf-8')
+            # print unit.decode('utf-8')
+            company = LotteryCorporations()
+            company.result = game.soccer
+            company.homeSoccer = game.allHome
+            company.friendSoccer = game.allFriend
+            company.soccerGameId = game.soccerID
+            unitArray = unit.split('^')
 
-            if i % 8 == 0:
+            company.companyTitle = unitArray[0].encode('utf-8')
+            company.orignal_winOdd = float(unitArray[2])
+            company.orignal_drawOdd = float(unitArray[3])
 
-                company = LotteryCorporations()
-                company.result = game.soccer
-                company.homeSoccer = game.allHome
-                company.friendSoccer = game.allFriend
-                company.soccerGameId = game.soccerID
-                # if isinstance(unit, unicode):
-                #     print 'unit 是 Unicode'
-                # else:
-                #     print 'unit 是 str'
+            company.orignal_loseOdd = float(unitArray[4])
 
-                if '!' in unit:
-                    index = unit.index('!') + 1
-                    company.companyTitle = unit[index:].decode('utf-8')
-                else:
-                    company.companyTitle = unit.decode('utf-8')
+            company.winOdd = float(unitArray[5])
 
-            elif i % 8 == 1:
-                pass
-            elif i % 8 == 2:
-                company.orignal_winOdd = float(unit)
-            elif i % 8 == 3:
-                company.orignal_drawOdd = float(unit)
-            elif i % 8 == 4:
-                company.orignal_loseOdd = float(unit)
-            elif i % 8 == 5:
-                company.winOdd = float(unit)
-            elif i % 8 == 6:
-                company.drawOdd = float(unit)
-            elif i % 8 == 7:
-                company.loseOdd = float(unit)
+            company.drawOdd = float(unitArray[6])
+            company.loseOdd = float(unitArray[7])
 
-            else:
-                pass
-
-            i += 1
-            if i % 8 == 0:
-                companys.append(copy.copy(company))
-                company = None
+            companys.append(company)
 
         return companys
 
@@ -162,11 +113,19 @@ def getOneGameODD(game):
 
 
 
-def GetRound(league,leagueID, round, reason):
+def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
     resultStr = ''
+
     try:
-        url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + '39' + "&season=" + reason + "&subid=" + str(
-            leagueID) + "&round=" + str(round) + "&apiversion=1&from=2"
+        if gameRound == 0:
+            url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
+                leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
+                leagueSubID).encode('utf-8') + "&apiversion=1&from=2"
+        else:
+
+            url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
+                    leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
+                    leagueSubID).encode('utf-8') + "&round=" + str(gameRound).encode('utf-8') + "&apiversion=1&from=2"
 
         print url
     except:
@@ -179,67 +138,66 @@ def GetRound(league,leagueID, round, reason):
     else:
         pass
 
+    games = []
+
     if resultStr != '':
-        array = resultStr.split('!')
-        i = 0
-        games = []
-        game = None
-        for unit in array:
-            print unit.decode('utf-8')
+        games = creatGameModelWithComplexStr(resultStr, leaguename)
 
-            if game == None:
-                game = FootballGame()
-                game.leauge = league.decode('utf-8')
+    return games
 
-            if i == 0:
-                if '1$$' in unit:
-                    index = unit.index('1$$')+3
-                    game.soccerID = unit[index:].decode('utf-8')
-                elif '!' in unit:
-                    index = unit.index('!') + 1
-                    game.soccerID = unit[index:].decode('utf-8')
-                else:
-                    game.soccerID = unit.decode('utf-8')
 
-            elif i == 1:
-                game.beginTime = unit.decode('utf-8')
-            elif i == 2:
-                game.homeTeam = unit.decode('utf-8')
-            elif i == 3:
-                game.homeTeam2 = unit.decode('utf-8')
-            elif i == 4:
-                game.friendTeam = unit.decode('utf-8')
-            elif i == 5:
-                game.friendTeam2 = unit.decode('utf-8')
-            elif i == 6:
-                pass
-            elif i == 7:
-                game.allHome = int(unit)
-            elif i == 8:
-                game.allFriend = int(unit)
-            elif i == 9:
-                game.halfHome = int(unit)
-            elif i == 10:
-                game.halfFriend = int(unit)
-            elif i == 11:
-                # 主队排名
-                game.homeTeamLevel = int(unit)
-            elif i == 12:
-                # 客队排名
-                game.friendTeamLevel = int(unit)
+def creatGameModelWithComplexStr(complexStr,leagueStr):
+    array = complexStr.split('!')
+    games = []
+    for unit in array:
+        print unit.decode('utf-8')
+        if '$$' in unit:
+            onegame = unit.split('$$')[1]
+            model = creatGameModel(onegame, leagueStr)
+            if model != None:
+                games.append(model)
 
-            else:
-                pass
+        else:
+            model = creatGameModel(unit, leagueStr)
+            if model != None:
+                games.append(model)
+    return games
 
-            i += 1
-            if i == 13:
-                i = 0
-                games.append(copy.copy(game))
+def creatGameModel(gameStr,leagueStr):
+    print gameStr
+    if isinstance(gameStr, str):
+        model = FootballGame()
+        model.leauge = leagueStr
 
-                game = None
+        if '$$' in gameStr:
+            onestr = gameStr.split('$$')
+            return creatGameModel(onestr[1], leagueStr)
+        else:
+            gameArray = gameStr.split('^')
 
-        return games
+            model.soccerID = int(gameArray[0])
+            beginTime = gameArray[1].encode('utf-8')
+            model.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + '-' + beginTime[8:10] + ':' + beginTime[10:12]
+            model.homeTeam = gameArray[2].encode('utf-8')
+            model.homeTeam2 = gameArray[3].encode('utf-8')
+            model.friendTeam = gameArray[4].encode('utf-8')
+            model.friendTeam2 = gameArray[5].encode('utf-8')
+            if int(gameArray[6]) != -1:
+                return None
+            model.allHome = int(gameArray[7])
+            model.allFriend = int(gameArray[8])
+            model.halfHome = int(gameArray[9])
+            model.halfFriend = int(gameArray[10])
+            model.homeTeamLevel = int(gameArray[11])
+            model.friendTeamLevel = int(gameArray[12])
 
+            time.sleep(3)
+            model.oddCompanies = getOneGameODD(model)
+            model.handiCompanies = getOneGameHandi(model)
+            return model
+
+    else:
+        return None
 
 
 class MainSoccer:
@@ -247,7 +205,7 @@ class MainSoccer:
         self.contientList = []
         self.index = 0
         self.countryList = []
-    def getContientModel(self,contientID):
+    def getContientModel(self, contientID):
         targetModel = None
         for model in self.contientList:
             if model.continentID == contientID:
@@ -255,7 +213,7 @@ class MainSoccer:
                 break
         return targetModel
 
-    def getCountryModel(self,countryID):
+    def getCountryModel(self, countryID):
         targetModel = None
         for model in self.countryList:
             if model.countryID == countryID:
@@ -264,7 +222,7 @@ class MainSoccer:
         return targetModel
 
 
-    def switchModel(self,complexStr):
+    def switchModel(self, complexStr):
         if self.index == 0:
             array = complexStr.split('$$')
 
@@ -289,7 +247,7 @@ class MainSoccer:
 
         self.index += 1
 
-    def creatContientModel(self,complexStr):
+    def creatContientModel(self, complexStr):
         model = ContinentSoccer()
         array = complexStr.split('^')
         model.continentID = array[0]
@@ -297,7 +255,7 @@ class MainSoccer:
         self.contientList.append(model)
 
 
-    def creatCountryModel(self,complexStr):
+    def creatCountryModel(self, complexStr):
         model = CountrySoccer()
         array = complexStr.split('^')
         model.countryID = array[0]
@@ -308,19 +266,28 @@ class MainSoccer:
         contientModel.countryList.append(model)
         self.countryList.append(model)
 
-    def creatLeagueModel(self,complexStr):
+    def creatLeagueModel(self, complexStr):
         model = League()
         array = complexStr.split('^')
-        model.leagueID = array[0]
-        model.belongtoCountryID = array[1]
+        model.leagueID = int(array[0])
+        model.belongtoCountryID = int(array[1])
         model.leagueName = array[2]
         model.breifLeagueName = array[3]
-        model.aviableseasonstr = array[5]
-
+        model.aviableSeasonStr = array[5]
+        model.creatSeasonList()
         countryModel = self.getCountryModel(model.belongtoCountryID)
-        countryModel.leagueList.append(model)
+        if countryModel != None:
+            countryModel.leagueList.append(model)
 
-        insert_League(model)
+
+        if model.breifLeagueName == '英超' :
+            print model.leagueName + '========='
+            league = GetLeague(model)
+            # 如果包含附加赛,就继续请求数据,否则视为顶级联赛
+            league.GetLeagueDetails()
+
+
+        # insert_League(model)
 
 
 
@@ -358,34 +325,129 @@ class MainSoccer:
 
 
 
+class GetLeague:
+    def __init__(self, model):
+        if isinstance(model, League):
+            self.leagueModel = model
+            self.orignalLeagueURL = ''
+            self.leagueID = '37'
+            self.currentSeason = model.aviableSeasonList[0]
+
+            self.leagueSubID = 0
+            self.countOfGounds = 0
+            self.currentGound = 1
+
+            self.addtionalSubID = 0
+            self.finalSubID = 0
+
+            self.allGames = []
+        else:
+            return None
 
 
-# create_database()
-# main = MainSoccer()
-# main.getData()
+    def GetLeagueDetails(self):
+        resultStr = ''
+
+
+        self.orignalLeagueURL = 'http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=' \
+                                    + str(self.leagueModel.leagueID).encode('utf-8') + '&season=' + self.currentSeason + '&subid=0&apiversion=1&from=2'
+        print self.orignalLeagueURL
+        response = requests.get(self.orignalLeagueURL)
+
+        if response.ok:
+            resultStr = response.content;
+        else:
+            pass
+
+        # 1.非顶级联赛;正在进行的赛季
+        if resultStr != '':
+
+            print  resultStr
+            array = resultStr.split('$$')
+
+            if ('联赛' in array[0]) and ('附加赛' in array[0]) and ('附加赛决赛' in array[0]):
+                # 非顶级联赛 且 过往赛季
+                leagueStr = array[0]
+                leagueArray = leagueStr.split('^')
+                self.leagueSubID = leagueArray[0]
+                self.countOfGounds = leagueArray[4]
+                self.currentGound = leagueArray[5]
+
+                additionalLeagueStr = array[1]
+                additionalArray = additionalLeagueStr.split('^')
+                self.addtionalSubID = additionalArray[0]
+
+                finalLeagueStr = array[2]
+                finalArray = finalLeagueStr.split('^')
+                self.finalSubID = finalArray[0]
+
+                self.getOfficialLeague()
+                self.getAddtionalLeague()
+                self.getAddtionalFinalLeague()
+
+
+            elif '联赛' in array[0]:
+                # 非顶级联赛 正在进行赛季
+                header = array[0]
+                print '非顶级联赛 正在进行赛季' + 'header' + header
+
+                leagueArray = header.split('^')
+                self.leagueSubID = leagueArray[0]
+                self.countOfGounds = leagueArray[4]
+                self.currentGound = leagueArray[5]
+
+                self.getOfficialLeague()
+
+            else:
+                # 顶级联赛
+                header = array[0]
+                print '顶级联赛' + 'header' + header
+                headerArray = header.split('^')
+                self.countOfGounds = int(headerArray[0])
+                self.currentGound = int(headerArray[1])
+
+                self.getOfficialLeague()
+
+
+
+    def getAddtionalLeague(self):
+        games = GetRound(self.leagueModel.leagueName, self.leagueModel.leagueID, self.leagueSubID, 0,
+                         self.currentSeason)
+        self.allGames.extend(games)
+
+    def getAddtionalFinalLeague(self):
+        games = GetRound(self.leagueModel.leagueName, self.leagueModel.leagueID, self.leagueSubID, 0,
+                         self.currentSeason)
+        self.allGames.extend(games)
+
+    def getOfficialLeague(self):
+
+        for season in self.leagueModel.aviableSeasonList:
+            print season
+            if season == '2016-2017':
+                continue
+            self.currentSeason = season
+
+
+            while(self.currentGound <= self.countOfGounds and self.currentGound >= 1):
+
+                games = GetRound(self.leagueModel.leagueName, self.leagueModel.leagueID, self.leagueSubID, self.currentGound,
+                         self.currentSeason)
+
+                self.allGames.extend(games)
+                self.currentGound -= 1
+
+                time.sleep(3)
+                if self.currentGound == 1:
+                    print len(self.allGames)
+                    insertGameList(self.allGames)
+                    self.currentGound = self.countOfGounds
+                    del self.allGames[:]
+                    time.sleep(10)
 
 
 
 
-resultStr = ''
-try:
-    url = 'http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=39&season=2016-2017&subid=0&apiversion=1&from=2'
-
-    print url
-except:
-    pass
-
-response = requests.get(url)
-
-if response.ok:
-    resultStr = response.content;
-else:
-    pass
-
-if resultStr != '':
-    array = resultStr.split('!')
-    for str in array:
-        print str.decode('utf-8')
 
 
 
@@ -393,38 +455,19 @@ if resultStr != '':
 
 
 
-#             英甲
-# English_C = League()
-# English_C.leagueName = '英甲'
-# English_C.teamNumber = 24
-# English_C.country = '英格兰'
-# create_database()
-# for game in GetRound('英甲',135, 1,'2016-2017'):
-#     time.sleep(1)
-#
-#     print (game.soccerID,game.leauge,game.beginTime,game.soccer,game.homeTeamLevel,game.homeTeam,game.allHome,game.friendTeamLevel,game.friendTeam,game.allFriend)
-#     insert_Game(game)
-#
-#     companys = getOneGameODD(game)
-#     insertGameODDList(companys)
-#
-#     companyHandis = getOneGameHandi(game)
-#     insertGameHandiList(companyHandis)
-# print getOneGameODD('1252359')
 
 
-# for company in getOneGameHandi('1252360'):
-#     print (company.soccerGameId,company.companyTitle,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
-#     insert_Handi((company.soccerGameId,company.companyTitle,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom))
-# for company in getOneGameODD('1252360'):
-#     print (company.soccerGameId,company.companyTitle,company.orignal_winOdd,company.orignal_drawOdd,company.orignal_loseOdd,company.winOdd,company.drawOdd,company.loseOdd)
-#     insert_ODD((company.soccerGameId,company.companyTitle,company.orignal_winOdd,company.orignal_drawOdd,company.orignal_loseOdd,company.winOdd,company.drawOdd,company.loseOdd))
 
-# i = 51
-# while (i<=46):
-#     GetRound(135, i,'2016-2017')
-#     i += 1
-#     time.sleep(1)
+
+
+
+create_database()
+main = MainSoccer()
+main.getData()
+# main = GetLeague()
+# main.GetLeagueDetails(37, '2015-2016')
+
+
 
 
 

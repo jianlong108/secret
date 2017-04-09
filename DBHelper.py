@@ -4,6 +4,10 @@
 import sqlite3
 import os
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 location = os.path.expanduser('~/Desktop/Soccer.db')
 
 global conn
@@ -55,7 +59,7 @@ def create_database():
 def insert_League(league):
     conn = sqlite3.connect(location)
     c = conn.cursor()
-    params = (league.leagueID,league.leagueName.decode('utf-8'),league.breifLeagueName.decode('utf-8'),league.aviableSeasonStr.decode('utf-8'))
+    params = (league.leagueID,league.leagueName.decode('utf-8'), league.breifLeagueName.decode('utf-8'), league.aviableSeasonStr.decode('utf-8'))
     c.execute("INSERT INTO League VALUES (NULL ,?,?,?,?)", params)
     # c.execute(sql)
     conn.commit()
@@ -79,16 +83,32 @@ def insertGameList(games):
     c = conn.cursor()
 
     for game in games:
-        params = (game.soccerID, game.leauge, game.beginTime, game.soccer, game.homeTeamLevel, game.homeTeam,
-                     game.allHome, game.friendTeamLevel, game.friendTeam, game.allFriend)
+        params = (game.soccerID, game.leauge.decode('utf-8'), game.beginTime.decode('utf-8'), game.soccer, game.homeTeamLevel, game.homeTeam.decode('utf-8'),
+                     game.allHome, game.friendTeamLevel, game.friendTeam.decode('utf-8'), game.allFriend)
         c.execute("INSERT INTO Games VALUES (NULL ,?,?,?,?,?,?,?,?,?,?)", params)
+
+        handi = game.handiCompanies
+        for company in handi:
+            params1 = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
+                       company.companyTitle.decode('utf-8'),
+                       company.orignal_top, company.orignal, company.orignal_bottom, company.now_top, company.now,
+                       company.now_bottom)
+            c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params1)
+
+
+        odd  = game.oddCompanies
+        for company in odd:
+            params = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer, company.companyTitle.decode('utf-8'),
+                  company.orignal_winOdd, company.orignal_drawOdd,
+                  company.orignal_loseOdd, company.winOdd, company.drawOdd, company.loseOdd)
+            c.execute("INSERT INTO CompanyODD VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params)
 
     conn.commit()
     c.close()
     conn.close()
 
 '''
-插入多条亚盘数据
+插入多条欧赔数据
 '''
 def insertGameHandiList(games):
     conn = sqlite3.connect(location)

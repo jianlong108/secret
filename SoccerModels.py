@@ -77,7 +77,8 @@ class FootballGame:
         # 比赛ID
         self.soccerID = 0
         # 博彩公司列表
-        self.betcompanyList = []
+        self.oddCompanies = []
+        self.handiCompanies = []
         # 所属联赛
         self.leauge = ''
         # 开赛时间
@@ -133,19 +134,30 @@ class League:
         self.teams = []
         # 当前赛季
         self.currentSeason = ''
-        # self._aviableSeasonStr = ''
+
+        self.aviableSeasonStr = ''
 
 
-    # @property
-    def get_aviableseasonstr(self):
-        return self.aviableseasonstr
 
-    # @aviableseasonstr.setter
-    def set_aviableseasonstr(self, value):
-        array = value.splite(',')
+        # 附加赛ID
+        self.playOffs_ID = 0
+        # 附加赛决赛ID
+        self.final_playOffs_ID = 0
+        #正赛ID
+        self.leagueSubID = 0
+
+    def creatSeasonList(self):
+        array = self.aviableSeasonStr.split(',')
         self.aviableSeasonList = array
 
-    aviableSeasonStr = property(get_aviableseasonstr, set_aviableseasonstr)
+    # def get_aviableseasonstr(self):
+    #     return self.aviableseasonstr
+    #
+    # def set_aviableseasonstr(self, value):
+    #     array = value.splite(',')
+    #     self.aviableSeasonList = array
+    #
+    # aviableSeasonStr = property(get_aviableseasonstr, set_aviableseasonstr)
 
 class CountrySoccer:
     def __init__(self):
