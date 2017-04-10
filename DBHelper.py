@@ -83,25 +83,34 @@ def insertGameList(games):
     c = conn.cursor()
 
     for game in games:
-        params = (game.soccerID, game.leauge.decode('utf-8'), game.beginTime.decode('utf-8'), game.soccer, game.homeTeamLevel, game.homeTeam.decode('utf-8'),
+        params = (game.soccerID, game.breifLeagueName.decode('utf-8'), game.beginTime.decode('utf-8'), game.soccer, game.homeTeamLevel, game.homeTeam.decode('utf-8'),
                      game.allHome, game.friendTeamLevel, game.friendTeam.decode('utf-8'), game.allFriend)
         c.execute("INSERT INTO Games VALUES (NULL ,?,?,?,?,?,?,?,?,?,?)", params)
 
         handi = game.handiCompanies
-        for company in handi:
-            params1 = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
-                       company.companyTitle.decode('utf-8'),
-                       company.orignal_top, company.orignal, company.orignal_bottom, company.now_top, company.now,
-                       company.now_bottom)
-            c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params1)
+        if handi == None:
+            pass
+        else:
+            for company in handi:
+                params1 = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
+                           company.companyTitle.decode('utf-8'),
+                           company.orignal_top, company.orignal, company.orignal_bottom, company.now_top, company.now,
+                           company.now_bottom)
+                c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params1)
+
 
 
         odd  = game.oddCompanies
-        for company in odd:
-            params = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer, company.companyTitle.decode('utf-8'),
-                  company.orignal_winOdd, company.orignal_drawOdd,
-                  company.orignal_loseOdd, company.winOdd, company.drawOdd, company.loseOdd)
-            c.execute("INSERT INTO CompanyODD VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params)
+        if odd == None:
+            pass
+        else:
+            for company in odd:
+                params = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
+                          company.companyTitle.decode('utf-8'),
+                          company.orignal_winOdd, company.orignal_drawOdd,
+                          company.orignal_loseOdd, company.winOdd, company.drawOdd, company.loseOdd)
+                c.execute("INSERT INTO CompanyODD VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params)
+
 
     conn.commit()
     c.close()

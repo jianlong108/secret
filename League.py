@@ -188,8 +188,10 @@ def creatGameModel(gameStr,leagueStr):
             model.allFriend = int(gameArray[8])
             model.halfHome = int(gameArray[9])
             model.halfFriend = int(gameArray[10])
-            model.homeTeamLevel = int(gameArray[11])
-            model.friendTeamLevel = int(gameArray[12])
+            if gameArray[11] != '':
+                model.homeTeamLevel = int(gameArray[11])
+                model.friendTeamLevel = int(gameArray[12])
+
 
             time.sleep(3)
             model.oddCompanies = getOneGameODD(model)
@@ -283,8 +285,12 @@ class MainSoccer:
         if model.leagueID == 36 or model.leagueID == 37 or model.leagueID == 39:
             print model.leagueName + '========='
             league = GetLeague(model)
-            # 如果包含附加赛,就继续请求数据,否则视为顶级联赛
-            league.GetLeagueDetails()
+            # 杯赛去请求杯赛接口,逻辑
+            if '杯' in model.breifLeagueName:
+                league.getCupDetails()
+            #     否则全部视为联赛
+            else:
+                league.GetLeagueDetails()
 
 
         # insert_League(model)
@@ -330,6 +336,7 @@ class GetLeague:
         if isinstance(model, League):
             self.leagueModel = model
             self.orignalLeagueURL = ''
+            self.orignalCupURL = ''
             self.leagueID = '37'
             self.currentSeason = model.aviableSeasonList[0]
 
@@ -343,6 +350,43 @@ class GetLeague:
             self.allGames = []
         else:
             return None
+
+    def getCupDetails(self):
+        resultStr = ''
+
+        self.orignalCupURL = 'http://ios.win007.com/phone/CupSaiCheng.aspx?ID=' + str(self.leagueModel.leagueID).encode(
+            'utf-8') + '&lang=0&Season=' + self.currentSeason
+        print self.orignalCupURL
+        response = requests.get(self.orignalCupURL)
+
+        if response.ok:
+            resultStr = response.content;
+        else:
+            pass
+
+        # 1.非顶级联赛;正在进行的赛季
+        if resultStr != '':
+
+            print  resultStr
+            if '$$$$' in resultStr:
+                # 以往赛季
+                array = resultStr.split('$$$$')
+                subGameStr = array[0]
+                if len(subGameStr) > 0:
+                    for subStr in subGameStr.split('!'):
+                        if len(subStr) > 0:
+                            gameIDArray = subStr.split('^')
+                            gameIDArray[0]
+
+            else:
+                # 当前赛季
+                array = resultStr.split('$$')
+                subGameStr = array[2]
+                if len(subGameStr) > 0:
+                    for subStr in subGameStr.split('!'):
+                        pass
+
+
 
 
     def GetLeagueDetails(self):
