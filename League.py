@@ -280,7 +280,7 @@ class MainSoccer:
             countryModel.leagueList.append(model)
 
 
-        if model.breifLeagueName == '英超' :
+        if model.leagueID == 36 or model.leagueID == 37 or model.leagueID == 39:
             print model.leagueName + '========='
             league = GetLeague(model)
             # 如果包含附加赛,就继续请求数据,否则视为顶级联赛
@@ -423,26 +423,40 @@ class GetLeague:
     def getOfficialLeague(self):
 
         for season in self.leagueModel.aviableSeasonList:
-            print season
-            if season == '2016-2017':
+
+            if self.leagueModel.leagueID == 36:
+                if season == '2004-2005':
+                    print season
+                elif season == '2003-2004':
+                    print season
+                else:
+                    continue
+            else:
                 continue
+
+
+
             self.currentSeason = season
+            print '================'
 
 
             while(self.currentGound <= self.countOfGounds and self.currentGound >= 1):
 
                 games = GetRound(self.leagueModel.leagueName, self.leagueModel.leagueID, self.leagueSubID, self.currentGound,
-                         self.currentSeason)
+                                 season)
 
                 self.allGames.extend(games)
                 self.currentGound -= 1
 
                 time.sleep(3)
-                if self.currentGound == 1:
+                if self.currentGound == 0:
                     print len(self.allGames)
-                    insertGameList(self.allGames)
+                    if len(self.allGames) != 0:
+                        insertGameList(self.allGames)
+
                     self.currentGound = self.countOfGounds
                     del self.allGames[:]
+                    break
                     time.sleep(10)
 
 
