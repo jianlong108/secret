@@ -20,6 +20,9 @@ sys.setdefaultencoding('utf-8')
 
 
 def getOneGameHandi(game):
+
+    resultStr = ''
+
     try:
         handiURL = 'http://112.91.160.46:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
         print handiURL
@@ -66,7 +69,7 @@ def getOneGameHandi(game):
 获取一场比赛的欧赔数据
 '''
 def getOneGameODD(game):
-
+    resultStr = ''
     try:
         oddURL = 'http://112.91.160.46:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
         print oddURL
@@ -166,37 +169,44 @@ def creatGameModelWithComplexStr(complexStr,leagueStr):
 def creatGameModel(gameStr,leagueStr):
     print gameStr
     if isinstance(gameStr, str):
-        model = FootballGame()
-        model.leauge = leagueStr
 
-        if '$$' in gameStr:
-            onestr = gameStr.split('$$')
-            return creatGameModel(onestr[1], leagueStr)
-        else:
-            gameArray = gameStr.split('^')
+        try:
+            model = FootballGame()
+            model.leauge = leagueStr
 
-            model.soccerID = int(gameArray[0])
-            beginTime = gameArray[1].encode('utf-8')
-            model.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + '-' + beginTime[8:10] + ':' + beginTime[10:12]
-            model.homeTeam = gameArray[2].encode('utf-8')
-            model.homeTeam2 = gameArray[3].encode('utf-8')
-            model.friendTeam = gameArray[4].encode('utf-8')
-            model.friendTeam2 = gameArray[5].encode('utf-8')
-            if int(gameArray[6]) != -1:
-                return None
-            model.allHome = int(gameArray[7])
-            model.allFriend = int(gameArray[8])
-            model.halfHome = int(gameArray[9])
-            model.halfFriend = int(gameArray[10])
-            if gameArray[11] != '':
-                model.homeTeamLevel = int(gameArray[11])
-                model.friendTeamLevel = int(gameArray[12])
+            if '$$' in gameStr:
+                onestr = gameStr.split('$$')
+                return creatGameModel(onestr[1], leagueStr)
+            else:
+                gameArray = gameStr.split('^')
 
+                model.soccerID = int(gameArray[0])
+                beginTime = gameArray[1].encode('utf-8')
+                model.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + '-' + beginTime[
+                                                                                                       8:10] + ':' + beginTime[
+                                                                                                                     10:12]
+                model.homeTeam = gameArray[2].encode('utf-8')
+                model.homeTeam2 = gameArray[3].encode('utf-8')
+                model.friendTeam = gameArray[4].encode('utf-8')
+                model.friendTeam2 = gameArray[5].encode('utf-8')
+                if int(gameArray[6]) != -1:
+                    return None
+                model.allHome = int(gameArray[7])
+                model.allFriend = int(gameArray[8])
+                model.halfHome = int(gameArray[9])
+                model.halfFriend = int(gameArray[10])
+                if gameArray[11] != '':
+                    model.homeTeamLevel = int(gameArray[11])
 
-            time.sleep(3)
-            model.oddCompanies = getOneGameODD(model)
-            model.handiCompanies = getOneGameHandi(model)
-            return model
+                if gameArray[12] != '':
+                    model.friendTeamLevel = int(gameArray[12])
+
+                time.sleep(3)
+                model.oddCompanies = getOneGameODD(model)
+                model.handiCompanies = getOneGameHandi(model)
+                return model
+        except:
+            return None
 
     else:
         return None
@@ -282,7 +292,7 @@ class MainSoccer:
             countryModel.leagueList.append(model)
 
 
-        if model.leagueID == 36 or model.leagueID == 37 or model.leagueID == 39:
+        if model.leagueID == 37 or model.leagueID == 39:
             print model.leagueName + '========='
             league = GetLeague(model)
             # 杯赛去请求杯赛接口,逻辑
@@ -338,7 +348,7 @@ class GetLeague:
             self.orignalLeagueURL = ''
             self.orignalCupURL = ''
             self.leagueID = '37'
-            self.currentSeason = model.aviableSeasonList[0]
+            self.currentSeason = '2016-2017'
 
             self.leagueSubID = 0
             self.countOfGounds = 0
@@ -346,6 +356,8 @@ class GetLeague:
 
             self.addtionalSubID = 0
             self.finalSubID = 0
+
+            self.superLeague = True
 
             self.allGames = []
         else:
@@ -403,7 +415,6 @@ class GetLeague:
         else:
             pass
 
-        # 1.非顶级联赛;正在进行的赛季
         if resultStr != '':
 
             print  resultStr
@@ -413,21 +424,23 @@ class GetLeague:
                 # 非顶级联赛 且 过往赛季
                 leagueStr = array[0]
                 leagueArray = leagueStr.split('^')
-                self.leagueSubID = leagueArray[0]
-                self.countOfGounds = leagueArray[4]
-                self.currentGound = leagueArray[5]
+                self.leagueSubID = int(leagueArray[0])
+                self.countOfGounds = int(leagueArray[4])
+                self.currentGound = int(leagueArray[5])
 
                 additionalLeagueStr = array[1]
                 additionalArray = additionalLeagueStr.split('^')
-                self.addtionalSubID = additionalArray[0]
+                self.addtionalSubID = int(additionalArray[0])
 
                 finalLeagueStr = array[2]
                 finalArray = finalLeagueStr.split('^')
-                self.finalSubID = finalArray[0]
+                self.finalSubID = int(finalArray[0])
 
                 self.getOfficialLeague()
                 self.getAddtionalLeague()
                 self.getAddtionalFinalLeague()
+
+                self.superLeague = False
 
 
             elif '联赛' in array[0]:
@@ -436,9 +449,9 @@ class GetLeague:
                 print '非顶级联赛 正在进行赛季' + 'header' + header
 
                 leagueArray = header.split('^')
-                self.leagueSubID = leagueArray[0]
-                self.countOfGounds = leagueArray[4]
-                self.currentGound = leagueArray[5]
+                self.leagueSubID = int(leagueArray[0])
+                self.countOfGounds = int(leagueArray[4])
+                self.currentGound = int(leagueArray[5])
 
                 self.getOfficialLeague()
 
@@ -455,12 +468,12 @@ class GetLeague:
 
 
     def getAddtionalLeague(self):
-        games = GetRound(self.leagueModel.leagueName, self.leagueModel.leagueID, self.leagueSubID, 0,
+        games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.leagueSubID, 0,
                          self.currentSeason)
         self.allGames.extend(games)
 
     def getAddtionalFinalLeague(self):
-        games = GetRound(self.leagueModel.leagueName, self.leagueModel.leagueID, self.leagueSubID, 0,
+        games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.leagueSubID, 0,
                          self.currentSeason)
         self.allGames.extend(games)
 
@@ -468,15 +481,19 @@ class GetLeague:
 
         for season in self.leagueModel.aviableSeasonList:
 
-            if self.leagueModel.leagueID == 36:
-                if season == '2004-2005':
-                    print season
-                elif season == '2003-2004':
-                    print season
-                else:
+            if self.leagueModel.leagueID == 37:
+                if season == '2012-2013' or season == '2013-2014' or season == '2014-2015' or season == '2015-2016' or season == '2016-2017':
                     continue
+                else:
+                   print season
             else:
-                continue
+                print season
+
+
+
+            if season != self.currentSeason:
+                self.currentGound = self.countOfGounds
+
 
 
 
@@ -484,9 +501,10 @@ class GetLeague:
             print '================'
 
 
+
             while(self.currentGound <= self.countOfGounds and self.currentGound >= 1):
 
-                games = GetRound(self.leagueModel.leagueName, self.leagueModel.leagueID, self.leagueSubID, self.currentGound,
+                games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.leagueSubID, self.currentGound,
                                  season)
 
                 self.allGames.extend(games)

@@ -83,7 +83,7 @@ def insertGameList(games):
     c = conn.cursor()
 
     for game in games:
-        params = (game.soccerID, game.breifLeagueName.decode('utf-8'), game.beginTime.decode('utf-8'), game.soccer, game.homeTeamLevel, game.homeTeam.decode('utf-8'),
+        params = (game.soccerID, game.leauge.decode('utf-8'), game.beginTime.decode('utf-8'), game.soccer, game.homeTeamLevel, game.homeTeam.decode('utf-8'),
                      game.allHome, game.friendTeamLevel, game.friendTeam.decode('utf-8'), game.allFriend)
         c.execute("INSERT INTO Games VALUES (NULL ,?,?,?,?,?,?,?,?,?,?)", params)
 
