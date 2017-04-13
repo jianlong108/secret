@@ -147,8 +147,8 @@ def getOneGameHandi(game):
 
             company.now = float(unitArray[6])
             company.now_bottom = float(unitArray[7])
-
-            companys.append(company)
+            if company.companyTitle in ['10BET', 'Bet365', 'SB', '澳彩', '韦德']:
+                companys.append(company)
 
         return companys
 
@@ -195,7 +195,7 @@ def getOneGameODD(game):
 
             company.drawOdd = float(unitArray[6])
             company.loseOdd = float(unitArray[7])
-
-            companys.append(company)
+            if company.companyTitle in ['竞彩官方', '10BET', 'bet 365', 'bwin', 'Interwetten', 'SB', '澳门', '立博', '威廉希尔', '香港马会', '伟德']:
+                companys.append(company)
 
         return companys

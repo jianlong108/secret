@@ -100,8 +100,9 @@ class MainSoccer:
         if countryModel != None:
             countryModel.leagueList.append(model)
 
+        # insert_League(model)
 
-        if model.leagueID == 37 or model.leagueID == 39:
+        if model.leagueID == 39:
             print model.leagueName + '========='
             league = GetLeague(model)
             # 杯赛去请求杯赛接口,逻辑
@@ -112,7 +113,7 @@ class MainSoccer:
                 league.getOfficialLeague()
 
 
-        # insert_League(model)
+
 
 
 
@@ -217,6 +218,7 @@ class GetLeague:
         self.orignalLeagueURL = 'http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=' \
                                     + str(self.leagueModel.leagueID).encode('utf-8') + '&season=' + self.currentSeason + '&subid=0&apiversion=1&from=2'
         print self.orignalLeagueURL
+
         response = requests.get(self.orignalLeagueURL)
 
         if response.ok:
@@ -232,16 +234,17 @@ class GetLeague:
             if ('联赛' in array[0]) and ('附加赛' in array[0]) and ('附加赛决赛' in array[0]):
                 # 非顶级联赛 且 过往赛季
                 leagueStr = array[0]
-                leagueArray = leagueStr.split('^')
-                self.leagueSubID = int(leagueArray[0])
-                self.countOfGounds = int(leagueArray[4])
-                self.currentGound = int(leagueArray[5])
+                leagueArray = leagueStr.split('!')
+                officalStr = leagueArray[0]
+                self.leagueSubID = int(officalStr.split('^')[0])
+                self.countOfGounds = int(officalStr.split('^')[4])
+                self.currentGound = int(officalStr.split('^')[5])
 
-                additionalLeagueStr = array[1]
+                additionalLeagueStr = leagueArray[1]
                 additionalArray = additionalLeagueStr.split('^')
                 self.addtionalSubID = int(additionalArray[0])
 
-                finalLeagueStr = array[2]
+                finalLeagueStr = leagueArray[2]
                 finalArray = finalLeagueStr.split('^')
                 self.finalSubID = int(finalArray[0])
 
@@ -270,20 +273,23 @@ class GetLeague:
     def getAllData(self):
         if self.finalSubID != 0:
             self.getAddtionalFinalLeague()
-        elif self.addtionalSubID != 0:
+        if self.addtionalSubID != 0:
             self.getAddtionalLeague()
-        else:
-            self.getLeagueGame()
+
+        self.getLeagueGame()
 
 
     def getAddtionalLeague(self):
-        games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.leagueSubID, 0,
+        games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.addtionalSubID, 0,
                          self.currentSeason)
+        print '获取附加赛数据' + self.currentSeason + str(len(games))
         self.allGames.extend(games)
 
     def getAddtionalFinalLeague(self):
-        games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.leagueSubID, 0,
+
+        games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.finalSubID, 0,
                          self.currentSeason)
+        print '获取附加赛决赛数据' + self.currentSeason + str(len(games))
         self.allGames.extend(games)
 
     def getLeagueGame(self):
@@ -291,19 +297,25 @@ class GetLeague:
 
             games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.leagueSubID,
                              self.currentGound,
-                             season)
+                             self.currentSeason)
 
             self.allGames.extend(games)
+            print '获取正赛数据 ' + self.currentSeason +' '+str(self.currentGound) + ' '+ str(len(games))
             self.currentGound -= 1
+            if len(self.allGames) != 0:
+                insertGameList(self.allGames)
+
+            # self.currentGound = self.countOfGounds
+            del self.allGames[:]
 
             time.sleep(3)
             if self.currentGound == 0:
-                print len(self.allGames)
-                if len(self.allGames) != 0:
-                    insertGameList(self.allGames)
 
+                # if len(self.allGames) != 0:
+                #     insertGameList(self.allGames)
+                #
                 self.currentGound = self.countOfGounds
-                del self.allGames[:]
+                # del self.allGames[:]
                 break
                 time.sleep(10)
 
@@ -311,13 +323,13 @@ class GetLeague:
 
         for season in self.leagueModel.aviableSeasonList:
 
-            if self.leagueModel.leagueID == 37:
-                if season == '2012-2013' or season == '2013-2014' or season == '2014-2015' or season == '2015-2016':
-                    continue
-                else:
-                   print season
-            else:
-                print season
+            # if self.leagueModel.leagueID == 37:
+            #     if season == '2008-2009' or season == '2007-2008' or season == '2006-2007' or season == '2005-2006' or season == '2004-2005':
+            #         print season
+            #     else:
+            #        continue
+            # else:
+            #     print season
 
 
 

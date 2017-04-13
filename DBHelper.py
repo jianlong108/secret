@@ -35,12 +35,12 @@ def create_database():
     c.execute(sql0)
 
     sql1 = 'create table if not exists ' + 'CompanyHandicap' + \
-          '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,gameid INTEGER,result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),otodds REAL ,' \
+          '(rowid INTEGER PRIMARY KEY AUTOINCREMENT, soccerID INTEGER, gameid INTEGER,result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),otodds REAL ,' \
           'orignalpan REAL,ododds REAL,ntodds REAL ,nowpan REAL,ndodds REAL)'
     c.execute(sql1)
 
     sql2 = 'create table if not exists ' + 'CompanyODD' + \
-           '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,gameid INTEGER,result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),' \
+           '(rowid INTEGER PRIMARY KEY AUTOINCREMENT, soccerID INTEGER , gameid INTEGER, result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),' \
            'ori_winODD REAL ,ori_drawODD REAL,ori_loseODD REAL,'\
             'winODD REAL ,drawODD REAL,loseODD REAL)'
     c.execute(sql2)
@@ -59,7 +59,7 @@ def create_database():
 def insert_League(league):
     conn = sqlite3.connect(location)
     c = conn.cursor()
-    params = (league.leagueID,league.leagueName.decode('utf-8'), league.breifLeagueName.decode('utf-8'), league.aviableSeasonStr.decode('utf-8'))
+    params = (league.leagueID, league.leagueName.decode('utf-8'), league.breifLeagueName.decode('utf-8'), league.aviableSeasonStr.decode('utf-8'))
     c.execute("INSERT INTO League VALUES (NULL ,?,?,?,?)", params)
     # c.execute(sql)
     conn.commit()
@@ -92,11 +92,11 @@ def insertGameList(games):
             pass
         else:
             for company in handi:
-                params1 = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
+                params1 = (game.soccerID, company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
                            company.companyTitle.decode('utf-8'),
                            company.orignal_top, company.orignal, company.orignal_bottom, company.now_top, company.now,
                            company.now_bottom)
-                c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params1)
+                c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,? ,?,?,?,?,?,?,?,?,?,?,?)", params1)
 
 
 
@@ -105,11 +105,11 @@ def insertGameList(games):
             pass
         else:
             for company in odd:
-                params = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
+                params = (game.soccerID, company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
                           company.companyTitle.decode('utf-8'),
                           company.orignal_winOdd, company.orignal_drawOdd,
                           company.orignal_loseOdd, company.winOdd, company.drawOdd, company.loseOdd)
-                c.execute("INSERT INTO CompanyODD VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params)
+                c.execute("INSERT INTO CompanyODD VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?,?)", params)
 
 
     conn.commit()
