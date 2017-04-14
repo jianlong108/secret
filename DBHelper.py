@@ -189,3 +189,15 @@ def insert_ODD(company):
     conn.commit()
     c.close()
     conn.close()
+
+def getGameData(game):
+    conn = sqlite3.connect(location)
+    c = conn.cursor()
+    for oneCompany in game.handiCompanies:
+        c.execute("select * from CompanyHandicap where company == oneCompany.companyTitle and orignalpan == oneCompany.orignal and nowpan == oneCompany.now")
+        r = c.fetchall()
+        print r
+
+
+    c.close()
+    conn.close()

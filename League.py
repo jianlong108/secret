@@ -272,9 +272,11 @@ class GetLeague:
 
     def getAllData(self):
         if self.finalSubID != 0:
-            self.getAddtionalFinalLeague()
+            # self.getAddtionalFinalLeague()
+            pass
         if self.addtionalSubID != 0:
-            self.getAddtionalLeague()
+            pass
+            # self.getAddtionalLeague()
 
         self.getLeagueGame()
 
@@ -294,6 +296,9 @@ class GetLeague:
 
     def getLeagueGame(self):
         while (self.currentGound <= self.countOfGounds and self.currentGound >= 1):
+            if self.currentGound > 35:
+                self.currentGound -= 1
+                continue
 
             games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.leagueSubID,
                              self.currentGound,
@@ -323,13 +328,13 @@ class GetLeague:
 
         for season in self.leagueModel.aviableSeasonList:
 
-            # if self.leagueModel.leagueID == 37:
-            #     if season == '2008-2009' or season == '2007-2008' or season == '2006-2007' or season == '2005-2006' or season == '2004-2005':
-            #         print season
-            #     else:
-            #        continue
-            # else:
-            #     print season
+            if self.leagueModel.leagueID == 39:
+                if season in ['2012-2013']:
+                    print season
+                else:
+                   continue
+            else:
+                print season
 
 
 
