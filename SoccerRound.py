@@ -90,7 +90,7 @@ def creatGameModel(gameStr,leagueStr):
                 if gameArray[12] != '':
                     model.friendTeamLevel = int(gameArray[12])
 
-                time.sleep(3)
+                time.sleep(1)
                 model.oddCompanies = getOneGameODD(model)
                 model.handiCompanies = getOneGameHandi(model)
                 return model
@@ -113,7 +113,7 @@ def getOneGameHandi(game):
 
     try:
         handiURL = 'http://112.91.160.46:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
-        print handiURL
+        # print handiURL
     except:
         pass
 
@@ -160,7 +160,7 @@ def getOneGameODD(game):
     resultStr = ''
     try:
         oddURL = 'http://112.91.160.46:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
-        print oddURL
+        # print oddURL
     except:
         pass
 

@@ -4,6 +4,7 @@
 import sqlite3
 import os
 
+from decimal import Decimal
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -193,11 +194,103 @@ def insert_ODD(company):
 def getGameData(game):
     conn = sqlite3.connect(location)
     c = conn.cursor()
+    winCount = 0
+    drawCount = 0
+    loseCount = 0
+    num = 0.00
+    now = 0
+    orignal = 0
     for oneCompany in game.handiCompanies:
-        c.execute("select * from CompanyHandicap where company == oneCompany.companyTitle and orignalpan == oneCompany.orignal and nowpan == oneCompany.now")
-        r = c.fetchall()
-        print r
 
+        # 亚盘
+        c.execute("select * from CompanyHandicap where company == ? and orignalpan == ? and nowpan == ? and ntodds >= ? and ntodds < ? and ndodds >= ? and ndodds < ? AND otodds >= ? AND otodds < ? AND ododds >= ? AND ododds < ?", (oneCompany.companyTitle.decode('utf-8'), oneCompany.orignal, oneCompany.now, switchData(oneCompany.now_bottom)[0], switchData(oneCompany.now_bottom)[1], switchData(oneCompany.now_top)[0], switchData(oneCompany.now_top)[1], switchData(oneCompany.orignal_top)[0], switchData(oneCompany.orignal_top)[1], switchData(oneCompany.orignal_bottom)[0], switchData(oneCompany.orignal_bottom)[1]))
+        r = c.fetchall()
+        num += len(r)
+        for result in r:
+           # print str(result[1]) +'*'+ str(result[3]) +'*'+ str(result[6])
+           # print int(result[1]).__class__
+           # c.execute("select * from CompanyODD where soccerID = ?", (int(result[1]),))
+           # print '--------'
+           # oddResult = c.fetchall()
+           # for one in oddResult:
+           #     print str(one[6]) + ' ' + str(one[7]) + ' ' + str(one[8]) + ' ' + str(one[9]) + ' ' + str(one[10]) + ' ' + str(one[11]) + ' ' + str(one[12])
+
+           if result[3] == 3:
+               winCount += 1
+           elif result[3] == 1:
+               drawCount += 1
+           else:
+               loseCount += 1
+
+    if num > 0:
+        print '亚盘' + ' ' + str(game.soccerID) +'==='+ str(winCount) +'==='+ str(drawCount) +'==='+ str(loseCount)+'==='+ game.homeTeam +'vs'+ game.friendTeam
+        print '亚盘' + ' ' + game.homeTeam + 'vs' + game.friendTeam +' 胜:' + str(float(winCount)/float(num) * 100)[:5]+'/100' + ' 平:' + str(float(drawCount)/float(num) * 100)[:5]+'/100' + ' 负:' + str(float(loseCount)/float(num) * 100)[:5]+'/100'
+        # 欧赔
+        # c.execute(
+        #     "select * from CompanyODD where company == ? and ori_winODD == ? and ori_drawODD == ? and ori_loseODD == ? /*and winODD == ? AND drawODD == ? AND loseODD == ?*/",
+        #     (oneCompany.companyTitle.decode('utf-8'), float(Decimal(oneCompany.orignal_winOdd).quantize(Decimal('0.0'))), float(Decimal(oneCompany.orignal_drawOdd).quantize(Decimal('0.0'))), float(Decimal(oneCompany.orignal_loseOdd).quantize(Decimal('0.0'))),
+        #      ))
+        # r = c.fetchall()
+        # winCount = 0
+        # drawCount = 0
+        # loseCount = 0
+        # for result in r:
+        #     # print str(game.soccerID) +'==='+ str(result[3]) +'==='+ str(result[6]) +'==='+ game.homeTeam +'==='+ game.friendTeam
+        #     if result[3] == 3:
+        #         winCount += 1
+        #     elif result[3] == 1:
+        #         drawCount += 1
+        #     else:
+        #         loseCount += 1
+
+        # if len(r) > 0:
+        #     print '欧赔' + str(game.soccerID) + '===' + str(winCount) + '===' + str(drawCount) + '===' + str(
+        #         loseCount) + '===' + game.homeTeam + '===' + game.friendTeam
+
+    # for one in list:
+    #    print str(one[6]) + ' ' + str(one[7]) + ' ' + str(one[8]) + ' ' + str(one[9]) + ' ' + str(one[10]) + ' ' + str(one[11]) + ' ' + str(one[12])
+       # if one[3] == 3:
+       #     winCount += 1
+       # elif one[3] == 1:
+       #     drawCount += 1
+       # else:
+       #     loseCount += 1
+    #
+    # if len(r) > 0:
+    #     print '亚盘' + str(game.soccerID) +'==='+ str(winCount) +'==='+ str(drawCount) +'==='+ str(loseCount)+'==='+ game.homeTeam +'==='+ game.friendTeam
+
+
+    print '\n'
 
     c.close()
     conn.close()
+
+def switchData(num):
+    if num<0.5:
+        return (0, 0)
+    elif num >= 0.5 and num < 0.6:
+        return (0.5, 0.6)
+    elif num >= 0.6 and num < 0.7:
+        return (0.6, 0.7)
+    elif num >= 0.7 and num < 0.8:
+        return (0.7, 0.8)
+    elif num >= 0.8 and num < 0.9:
+        return (0.8, 0.9)
+    elif num >= 0.9 and num < 1.0:
+        return (0.9, 1.0)
+    elif num >= 1.0 and num < 1.1:
+        return (1.0, 1.1)
+    elif num >= 1.1 and num < 1.2:
+        return (1.1, 1.2)
+    elif num >= 1.2 and num < 1.3:
+        return (1.2, 1.3)
+    elif num >= 1.3 and num < 1.4:
+        return (1.3, 1.4)
+    elif num >= 1.4 and num < 1.5:
+        return (1.4, 1.5)
+    elif num >= 1.5 and num < 1.6:
+        return (1.5, 1.6)
+    elif num >= 1.6 and num < 1.7:
+        return (1.6, 1.7)
+    else:
+        return (0,0)

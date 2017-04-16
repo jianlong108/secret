@@ -38,11 +38,17 @@ def getTodaySoccer():
         for game in games:
             onegame = FootballGame()
             oneGameArray = game.split('^')
+            oneGameArray.remove('')
             onegame.soccerID = int(oneGameArray[0])
             onegame.leauge = dic.get(oneGameArray[1].encode('utf-8'))
             onegame.beginTime = oneGameArray[3].encode('utf-8')
-            onegame.homeTeam = oneGameArray[4].encode('utf-8')
-            onegame.friendTeam = oneGameArray[5].encode('utf-8')
+            if oneGameArray[4].isdigit() or oneGameArray[4] == '':
+                onegame.homeTeam = oneGameArray[5].encode('utf-8')
+                onegame.friendTeam = oneGameArray[6].encode('utf-8')
+            else:
+                onegame.homeTeam = oneGameArray[4].encode('utf-8')
+                onegame.friendTeam = oneGameArray[5].encode('utf-8')
+
             onegame.oddCompanies = getOneGameODD(onegame)
             onegame.handiCompanies = getOneGameHandi(onegame)
             Games.append(onegame)
@@ -55,7 +61,7 @@ def getTodaySoccer():
 
 getTodaySoccer()
 
-
+# print float(Decimal(1.345).quantize(Decimal('0.0')))
 
 
 
