@@ -102,7 +102,7 @@ class MainSoccer:
 
         # insert_League(model)
 
-        if model.leagueID == 8 or model.leagueID == 9 or model.leagueID == 11 or model.leagueID == 12:
+        if model.leagueID == 26:
             print model.leagueName + '========='
             league = GetLeague(model)
             # 杯赛去请求杯赛接口,逻辑
@@ -296,9 +296,9 @@ class GetLeague:
 
     def getLeagueGame(self):
         while (self.currentGound <= self.countOfGounds and self.currentGound >= 1):
-            if self.currentGound > 32:
-                self.currentGound -= 1
-                continue
+            # if self.currentGound > 3:
+            #     self.currentGound -= 1
+            #     continue
 
             games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.leagueSubID,
                              self.currentGound,
@@ -328,8 +328,8 @@ class GetLeague:
 
         for season in self.leagueModel.aviableSeasonList:
 
-            # if self.leagueModel.leagueID == 31:
-            #     if season in ['2012-2013']:
+            # if self.leagueModel.leagueID == 23:
+            #     if season in ['2007-2008']:
             #         print season
             #     else:
             #        continue

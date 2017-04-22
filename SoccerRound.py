@@ -90,7 +90,7 @@ def creatGameModel(gameStr,leagueStr):
                 if gameArray[12] != '':
                     model.friendTeamLevel = int(gameArray[12])
 
-                time.sleep(1)
+                time.sleep(1.5)
                 model.oddCompanies = getOneGameODD(model)
                 model.handiCompanies = getOneGameHandi(model)
                 return model

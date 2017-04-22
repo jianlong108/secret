@@ -200,6 +200,9 @@ def getGameData(game):
     num = 0.00
     now = 0
     orignal = 0
+    if game.handiCompanies == None:
+        return
+
     for oneCompany in game.handiCompanies:
 
         # 亚盘
@@ -223,8 +226,8 @@ def getGameData(game):
                loseCount += 1
 
     if num > 0:
-        print '亚盘' + ' ' + str(game.soccerID) +'==='+ str(winCount) +'==='+ str(drawCount) +'==='+ str(loseCount)+'==='+ game.homeTeam +'vs'+ game.friendTeam
-        print '亚盘' + ' ' + game.homeTeam + 'vs' + game.friendTeam +' 胜:' + str(float(winCount)/float(num) * 100)[:5]+'/100' + ' 平:' + str(float(drawCount)/float(num) * 100)[:5]+'/100' + ' 负:' + str(float(loseCount)/float(num) * 100)[:5]+'/100'
+        print str(game.beginTime) + '===' + str(winCount) + '===' + str(drawCount) +'==='+ str(loseCount)+'==='+ game.homeTeam +'vs'+ game.friendTeam
+        print game.homeTeam + 'vs' + game.friendTeam + ' 胜:' + str(float(winCount)/float(num) * 100)[:5]+'/100' + ' 平:' + str(float(drawCount)/float(num) * 100)[:5]+'/100' + ' 负:' + str(float(loseCount)/float(num) * 100)[:5]+'/100'
         # 欧赔
         # c.execute(
         #     "select * from CompanyODD where company == ? and ori_winODD == ? and ori_drawODD == ? and ori_loseODD == ? /*and winODD == ? AND drawODD == ? AND loseODD == ?*/",
@@ -266,6 +269,37 @@ def getGameData(game):
     conn.close()
 
 def switchData(num):
+    if num<0.5:
+        return (0, 0)
+    elif num >= 0.5 and num < 0.6:
+        return (0.5, 0.6)
+    elif num >= 0.6 and num < 0.7:
+        return (0.6, 0.7)
+    elif num >= 0.7 and num < 0.8:
+        return (0.7, 0.8)
+    elif num >= 0.8 and num < 0.9:
+        return (0.8, 0.9)
+    elif num >= 0.9 and num < 1.0:
+        return (0.9, 1.0)
+    elif num >= 1.0 and num < 1.1:
+        return (1.0, 1.1)
+    elif num >= 1.1 and num < 1.2:
+        return (1.1, 1.2)
+    elif num >= 1.2 and num < 1.3:
+        return (1.2, 1.3)
+    elif num >= 1.3 and num < 1.4:
+        return (1.3, 1.4)
+    elif num >= 1.4 and num < 1.5:
+        return (1.4, 1.5)
+    elif num >= 1.5 and num < 1.6:
+        return (1.5, 1.6)
+    elif num >= 1.6 and num < 1.7:
+        return (1.6, 1.7)
+    else:
+        return (0,0)
+
+
+def switchODDData(num):
     if num<0.5:
         return (0, 0)
     elif num >= 0.5 and num < 0.6:

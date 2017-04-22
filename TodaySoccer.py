@@ -12,7 +12,7 @@ from SoccerRound import *
 
 def getTodaySoccer():
     try:
-        url = "http://112.91.160.49:8071/phone/schedule_0_3.txt?an=iosQiuTan&av=5.9&from=2&r="+str(int(time.time()))
+        url = "http://112.91.160.49:8071/phone/schedule_0_1.txt?an=iosQiuTan&av=5.9&from=2&r="+str(int(time.time()))
         print url
     except:
         pass
@@ -24,16 +24,17 @@ def getTodaySoccer():
         pass
     Games = []
     if resultStr != '':
+        print resultStr
         allArray = resultStr.split('$$')
 
-        leagueStr = allArray[1]
+        leagueStr = allArray[0]
         allLeague = leagueStr.split('!')
         dic = {}
         for league in allLeague:
             oneLeague = league.split('^')
             dic[oneLeague[1]] = oneLeague[0]
 
-        gameStr = allArray[2]
+        gameStr = allArray[1]
         games = gameStr.split('!')
         for game in games:
             onegame = FootballGame()
@@ -41,7 +42,10 @@ def getTodaySoccer():
             oneGameArray.remove('')
             onegame.soccerID = int(oneGameArray[0])
             onegame.leauge = dic.get(oneGameArray[1].encode('utf-8'))
-            onegame.beginTime = oneGameArray[3].encode('utf-8')
+            beginTime = oneGameArray[3].encode('utf-8')
+            onegame.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + '-' + beginTime[
+                                                                                                   8:10] + ':' + beginTime[
+                                                                                                                 10:12]
             if oneGameArray[4].isdigit() or oneGameArray[4] == '':
                 onegame.homeTeam = oneGameArray[5].encode('utf-8')
                 onegame.friendTeam = oneGameArray[6].encode('utf-8')
