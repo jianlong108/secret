@@ -24,7 +24,7 @@ def getTodaySoccer():
         pass
     Games = []
     if resultStr != '':
-        print resultStr
+        # print resultStr
         allArray = resultStr.split('$$')
 
         leagueStr = allArray[0]
