@@ -4,7 +4,6 @@
 import sqlite3
 import os
 import math
-
 from decimal import Decimal
 import sys
 reload(sys)
@@ -192,7 +191,9 @@ def insert_ODD(company):
     c.close()
     conn.close()
 
-def getGameData(game):
+def getGameData(game,contentStr):
+    if isinstance(contentStr, str) == False:
+        return
     conn = sqlite3.connect(location)
     c = conn.cursor()
     winCount = 0
@@ -218,6 +219,8 @@ def getGameData(game):
                loseCount += 1
 
     if num > 0:
+        contentStr + str(game.beginTime) + ':' + game.leauge +':'+ game.homeTeam + 'vs' + game.friendTeam
+        contentStr + ' 胜:' + str(float(winCount)/float(num) * 100)[:5]+'/100' + ' 平:' + str(float(drawCount)/float(num) * 100)[:5]+'/100' + ' 负:' + str(float(loseCount)/float(num) * 100)[:5]+'/100'
         print str(game.beginTime) + ':' + game.leauge +':'+ game.homeTeam + 'vs' + game.friendTeam
         print ' 胜:' + str(float(winCount)/float(num) * 100)[:5]+'/100' + ' 平:' + str(float(drawCount)/float(num) * 100)[:5]+'/100' + ' 负:' + str(float(loseCount)/float(num) * 100)[:5]+'/100'
     # 欧赔
@@ -225,6 +228,8 @@ def getGameData(game):
     drawCount = 0
     loseCount = 0
     num = 0
+    if len(game.oddCompanies) <= 0:
+        return
     for oneOdd in game.oddCompanies:
         c.execute(
             "select * from CompanyODD where company == ? and ori_winODD >= ? and ori_winODD <= ? and ori_drawODD >= ? and ori_drawODD <= ? and ori_loseODD >= ? and ori_loseODD <= ? and winODD >= ? and winODD <= ? AND drawODD >= ? and drawODD <= ? AND loseODD >= ? and loseODD <= ?",
@@ -241,11 +246,17 @@ def getGameData(game):
                 loseCount += 1
 
     if num > 0:
+        contentStr + ' 胜:' + str(float(winCount) / float(num) * 100)[
+                                                               :5] + '/100' + ' 平:' + str(
+            float(drawCount) / float(num) * 100)[:5] + '/100' + ' 负:' + str(float(loseCount) / float(num) * 100)[
+                                                                        :5] + '/100'
         print ' 胜:' + str(float(winCount) / float(num) * 100)[
                                                                :5] + '/100' + ' 平:' + str(
             float(drawCount) / float(num) * 100)[:5] + '/100' + ' 负:' + str(float(loseCount) / float(num) * 100)[
                                                                         :5] + '/100'
         print '\n'
+
+    contentStr + '-------------------------------------------'
 
     c.close()
     conn.close()

@@ -7,7 +7,9 @@ import requests
 from DBHelper import *
 from SoccerModels import *
 from SoccerRound import *
+import datetime
 
+from SendMail import *
 from SoccerRound import *
 
 def getTodaySoccer():
@@ -36,6 +38,7 @@ def getTodaySoccer():
 
         gameStr = allArray[1]
         games = gameStr.split('!')
+        contentStr = ''
         for game in games:
             onegame = FootballGame()
             oneGameArray = game.split('^')
@@ -56,9 +59,11 @@ def getTodaySoccer():
             onegame.oddCompanies = getOneGameODD(onegame)
             onegame.handiCompanies = getOneGameHandi(onegame)
             Games.append(onegame)
-            getGameData(onegame)
+            getGameData(onegame,contentStr)
             time.sleep(3)
 
+        today = datetime.date.today()
+        send_mail(today.isoformat(), contentStr)
 
 
 
