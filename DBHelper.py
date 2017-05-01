@@ -191,17 +191,27 @@ def insert_ODD(company):
     c.close()
     conn.close()
 
-def getGameData(game,contentStr):
-    if isinstance(contentStr, str) == False:
-        return
+
+'''
+分析一场比赛的数据
+'''
+def getGameData(game):
+
+    contentstr = ''
+
     conn = sqlite3.connect(location)
     c = conn.cursor()
     winCount = 0
     drawCount = 0
     loseCount = 0
     num = 0
+
+
+
     if game.handiCompanies == None:
         return
+
+    contentstr = contentstr.join([str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam])
 
     for oneCompany in game.handiCompanies:
 
@@ -218,9 +228,10 @@ def getGameData(game,contentStr):
            else:
                loseCount += 1
 
+
     if num > 0:
-        contentStr + str(game.beginTime) + ':' + game.leauge +':'+ game.homeTeam + 'vs' + game.friendTeam
-        contentStr + ' 胜:' + str(float(winCount)/float(num) * 100)[:5]+'/100' + ' 平:' + str(float(drawCount)/float(num) * 100)[:5]+'/100' + ' 负:' + str(float(loseCount)/float(num) * 100)[:5]+'/100'
+        tempstr = ''.join(['  亚 ', '胜: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 平:', str(float(drawCount) / float(num) * 100)[:5], '/100', '负', str(float(loseCount) / float(num) * 100)[:5], '/100  '])
+        contentstr = contentstr + tempstr
         print str(game.beginTime) + ':' + game.leauge +':'+ game.homeTeam + 'vs' + game.friendTeam
         print ' 胜:' + str(float(winCount)/float(num) * 100)[:5]+'/100' + ' 平:' + str(float(drawCount)/float(num) * 100)[:5]+'/100' + ' 负:' + str(float(loseCount)/float(num) * 100)[:5]+'/100'
     # 欧赔
@@ -246,20 +257,18 @@ def getGameData(game,contentStr):
                 loseCount += 1
 
     if num > 0:
-        contentStr + ' 胜:' + str(float(winCount) / float(num) * 100)[
-                                                               :5] + '/100' + ' 平:' + str(
-            float(drawCount) / float(num) * 100)[:5] + '/100' + ' 负:' + str(float(loseCount) / float(num) * 100)[
-                                                                        :5] + '/100'
+        tempstr = ''.join(['  欧: ', '胜: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 平:', str(float(drawCount) / float(num) * 100)[:5], '/100', '负', str(float(loseCount) / float(num) * 100)[:5], '/100'])
+        contentstr = contentstr + tempstr
         print ' 胜:' + str(float(winCount) / float(num) * 100)[
                                                                :5] + '/100' + ' 平:' + str(
             float(drawCount) / float(num) * 100)[:5] + '/100' + ' 负:' + str(float(loseCount) / float(num) * 100)[
                                                                         :5] + '/100'
         print '\n'
 
-    contentStr + '-------------------------------------------'
-
     c.close()
     conn.close()
+
+    return contentstr
 
 def switchData(num):
     if num<0.5:
@@ -301,3 +310,21 @@ def switchODDData(num):
         return (middle, maxNum)
     else:
         return (minNum, middle)
+
+'''
+根据联赛id 获取联赛对应的详细信息
+'''
+def getLeagueDetail(tempLeagueID):
+    conn = sqlite3.connect(location)
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM League WHERE leagueID == ?", (tempLeagueID, ))
+    r = c.fetchall()
+    if len(r) > 0:
+        return r[0]
+    else:
+        return None
+
+    conn.commit()
+    c.close()
+    conn.close()

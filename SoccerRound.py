@@ -37,6 +37,70 @@ def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
 
     return games
 
+def creatCupGameModelWithComplexStr(complexStr,leagueStr):
+    array = complexStr.split('!')
+    games = []
+    for unit in array:
+        print unit.decode('utf-8')
+        if '$$' in unit:
+            onegame = unit.split('$$')[1]
+            model = creatCupGameModel(onegame, leagueStr)
+            if model != None:
+                games.append(model)
+
+        else:
+            model = creatCupGameModel(unit, leagueStr)
+            if model != None:
+                games.append(model)
+    return games
+
+def creatCupGameModel(gameStr,leagueStr):
+    print gameStr
+    if isinstance(gameStr, str):
+
+        try:
+            model = FootballGame()
+            model.leauge = leagueStr
+
+            if '$$' in gameStr:
+                onestr = gameStr.split('$$')
+                return creatGameModel(onestr[1], leagueStr)
+            else:
+                gameArray = gameStr.split('^')
+
+                if int(gameArray[6]) != -1:
+                    return None
+
+                model.soccerID = int(gameArray[11])
+
+                beginTime = gameArray[1].encode('utf-8')
+                model.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + '-' + beginTime[
+                                                                                                       8:10] + ':' + beginTime[
+                                                                                                                     10:12]
+                model.homeTeam = gameArray[2].encode('utf-8')
+                model.homeTeam2 = gameArray[3].encode('utf-8')
+                model.friendTeam = gameArray[4].encode('utf-8')
+                model.friendTeam2 = gameArray[5].encode('utf-8')
+
+                model.allHome = int(gameArray[7])
+                model.allFriend = int(gameArray[8])
+                model.halfHome = int(gameArray[9])
+                model.halfFriend = int(gameArray[10])
+                if gameArray[11] != '':
+                    model.homeTeamLevel = int(gameArray[11])
+
+                time.sleep(1.5)
+                model.oddCompanies = getOneGameODD(model)
+                model.handiCompanies = getOneGameHandi(model)
+                return model
+
+
+        except:
+            return None
+
+    else:
+        return None
+
 
 def creatGameModelWithComplexStr(complexStr,leagueStr):
     array = complexStr.split('!')
