@@ -16,6 +16,7 @@ def getTodaySoccer(type):
     # type == 3 精彩
     # type == 1 精简
     # type == 2 十四场
+    type = int(type)
     try:
         url = "http://112.91.160.49:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=5.9&from=2&r="+str(int(time.time()))
         print url
@@ -96,7 +97,7 @@ if sys.argv.__len__()==1:
     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
 
 if __name__ == '__main__':
-    getTodaySoccer(2)
+    getTodaySoccer(sys.argv[1])
 
 # print float(Decimal(1.345).quantize(Decimal('0.0')))
 
