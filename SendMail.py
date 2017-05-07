@@ -4,7 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import sys
-import string
+from datetime import date, time, datetime, timedelta
 
 
 
@@ -45,8 +45,4 @@ def send_mail(sub, content):
         return False
 
 
-# print time.strftime('%Y-%m-%d', time.localtime(time.time()))
-#
-# tempStr = ''.join(['a', 'b', 'c'])
-#
-# send_mail("射雕", '群发邮件测试')
+
