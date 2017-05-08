@@ -12,10 +12,12 @@ import datetime
 from SendMail import *
 from SoccerRound import *
 
-AllGames = []
-AllBeginTimes = []
+global AllGames
+global AllBeginTimes
 
-def anyaisegame(beginTimeStr):
+def anyaisegame(beginTimeStr, AllGames, AllBeginTimes):
+    # global AllGames
+    # global AllBeginTimes
     contentStr = ''
     for game in AllGames:
         if game.beginTime == beginTimeStr:
@@ -33,9 +35,9 @@ def anyaisegame(beginTimeStr):
     send_mail("%s %s" % (subjectstr, beginTimeStr), contentStr)
     del AllBeginTimes[0]
     if len(AllBeginTimes) > 0:
-        runTask(anyaisegame,AllBeginTimes[0])
+        runTask(anyaisegame, AllGames, AllBeginTimes)
 
-def runTask(func):
+def runTask(func, AllGames, AllBeginTimes):
 # def runTask(func, day=0, hour=0, min=0, second=0):
     # get current time
     # now = datetime.now()
@@ -45,7 +47,10 @@ def runTask(func):
     # period = timedelta(days=0, hours=0, minutes=15, seconds=0)
     # next_time = now + period
     # strnext_time = next_time.strftime('%Y-%m-%d %H:%M:%S')
-    timeStr = '2017-05-08 00:30'
+    # global AllGames
+    # global AllBeginTimes
+
+    timeStr = AllBeginTimes[0]
     print timeStr
     now = datetime.now()
 
@@ -54,19 +59,21 @@ def runTask(func):
     # next_time = now - period
     # strnext_time = next_time.strftime('%Y-%m-%d %H:%M:%S')
     strnow = now.strftime('%Y-%m-%d %H:%M:%S')
+    strnow = '2017-05-08 19:29'
     if timeStr < strnow:
         del AllBeginTimes[0]
-        runTask(anyaisegame)
+        runTask(anyaisegame, AllGames, AllBeginTimes)
         return
     strnext_time = timeStr
     print "next run:", strnext_time
     while True:
         now = datetime.now()
         strnow = now.strftime('%Y-%m-%d %H:%M:%S')
+        strnow = '2017-05-08 19:30'
         # if system time eq next_time run the specific task(hello func)
         if str(strnow) == str(strnext_time):
             print strnow
-            func(str(strnow))
+            func(str(strnow), AllGames, AllBeginTimes)
             break
 
 def getTodaySoccer(type):
@@ -85,7 +92,10 @@ def getTodaySoccer(type):
         resultStr = response.content;
     else:
         pass
-    Games = []
+
+    AllGames = []
+    AllBeginTimes = []
+
     if resultStr != '':
         # print resultStr
         allArray = resultStr.split('$$')
@@ -144,8 +154,6 @@ def getTodaySoccer(type):
 
         # i = datetime.now()
 
-        subjectstr = ''
-
         # if type == 1:
         #     subjectstr = '精简足球分析'
         # elif type == 2:
@@ -155,7 +163,7 @@ def getTodaySoccer(type):
         #
         # send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr)
 
-        runTask(anyaisegame)
+        runTask(anyaisegame, AllGames, AllBeginTimes)
 
 
 # if sys.argv.__len__()==1:
@@ -163,7 +171,7 @@ def getTodaySoccer(type):
 #
 # if __name__ == '__main__':
 #     getTodaySoccer(sys.argv[1])
-getTodaySoccer(3)
+getTodaySoccer(1)
 
 
 

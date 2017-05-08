@@ -329,7 +329,7 @@ class GetLeague:
             self.getAllData()
 
 if __name__ == '__main__':
-    leagueArray = getLeagueDetail(103)
+    leagueArray = getLeagueDetail(17)
     leagueModel = League()
     if leagueArray != None:
         leagueModel.leagueID = leagueArray[1]
