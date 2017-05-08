@@ -162,16 +162,16 @@ def getTodaySoccer(type):
         #     subjectstr = '竞彩分析'
         #
         # send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr)
+        if type == 1 or type == 3:
+            runTask(anyaisegame, AllGames, AllBeginTimes)
 
-        runTask(anyaisegame, AllGames, AllBeginTimes)
 
+if sys.argv.__len__()==1:
+    sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
 
-# if sys.argv.__len__()==1:
-#     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
-#
-# if __name__ == '__main__':
-#     getTodaySoccer(sys.argv[1])
-getTodaySoccer(1)
+if __name__ == '__main__':
+    getTodaySoccer(sys.argv[1])
+# getTodaySoccer(1)
 
 
 
