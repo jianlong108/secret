@@ -27,8 +27,8 @@ class GetURL:
             html = None
         return html
 
-    def getHtmlListWithLabel(self,label):
-        soup = BeautifulSoup(self.html,"html.parser")
+    def getHtmlListWithLabel(self, label):
+        soup = BeautifulSoup(self.html, "html.parser")
         trList = []
         tr_ni = soup.find_all(label)
         trList.extend(tr_ni)

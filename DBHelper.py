@@ -230,10 +230,11 @@ def getGameData(game):
 
 
     if num > 0:
-        tempstr = ''.join(['  亚 ', '胜: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 平:', str(float(drawCount) / float(num) * 100)[:5], '/100', '负', str(float(loseCount) / float(num) * 100)[:5], '/100  '])
-        contentstr = contentstr + tempstr
-        print str(game.beginTime) + ':' + game.leauge +':'+ game.homeTeam + 'vs' + game.friendTeam
-        print ' 胜:' + str(float(winCount)/float(num) * 100)[:5]+'/100' + ' 平:' + str(float(drawCount)/float(num) * 100)[:5]+'/100' + ' 负:' + str(float(loseCount)/float(num) * 100)[:5]+'/100'
+        if float(winCount) / float(num) > 0.4 or float(drawCount) / float(num) > 0.4 or float(loseCount) / float(num) > 0.4:
+            tempstr = ''.join(['  亚 ', '胜: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 平:', str(float(drawCount) / float(num) * 100)[:5], '/100', '负', str(float(loseCount) / float(num) * 100)[:5], '/100  '])
+            contentstr = contentstr + tempstr
+            print str(game.beginTime) + ':' + game.leauge +':'+ game.homeTeam + 'vs' + game.friendTeam
+            print ' 胜:' + str(float(winCount)/float(num) * 100)[:5]+'/100' + ' 平:' + str(float(drawCount)/float(num) * 100)[:5]+'/100' + ' 负:' + str(float(loseCount)/float(num) * 100)[:5]+'/100'
     # 欧赔
     winCount = 0
     drawCount = 0
@@ -244,7 +245,7 @@ def getGameData(game):
     for oneOdd in game.oddCompanies:
         c.execute(
             "select * from CompanyODD where company == ? and ori_winODD >= ? and ori_winODD <= ? and ori_drawODD >= ? and ori_drawODD <= ? and ori_loseODD >= ? and ori_loseODD <= ? and winODD >= ? and winODD <= ? AND drawODD >= ? and drawODD <= ? AND loseODD >= ? and loseODD <= ?",
-            (oneCompany.companyTitle.decode('utf-8'), switchODDData(oneOdd.orignal_winOdd)[0], switchODDData(oneOdd.orignal_winOdd)[1], switchODDData(oneOdd.orignal_drawOdd)[0], switchODDData(oneOdd.orignal_drawOdd)[1], switchODDData(oneOdd.orignal_loseOdd)[0], switchODDData(oneOdd.orignal_loseOdd)[1], switchODDData(oneOdd.winOdd)[0], switchODDData(oneOdd.winOdd)[1], switchODDData(oneOdd.drawOdd)[0], switchODDData(oneOdd.drawOdd)[1], switchODDData(oneOdd.loseOdd)[0], switchODDData(oneOdd.loseOdd)[1])
+            (oneOdd.companyTitle.decode('utf-8'), switchODDData(oneOdd.orignal_winOdd)[0], switchODDData(oneOdd.orignal_winOdd)[1], switchODDData(oneOdd.orignal_drawOdd)[0], switchODDData(oneOdd.orignal_drawOdd)[1], switchODDData(oneOdd.orignal_loseOdd)[0], switchODDData(oneOdd.orignal_loseOdd)[1], switchODDData(oneOdd.winOdd)[0], switchODDData(oneOdd.winOdd)[1], switchODDData(oneOdd.drawOdd)[0], switchODDData(oneOdd.drawOdd)[1], switchODDData(oneOdd.loseOdd)[0], switchODDData(oneOdd.loseOdd)[1])
              )
         r = c.fetchall()
         num += len(r)
@@ -257,13 +258,14 @@ def getGameData(game):
                 loseCount += 1
 
     if num > 0:
-        tempstr = ''.join(['  欧: ', '胜: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 平:', str(float(drawCount) / float(num) * 100)[:5], '/100', '负', str(float(loseCount) / float(num) * 100)[:5], '/100'])
-        contentstr = contentstr + tempstr
-        print ' 胜:' + str(float(winCount) / float(num) * 100)[
-                                                               :5] + '/100' + ' 平:' + str(
-            float(drawCount) / float(num) * 100)[:5] + '/100' + ' 负:' + str(float(loseCount) / float(num) * 100)[
-                                                                        :5] + '/100'
-        print '\n'
+        if float(winCount) / float(num) > 0.4 or float(drawCount) / float(num) > 0.4 or float(loseCount) / float(num) > 0.4:
+            tempstr = ''.join(['  欧: ', '胜: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 平:', str(float(drawCount) / float(num) * 100)[:5], '/100', '负', str(float(loseCount) / float(num) * 100)[:5], '/100'])
+            contentstr = contentstr + tempstr
+            print ' 胜:' + str(float(winCount) / float(num) * 100)[
+                                                                   :5] + '/100' + ' 平:' + str(
+                float(drawCount) / float(num) * 100)[:5] + '/100' + ' 负:' + str(float(loseCount) / float(num) * 100)[
+                                                                            :5] + '/100'
+            print '\n'
 
     c.close()
     conn.close()

@@ -3,7 +3,9 @@
 
 
 import time
-import requests
+from urllib2 import Request
+import urllib2
+from bs4 import BeautifulSoup
 from DBHelper import *
 from SoccerModels import *
 from SoccerRound import *
@@ -14,6 +16,29 @@ from SoccerRound import *
 
 global AllGames
 global AllBeginTimes
+
+def getexchange(soccerid = 0):
+    html = None
+    # url = 'http://www.310win.com/info/1x2exchange.aspx?id=' + str(soccerid) + '&cids=,' + str(companyid) + ',&type=3'
+    url = 'http://www.310win.com/info/1x2exchange.aspx?id=' + str(soccerid) + '&cids=,81,80,545,281,16,&type=3'
+    print("downloading", url)
+    try:
+        html = urllib2.urlopen(url).read()
+        # html = Request.urlopen(url).read()
+        # print html
+    except:
+        print("download error")
+        html = None
+
+
+    soup = BeautifulSoup(html, "html.parser")
+    trList = []
+    tr_ni = soup.find_all('td')
+    trList.extend(tr_ni)
+    tempList = []
+    for tr in trList[18:]:
+        tempList.append(str(tr))
+    return tempList
 
 def anyaisegame(beginTimeStr, AllGames, AllBeginTimes):
     # global AllGames
@@ -83,6 +108,9 @@ def getTodaySoccer(type):
     type = int(type)
     try:
         url = "http://112.91.160.49:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=5.9&from=2&r="+str(int(time.time()))
+        url = "http://112.91.160.49:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=5.9&from=2&r=1494229747"
+
+
         print url
     except:
         pass
@@ -142,38 +170,38 @@ def getTodaySoccer(type):
 
             AllGames.append(onegame)
 
-            # onegame.oddCompanies = getOneGameODD(onegame)
-            # onegame.handiCompanies = getOneGameHandi(onegame)
-            # Games.append(onegame)
-            # tempstr = getGameData(onegame)
-            # if tempstr != None:
-            #     contentStr = contentStr + tempstr
-            #     contentStr = contentStr + '\n'
-            #
-            # time.sleep(3)
+            onegame.oddCompanies = getOneGameODD(onegame)
+            onegame.handiCompanies = getOneGameHandi(onegame)
+            templist = getexchange(onegame.soccerID)
+            tempstr = getGameData(onegame)
+            if tempstr != None:
+                contentStr = contentStr + tempstr
+                contentStr = contentStr + '\n'
+                contentStr = contentStr.join(templist)
+            time.sleep(3)
 
-        # i = datetime.now()
+        i = datetime.now()
 
-        # if type == 1:
-        #     subjectstr = '精简足球分析'
-        # elif type == 2:
-        #     subjectstr = '十四场足球分析'
-        # else:
-        #     subjectstr = '竞彩分析'
-        #
-        # send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr)
-        if type == 1 or type == 3:
-            runTask(anyaisegame, AllGames, AllBeginTimes)
+        if type == 1:
+            subjectstr = '精简足球分析'
+        elif type == 2:
+            subjectstr = '十四场足球分析'
+        else:
+            subjectstr = '竞彩分析'
 
-
-if sys.argv.__len__()==1:
-    sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
-
-if __name__ == '__main__':
-    getTodaySoccer(sys.argv[1])
-# getTodaySoccer(1)
+        send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr)
+        # if type == 1 or type == 3:
+        #     runTask(anyaisegame, AllGames, AllBeginTimes)
 
 
+# if sys.argv.__len__()==1:
+#     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
+#
+# if __name__ == '__main__':
+#     getTodaySoccer(sys.argv[1])
+getTodaySoccer(2)
 
 
 
+
+# getexchange(1255863)
