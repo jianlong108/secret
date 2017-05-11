@@ -33,7 +33,7 @@ class GetURL:
         html = requests.get(url)
         return html.content
 
-    def getHtmlListWithLabel(self,label,options={}):
+    def getHtmlListWithLabel(self, label, options={}):
         soup = BeautifulSoup(self.html,"html.parser",from_encoding='gb18030')
         trList = []
         tr_ni = soup.find_all(label,attrs=options)
@@ -62,8 +62,8 @@ class GetURL:
 
 def main():
     date_list = []
-    begin_date = datetime.datetime.strptime("2015-12-01", "%Y-%m-%d")
-    end_date = datetime.datetime.strptime("2015-12-31", "%Y-%m-%d")
+    begin_date = datetime.datetime.strptime("2017-05-09", "%Y-%m-%d")
+    end_date = datetime.datetime.strptime("2017-05-09", "%Y-%m-%d")
     while begin_date <= end_date:
         date_str = begin_date.strftime("%Y-%m-%d")
         date_list.append(date_str)
@@ -73,7 +73,7 @@ def main():
         print dateStr
         url = "http://www.310win.com/buy/JingCai.aspx?typeID=105&oddstype=2&date=" + dateStr
         instance = GetURL(url)
-        HtmlParser.create_database()
+        # HtmlParser.create_database()
         # imgList = instance.getHtmlListWithLabel('a')
         # newImgList = instance.filterList(imgList, '>亚<')
         gameList = instance.getHtmlListWithLabel('table', {'class': 'socai'})

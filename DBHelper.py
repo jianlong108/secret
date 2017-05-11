@@ -211,7 +211,7 @@ def getGameData(game):
     if game.handiCompanies == None:
         return
 
-    contentstr = contentstr.join([str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam])
+    contentstr = contentstr.join([str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ', str(game.soccerID)])
 
     for oneCompany in game.handiCompanies:
 

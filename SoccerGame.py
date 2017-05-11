@@ -41,7 +41,7 @@ class SoccerGame:
     # tdList = []
     # companyList = []
 
-    def __init__(self,url):
+    def __init__(self, url):
         self.url = url
         self.trlist = []
         self.tdList = []

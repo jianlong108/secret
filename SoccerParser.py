@@ -49,7 +49,7 @@ class GetURL:
         for imgLabel in list:
             imgLabel_str = str(imgLabel)
             src = re.findall('[a-zA-z]+://[^\s]*jpg', imgLabel_str)
-            elementmodel = SoccerGame.ElementModel(getRangeWithStr(imgLabel_str,'alt="','"'),src)
+            elementmodel = SoccerGame.ElementModel(getRangeWithStr(imgLabel_str, 'alt="', '"'), src)
             imgList.append(elementmodel)
 
         return imgList
