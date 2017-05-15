@@ -220,21 +220,36 @@ def getGameData(game):
         r = c.fetchall()
         num += len(r)
         for result in r:
+            if oneCompany.now >= 0:
+                if result[4] - result[5] - float(oneCompany.now) > 0:
+                    winCount += 1
+                elif int(result[4]) - int(result[5]) - float(oneCompany.now) == 0:
+                    drawCount += 1
+                else:
+                    loseCount += 1
+            else:
+                if int(result[5]) - int(result[4]) + float(oneCompany.now) > 0:
+                    winCount += 1
+                elif int(result[5]) - int(result[4]) + float(oneCompany.now) == 0:
+                    drawCount += 1
+                else:
+                    loseCount += 1
 
-           if result[3] == 3:
-               winCount += 1
-           elif result[3] == 1:
-               drawCount += 1
-           else:
-               loseCount += 1
+           # if result[3] == 3:
+           #     winCount += 1
+           # elif result[3] == 1:
+           #     drawCount += 1
+           # else:
+           #     loseCount += 1
+
 
 
     if num > 0:
         if float(winCount) / float(num) > 0.4 or float(drawCount) / float(num) > 0.4 or float(loseCount) / float(num) > 0.4:
-            tempstr = ''.join(['  亚 ', '胜: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 平:', str(float(drawCount) / float(num) * 100)[:5], '/100', '负', str(float(loseCount) / float(num) * 100)[:5], '/100  '])
+            tempstr = ''.join(['  亚 ', '赢盘: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 走盘:', str(float(drawCount) / float(num) * 100)[:5], '/100', '输盘', str(float(loseCount) / float(num) * 100)[:5], '/100  '])
             contentstr = contentstr + tempstr
             print str(game.beginTime) + ':' + game.leauge +':'+ game.homeTeam + 'vs' + game.friendTeam
-            print ' 胜:' + str(float(winCount)/float(num) * 100)[:5]+'/100' + ' 平:' + str(float(drawCount)/float(num) * 100)[:5]+'/100' + ' 负:' + str(float(loseCount)/float(num) * 100)[:5]+'/100'
+            print ' 赢盘:' + str(float(winCount)/float(num) * 100)[:5]+'/100' + ' 走盘:' + str(float(drawCount)/float(num) * 100)[:5]+'/100' + ' 输盘:' + str(float(loseCount)/float(num) * 100)[:5]+'/100'
     # 欧赔
     winCount = 0
     drawCount = 0
