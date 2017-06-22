@@ -30,8 +30,29 @@ def getexchange(soccerid=0):
     tempList = []
     for tr in trList[18:]:
         tempList.append(str(tr.string).encode('utf-8'))
-        print str(tr.string).encode('utf-8')
-    # print tempList
+        tempList.append(' ')
+        # print str(tr.string).encode('utf-8')
+    if len(tempList) == 26:
+        print ''.join(tempList)
+    elif len(tempList) == 52:
+        print ''.join(tempList[:26])
+        print ''.join(tempList[-26:])
+    elif len(tempList) == 78:
+        print ''.join(tempList[:26])
+        print ''.join(tempList[26:52])
+        print ''.join(tempList[-26:])
+    elif len(tempList) == 104:
+        print ''.join(tempList[:26])
+        print ''.join(tempList[26:52])
+        print ''.join(tempList[52:78])
+        print ''.join(tempList[-26:])
+    elif len(tempList) == 130:
+        print ''.join(tempList[:26])
+        print ''.join(tempList[26:52])
+        print ''.join(tempList[52:78])
+        print ''.join(tempList[78:104])
+        print ''.join(tempList[-26:])
+
     # send_mail(str(soccerid), ''.join(tempList))
 
 
@@ -41,4 +62,4 @@ if sys.argv.__len__()==1:
 if __name__ == '__main__':
     getexchange(sys.argv[1])
 
-# getexchange(1379126)
+# getexchange(1352757)
