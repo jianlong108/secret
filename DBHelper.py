@@ -201,253 +201,156 @@ def getGameData(game):
 
     conn = sqlite3.connect(location)
     c = conn.cursor()
-    winCount = 0
-    drawCount = 0
-    loseCount = 0
+
+
+    # 将比赛开始时间 对阵双方信息 录入
+    contentstr = contentstr.join([str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ', str(game.soccerID)])
+    contentstr += '\n'
+    print str(game.beginTime) + ':' + game.leauge + ':' + game.homeTeam + 'vs' + game.friendTeam
+
+    # 获取亚盘数据
+    contentstr += getHandi(game ,c)
+    contentstr += '\n'
+    contentstr += getOdd(game ,c)
+    contentstr += '\n'
+
+    c.close()
+    conn.close()
+    return contentstr
+
+
+def getHandi(game, c):
+    # 如果这场比赛没有亚盘数据,就返回
+    if game.handiCompanies == None:
+        return ''
+
+
+    contentstr = ''
+    # 查询到的总数
     num = 0
 
+    # 亚盘 胜场数
     handi_win_count = 0
+    win_count = 0
+
+    # 亚盘 平场数
     handi_draw_count = 0
+    draw_count = 0
+
+    # 亚盘 输场数
     handi_lose_count = 0
+    lose_count = 0
 
-
-    if game.handiCompanies == None:
-        return
-
-    contentstr = contentstr.join([str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ', str(game.soccerID)])
-    print str(game.beginTime) + ':' + game.leauge + ':' + game.homeTeam + 'vs' + game.friendTeam
     for oneCompany in game.handiCompanies:
-
-        # 亚盘
         c.execute("SELECT * FROM Games WHERE soccerID IN (select soccerID from CompanyHandicap where company == ? and orignalpan == ? and nowpan == ? and ntodds >= ? and ntodds < ? and ndodds >= ? and ndodds < ? AND otodds >= ? AND otodds < ? AND ododds >= ? AND ododds < ?)", (oneCompany.companyTitle.decode('utf-8'), oneCompany.orignal, oneCompany.now, switchData(oneCompany.now_bottom)[0], switchData(oneCompany.now_bottom)[1], switchData(oneCompany.now_top)[0], switchData(oneCompany.now_top)[1], switchData(oneCompany.orignal_top)[0], switchData(oneCompany.orignal_top)[1], switchData(oneCompany.orignal_bottom)[0], switchData(oneCompany.orignal_bottom)[1]))
         r = c.fetchall()
         num += len(r)
         for result in r:
             if result[4] == 3:
-                winCount += 1
+                win_count += 1
             elif result[4] == 1:
-                drawCount += 1
+                draw_count += 1
             else:
-                loseCount += 1
+                lose_count += 1
 
-            # if oneCompany.now >= 0:
-            #     if result[4] - result[5] - float(oneCompany.now) > 0:
-            #         handi_win_count += 1
-            #     elif int(result[4]) - int(result[5]) - float(oneCompany.now) == 0:
-            #         handi_draw_count += 1
-            #     else:
-            #         handi_lose_count += 1
-            # else:
-            #     if int(result[5]) - int(result[4]) + float(oneCompany.now) > 0:
-            #         handi_win_count += 1
-            #     elif int(result[5]) - int(result[4]) + float(oneCompany.now) == 0:
-            #         handi_draw_count += 1
-            #     else:
-            #         handi_lose_count += 1
-            #
-            # soccerid = int(result[1])
-            # c.execute("SELECT  * FROM Games WHERE soccerID == ?", (soccerid, ))
-            # r1 = c.fetchall()
-            # if len(r1) > 0:
-            #     result = r1[0]
-            #
-            #     if result[4] == 3:
-            #         winCount += 1
-            #     elif result[4] == 1:
-            #         drawCount += 1
-            #     else:
-            #         loseCount += 1
-
-
-
-
-
-
+            if oneCompany.now >= 0:
+                if result[7] - result[10] - float(oneCompany.now) > 0:
+                    handi_win_count += 1
+                elif int(result[7]) - int(result[10]) - float(oneCompany.now) == 0:
+                    handi_draw_count += 1
+                else:
+                    handi_lose_count += 1
+            else:
+                if int(result[10]) - int(result[7]) + float(oneCompany.now) > 0:
+                    handi_win_count += 1
+                elif int(result[10]) - int(result[7]) + float(oneCompany.now) == 0:
+                    handi_draw_count += 1
+                else:
+                    handi_lose_count += 1
 
 
     if num > 0:
+        tempstr_one = ''.join(['  亚 ', '赢盘: ', str(float(handi_win_count) / float(num) * 100)[:5], '/100', ' 走盘:',
+                               str(float(handi_draw_count) / float(num) * 100)[:5], '/100', '输盘',
+                               str(float(handi_lose_count) / float(num) * 100)[:5], '/100  '])
+        tempstr_two = ''.join(['  亚: ', '胜: ', str(float(win_count) / float(num) * 100)[:5], '/100', ' 平:',
+                               str(float(draw_count) / float(num) * 100)[:5], '/100', '负',
+                               str(float(lose_count) / float(num) * 100)[:5], '/100'])
 
-        if float(winCount) / float(num) > 0.4 or float(drawCount) / float(num) > 0.4 or float(loseCount) / float(num) > 0.4:
-            # tempstr = ''.join(['  亚 ', '赢盘: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 走盘:', str(float(drawCount) / float(num) * 100)[:5], '/100', '输盘', str(float(loseCount) / float(num) * 100)[:5], '/100  '])
-            # contentstr = contentstr + tempstr
-            tempstr = ''.join(['  亚: ', '胜: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 平:',
-                               str(float(drawCount) / float(num) * 100)[:5], '/100', '负',
-                               str(float(loseCount) / float(num) * 100)[:5], '/100'])
-            contentstr = contentstr + tempstr
+        if float(handi_win_count) / float(num) > 0.4 or float(handi_draw_count) / float(num) > 0.4 or float(handi_lose_count) / float(num) > 0.4:
+            contentstr += tempstr_one
+            contentstr += '\n'
+            contentstr += tempstr_two
 
-            # print ' 赢盘:' + str(float(handi_win_count)/float(num) * 100)[:5]+'/100' + ' 走盘:' + str(float(handi_draw_count)/float(num) * 100)[:5]+'/100' + ' 输盘:' + str(float(handi_lose_count)/float(num) * 100)[:5]+'/100'
-            print ' 亚 胜:' + str(float(winCount) / float(num) * 100)[:5] + '/100' + ' 平:' + str(
-            float(drawCount) / float(num) * 100)[:5] + '/100' + ' 负:' + str(float(loseCount) / float(num) * 100)[
-                                                                        :5] + '/100'
+            # 终端的字符颜色是用转义序列控制的，是文本模式下的系统显示功能，和具体的语言无 关。
+            # 转义序列是以 ESC 开头,可以用 \033 完成相同的工作（ESC 的 ASCII 码用十进制表 示就是 27， = 用八进制表示的 33）
+            print "\033[1;31;46m%s\033[0m" % tempstr_one
+            print "\033[1;31;46m%s\033[0m" % tempstr_two
         else:
-            print '无亚盘数据'
-            contentstr = contentstr + '无亚盘数据'
+            print '忽略' + tempstr_one
+
+            print '忽略' + tempstr_two
+            contentstr += ('忽略' + tempstr_one)
+            contentstr += '\n'
+            contentstr += ('忽略' + tempstr_two)
     else:
         print '无亚盘数据'
         contentstr = contentstr + '无亚盘数据'
+
+    return contentstr
+
+def getOdd(game, c):
+    contentstr = ''
     # 欧赔
-    winCount = 0
-    drawCount = 0
-    loseCount = 0
+    wincount = 0
+    drawcount = 0
+    losecount = 0
     num = 0
     if len(game.oddCompanies) <= 0:
-        return
+        return contentstr
+
+
     for oneOdd in game.oddCompanies:
         c.execute(
             "SELECT * FROM Games WHERE soccerID IN (select soccerID from CompanyODD where company == ? and ori_winODD >= ? and ori_winODD <= ? and ori_drawODD >= ? and ori_drawODD <= ? and ori_loseODD >= ? and ori_loseODD <= ? and winODD >= ? and winODD <= ? AND drawODD >= ? and drawODD <= ? AND loseODD >= ? and loseODD <= ?)",
-            (oneOdd.companyTitle.decode('utf-8'), switchODDData(oneOdd.orignal_winOdd)[0], switchODDData(oneOdd.orignal_winOdd)[1], switchODDData(oneOdd.orignal_drawOdd)[0], switchODDData(oneOdd.orignal_drawOdd)[1], switchODDData(oneOdd.orignal_loseOdd)[0], switchODDData(oneOdd.orignal_loseOdd)[1], switchODDData(oneOdd.winOdd)[0], switchODDData(oneOdd.winOdd)[1], switchODDData(oneOdd.drawOdd)[0], switchODDData(oneOdd.drawOdd)[1], switchODDData(oneOdd.loseOdd)[0], switchODDData(oneOdd.loseOdd)[1])
-             )
+            (oneOdd.companyTitle.decode('utf-8'), switchODDData(oneOdd.orignal_winOdd)[0],
+             switchODDData(oneOdd.orignal_winOdd)[1], switchODDData(oneOdd.orignal_drawOdd)[0],
+             switchODDData(oneOdd.orignal_drawOdd)[1], switchODDData(oneOdd.orignal_loseOdd)[0],
+             switchODDData(oneOdd.orignal_loseOdd)[1], switchODDData(oneOdd.winOdd)[0], switchODDData(oneOdd.winOdd)[1],
+             switchODDData(oneOdd.drawOdd)[0], switchODDData(oneOdd.drawOdd)[1], switchODDData(oneOdd.loseOdd)[0],
+             switchODDData(oneOdd.loseOdd)[1])
+        )
         r = c.fetchall()
         num += len(r)
         for result in r:
             if result[4] == 3:
-                winCount += 1
+                wincount += 1
             elif result[4] == 1:
-                drawCount += 1
+                drawcount += 1
             else:
-                loseCount += 1
-            # if result[3] == 3:
-            #     winCount += 1
-            # elif result[3] == 1:
-            #     drawCount += 1
-            # else:
-            #     loseCount += 1
+                losecount += 1
 
     if num > 0:
-        if float(winCount) / float(num) > 0.4 or float(drawCount) / float(num) > 0.4 or float(loseCount) / float(num) > 0.4:
-            tempstr = ''.join(['  欧: ', '胜: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 平:', str(float(drawCount) / float(num) * 100)[:5], '/100', '负', str(float(loseCount) / float(num) * 100)[:5], '/100'])
+        tempstr = ''.join(['  欧: ', '胜: ', str(float(wincount) / float(num) * 100)[:5], '/100', ' 平:',
+                           str(float(drawcount) / float(num) * 100)[:5], '/100', '负',
+                           str(float(losecount) / float(num) * 100)[:5], '/100'])
+
+        if float(wincount) / float(num) > 0.4 or float(drawcount) / float(num) > 0.4 or float(losecount) / float(
+                num) > 0.4:
+
             contentstr = contentstr + tempstr
-            print '欧 胜:' + str(float(winCount) / float(num) * 100)[
-                                                                   :5] + '/100' + ' 平:' + str(
-                float(drawCount) / float(num) * 100)[:5] + '/100' + ' 负:' + str(float(loseCount) / float(num) * 100)[
-                                                                            :5] + '/100'
+
+            print "\033[1;31;46m%s\033[0m" % tempstr
             print '\n'
         else:
-            print '无欧赔数据'
-            contentstr = contentstr + '无欧赔数据'
+            print '忽略' + tempstr
+            contentstr = contentstr + '忽略' + tempstr
     else:
         print '无欧赔数据'
         contentstr = contentstr + '无欧赔数据'
 
-    c.close()
-    conn.close()
-
     return contentstr
 
-# def getGameData(game):
-#
-#     contentstr = ''
-#
-#     conn = sqlite3.connect(location)
-#     c = conn.cursor()
-#     winCount = 0
-#     drawCount = 0
-#     loseCount = 0
-#     num = 0
-#
-#     handi_win_count = 0
-#     handi_draw_count = 0
-#     handi_lose_count = 0
-#
-#
-#     if game.handiCompanies == None:
-#         return
-#
-#     contentstr = contentstr.join([str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ', str(game.soccerID)])
-#
-#     for oneCompany in game.handiCompanies:
-#
-#         # 亚盘
-#         c.execute("select soccerID from CompanyHandicap where company == ? and orignalpan == ? and nowpan == ? and ntodds >= ? and ntodds < ? and ndodds >= ? and ndodds < ? AND otodds >= ? AND otodds < ? AND ododds >= ? AND ododds < ?", (oneCompany.companyTitle.decode('utf-8'), oneCompany.orignal, oneCompany.now, switchData(oneCompany.now_bottom)[0], switchData(oneCompany.now_bottom)[1], switchData(oneCompany.now_top)[0], switchData(oneCompany.now_top)[1], switchData(oneCompany.orignal_top)[0], switchData(oneCompany.orignal_top)[1], switchData(oneCompany.orignal_bottom)[0], switchData(oneCompany.orignal_bottom)[1]))
-#         r = c.fetchall()
-#         num += len(r)
-#         for result in r:
-#
-#             if oneCompany.now >= 0:
-#                 if result[4] - result[5] - float(oneCompany.now) > 0:
-#                     handi_win_count += 1
-#                 elif int(result[4]) - int(result[5]) - float(oneCompany.now) == 0:
-#                     handi_draw_count += 1
-#                 else:
-#                     handi_lose_count += 1
-#             else:
-#                 if int(result[5]) - int(result[4]) + float(oneCompany.now) > 0:
-#                     handi_win_count += 1
-#                 elif int(result[5]) - int(result[4]) + float(oneCompany.now) == 0:
-#                     handi_draw_count += 1
-#                 else:
-#                     handi_lose_count += 1
-#
-#             soccerid = int(result[1])
-#             c.execute("SELECT  * FROM Games WHERE soccerID == ?", (soccerid, ))
-#             r1 = c.fetchall()
-#             if len(r1) > 0:
-#                 result = r1[0]
-#
-#                 if result[4] == 3:
-#                     winCount += 1
-#                 elif result[4] == 1:
-#                     drawCount += 1
-#                 else:
-#                     loseCount += 1
-#
-#
-#
-#
-#
-#
-#
-#
-#     if num > 0:
-#         if float(winCount) / float(num) > 0.4 or float(drawCount) / float(num) > 0.4 or float(loseCount) / float(num) > 0.4:
-#             tempstr = ''.join(['  亚 ', '赢盘: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 走盘:', str(float(drawCount) / float(num) * 100)[:5], '/100', '输盘', str(float(loseCount) / float(num) * 100)[:5], '/100  '])
-#             contentstr = contentstr + tempstr
-#             tempstr = ''.join(['  亚: ', '胜: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 平:',
-#                                str(float(drawCount) / float(num) * 100)[:5], '/100', '负',
-#                                str(float(loseCount) / float(num) * 100)[:5], '/100'])
-#             contentstr = contentstr + tempstr
-#             print str(game.beginTime) + ':' + game.leauge +':'+ game.homeTeam + 'vs' + game.friendTeam
-#             print ' 赢盘:' + str(float(handi_win_count)/float(num) * 100)[:5]+'/100' + ' 走盘:' + str(float(handi_draw_count)/float(num) * 100)[:5]+'/100' + ' 输盘:' + str(float(handi_lose_count)/float(num) * 100)[:5]+'/100'
-#             print ' 亚 胜:' + str(float(winCount) / float(num) * 100)[
-#                       :5] + '/100' + ' 平:' + str(
-#             float(drawCount) / float(num) * 100)[:5] + '/100' + ' 负:' + str(float(loseCount) / float(num) * 100)[
-#                                                                         :5] + '/100'
-#     # 欧赔
-#     winCount = 0
-#     drawCount = 0
-#     loseCount = 0
-#     num = 0
-#     if len(game.oddCompanies) <= 0:
-#         return
-#     for oneOdd in game.oddCompanies:
-#         c.execute(
-#             "select * from CompanyODD where company == ? and ori_winODD >= ? and ori_winODD <= ? and ori_drawODD >= ? and ori_drawODD <= ? and ori_loseODD >= ? and ori_loseODD <= ? and winODD >= ? and winODD <= ? AND drawODD >= ? and drawODD <= ? AND loseODD >= ? and loseODD <= ?",
-#             (oneOdd.companyTitle.decode('utf-8'), switchODDData(oneOdd.orignal_winOdd)[0], switchODDData(oneOdd.orignal_winOdd)[1], switchODDData(oneOdd.orignal_drawOdd)[0], switchODDData(oneOdd.orignal_drawOdd)[1], switchODDData(oneOdd.orignal_loseOdd)[0], switchODDData(oneOdd.orignal_loseOdd)[1], switchODDData(oneOdd.winOdd)[0], switchODDData(oneOdd.winOdd)[1], switchODDData(oneOdd.drawOdd)[0], switchODDData(oneOdd.drawOdd)[1], switchODDData(oneOdd.loseOdd)[0], switchODDData(oneOdd.loseOdd)[1])
-#              )
-#         r = c.fetchall()
-#         num += len(r)
-#         for result in r:
-#             if result[3] == 3:
-#                 winCount += 1
-#             elif result[3] == 1:
-#                 drawCount += 1
-#             else:
-#                 loseCount += 1
-#
-#     if num > 0:
-#         if float(winCount) / float(num) > 0.4 or float(drawCount) / float(num) > 0.4 or float(loseCount) / float(num) > 0.4:
-#             tempstr = ''.join(['  欧: ', '胜: ', str(float(winCount) / float(num) * 100)[:5], '/100', ' 平:', str(float(drawCount) / float(num) * 100)[:5], '/100', '负', str(float(loseCount) / float(num) * 100)[:5], '/100'])
-#             contentstr = contentstr + tempstr
-#             print ' 胜:' + str(float(winCount) / float(num) * 100)[
-#                                                                    :5] + '/100' + ' 平:' + str(
-#                 float(drawCount) / float(num) * 100)[:5] + '/100' + ' 负:' + str(float(loseCount) / float(num) * 100)[
-#                                                                             :5] + '/100'
-#             print '\n'
-#
-#     c.close()
-#     conn.close()
-#
-#     return contentstr
 
 def switchData(num):
     if num<0.5:
