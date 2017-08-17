@@ -4,6 +4,8 @@
 import requests
 from SoccerModels import *
 import time
+import pycurl
+import StringIO
 
 def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
     resultStr = ''
@@ -176,17 +178,28 @@ def getOneGameHandi(game):
     resultStr = ''
 
     try:
-        handiURL = 'http://112.91.160.46:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
+        handiURL = 'http://27.45.161.37:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
         # print handiURL
     except:
         pass
 
-    response = requests.get(handiURL)
+    # response = requests.get(handiURL)
+    #
+    # if response.ok:
+    #     resultStr = response.content;
+    # else:
+    #     pass
 
-    if response.ok:
-        resultStr = response.content;
-    else:
-        pass
+    c = pycurl.Curl()
+
+    c.setopt(pycurl.URL, handiURL)
+
+    b = StringIO.StringIO()
+    c.setopt(pycurl.WRITEFUNCTION, b.write)
+    c.setopt(pycurl.FOLLOWLOCATION, 1)
+    c.setopt(pycurl.MAXREDIRS, 5)
+    c.perform()
+    resultStr = b.getvalue().decode('utf8')
 
     if resultStr != '':
         array = resultStr.split('!')
@@ -223,18 +236,27 @@ def getOneGameHandi(game):
 def getOneGameODD(game):
     resultStr = ''
     try:
-        oddURL = 'http://112.91.160.46:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
+        oddURL = 'http://27.45.161.37:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
         # print oddURL
     except:
         pass
 
-    response = requests.get(oddURL)
+    # response = requests.get(oddURL)
+    #
+    # if response.ok:
+    #     resultStr = response.content;
+    # else:
+    #     pass
+    c = pycurl.Curl()
 
-    if response.ok:
-        resultStr = response.content;
-    else:
-        pass
+    c.setopt(pycurl.URL, oddURL)
 
+    b = StringIO.StringIO()
+    c.setopt(pycurl.WRITEFUNCTION, b.write)
+    c.setopt(pycurl.FOLLOWLOCATION, 1)
+    c.setopt(pycurl.MAXREDIRS, 5)
+    c.perform()
+    resultStr = b.getvalue().decode('utf8')
 
     if resultStr != '':
         array = resultStr.split('!')

@@ -89,15 +89,15 @@ def getTodaySoccer(type):
     # type == 2 十四场
     type = int(type)
     try:
-        url = "http://112.91.160.49:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=6.2&from=2&r="+str(int(time.time()))
+        url = "http://27.45.161.37:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=6.2&from=2&r="+str(int(time.time()))
         # url = "http://112.91.160.49:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=5.9&from=2&r=1494229747"
 
 
         print url
     except:
         pass
-    resultStr = ''
     c = pycurl.Curl()
+
     c.setopt(pycurl.URL, url)
 
     b = StringIO.StringIO()
@@ -185,7 +185,7 @@ def getTodaySoccer(type):
 #
 # if __name__ == '__main__':
 #     getTodaySoccer(sys.argv[1])
-getTodaySoccer(1)
+getTodaySoccer(3)
 
 
 

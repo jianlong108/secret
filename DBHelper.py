@@ -209,9 +209,11 @@ def getGameData(game):
     print str(game.beginTime) + ':' + game.leauge + ':' + game.homeTeam + 'vs' + game.friendTeam
 
     # 获取亚盘数据
-    contentstr += getHandi(game ,c)
+    handituple = getHandi(game ,c)
+    contentstr += handituple[0]
     contentstr += '\n'
-    contentstr += getOdd(game ,c)
+    oddtuple = getOdd(game ,c)
+    contentstr += oddtuple[0]
     contentstr += '\n'
 
     c.close()
@@ -220,12 +222,14 @@ def getGameData(game):
 
 
 def getHandi(game, c):
+    contentstr = ''
+    allHandiGames = []
+
     # 如果这场比赛没有亚盘数据,就返回
     if game.handiCompanies == None:
-        return ''
+        return (contentstr, allHandiGames)
 
 
-    contentstr = ''
     # 查询到的总数
     num = 0
 
@@ -246,6 +250,7 @@ def getHandi(game, c):
         r = c.fetchall()
         num += len(r)
         for result in r:
+            allHandiGames.append(result)
             if result[4] == 3:
                 win_count += 1
             elif result[4] == 1:
@@ -297,7 +302,7 @@ def getHandi(game, c):
         print '无亚盘数据'
         contentstr = contentstr + '无亚盘数据'
 
-    return contentstr
+    return (contentstr, )
 
 def getOdd(game, c):
     contentstr = ''
@@ -306,8 +311,9 @@ def getOdd(game, c):
     drawcount = 0
     losecount = 0
     num = 0
+    allOddGames = []
     if len(game.oddCompanies) <= 0:
-        return contentstr
+        return (contentstr, allOddGames)
 
 
     for oneOdd in game.oddCompanies:
@@ -323,6 +329,7 @@ def getOdd(game, c):
         r = c.fetchall()
         num += len(r)
         for result in r:
+            allOddGames.append(result)
             if result[4] == 3:
                 wincount += 1
             elif result[4] == 1:
@@ -349,7 +356,8 @@ def getOdd(game, c):
         print '无欧赔数据'
         contentstr = contentstr + '无欧赔数据'
 
-    return contentstr
+    return (contentstr, )
+
 
 
 def switchData(num):
