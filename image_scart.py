@@ -4,7 +4,6 @@
 
 import HtmlParser
 from bs4 import BeautifulSoup
-
 # from biplist import *
 
 
@@ -57,20 +56,20 @@ class OneGirl:
 
 
 class PageGirls:
-    def __init__(self,name,url,website='http://www.mm131.com/'):
+    def __init__(self, name, url, website='http://www.mm131.com/'):
         self.name = name
         self.url = url
-        self.website =website
+        self.website = website
         self.alreadyParseGirlNum = 0
         self.one_girl_list = []
         self.category_other_girls = []
         self.girList = []
         self.plist = {}
-        self.parserOneCategory(self.url)
+        self.parseronecategory(self.url)
         self.parserOtherPage()
 
 
-    def parserOneCategory(self,url):
+    def parseronecategory(self, url):
         # url = "http://www.mm131.com/qingchun/"
         html = HtmlParser.download(url)
         mainSoup = BeautifulSoup(html, 'html.parser',from_encoding='gb18030')

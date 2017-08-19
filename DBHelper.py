@@ -289,8 +289,8 @@ def getHandi(game, c):
 
             # 终端的字符颜色是用转义序列控制的，是文本模式下的系统显示功能，和具体的语言无 关。
             # 转义序列是以 ESC 开头,可以用 \033 完成相同的工作（ESC 的 ASCII 码用十进制表 示就是 27， = 用八进制表示的 33）
-            print "\033[1;31;46m%s\033[0m" % tempstr_one
-            print "\033[1;31;46m%s\033[0m" % tempstr_two
+            print "\033[1;31;47m%s\033[0m" % tempstr_one
+            print "\033[1;31;47m%s\033[0m" % tempstr_two
         else:
             print '忽略' + tempstr_one
 
@@ -347,7 +347,7 @@ def getOdd(game, c):
 
             contentstr = contentstr + tempstr
 
-            print "\033[1;31;46m%s\033[0m" % tempstr
+            print "\033[1;31;47m%s\033[0m" % tempstr
             print '\n'
         else:
             print '忽略' + tempstr

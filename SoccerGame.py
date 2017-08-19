@@ -1,14 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from bs4 import BeautifulSoup
-# from urllib import request
-# from urllib2 import Request
 import requests
 import os
 import re
-import HtmlParser
-
+import BeautifulSoupHelper
 
 
 class ElementModel:
@@ -35,11 +31,6 @@ class BetCompany:
 
 
 class SoccerGame:
-    # url = ''
-    # html = ''
-    # trlist = []
-    # tdList = []
-    # companyList = []
 
     def __init__(self, url):
         self.url = url
@@ -48,6 +39,8 @@ class SoccerGame:
         self.companyList = []
         self.leauge = ''
         self.soccer = ''
+        self.oddurl = ''
+        self.handiurl = ''
 
     def download(self,url):
         # try:
@@ -58,10 +51,30 @@ class SoccerGame:
         html = requests.get(url)
         return html.content
 
+
+    def gethandidata(self):
+        instance =  BeautifulSoupHelper.SoupHelper(self.handiurl)
+        companycontainer=  instance.gethtmllistwithlabel('table', {'class' : 'socai','width' : "100%"})
+        companylist = companycontainer[0]
+        handicompanylist = []
+        if BeautifulSoupHelper.isTagClass(companylist):
+            for ele in companylist.children:
+                if BeautifulSoupHelper.isTagClass(ele):
+                    targetelelist = BeautifulSoupHelper.getelementlistwithlabel(ele, 'tr', {'class' : 'ni'})
+                    if len(targetelelist) > 0:
+                        handicompanylist.extend(targetelelist)
+                    targetelelist = []
+                    targetelelist = BeautifulSoupHelper.getelementlistwithlabel(ele, 'tr', {'class': 'ni2'})
+                    if len(targetelelist) > 0:
+                        handicompanylist.extend(targetelelist)
+
+        print handicompanylist
+
+
     def parserHtml(self):
 
         html = self.download(self.url)
-        soup = BeautifulSoup(html, 'html.parser')
+        soup = ''
         try:
             table = soup.find('table', attrs={'class': 'socai'})
             list_ni = table.find_all('tr', attrs={'class': 'ni'})

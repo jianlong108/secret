@@ -6,9 +6,6 @@ from bs4 import BeautifulSoup
 import requests
 
 
-
-
-
 def download(url):
     # print("downloading", url)
     try:
@@ -19,24 +16,21 @@ def download(url):
     return html
 
 
-def getHtmlListWithLabel(html, label,attrs={}):
-
+def gethtmllistwithlabel(html, label, attrs={}):
     soup = BeautifulSoup(html, "html.parser")
-
-    trList = []
+    elementlist = []
+    targetelement = None
     if attrs != {}:
-        tr_ni = soup.find_all(label,attrs=attrs)
+        targetelement = soup.find_all(label, attrs=attrs)
     else:
-        tr_ni = soup.find_all(label)
+        targetelement = soup.find_all(label)
+    elementlist.extend(targetelement)
+    return elementlist
 
-    trList.extend(tr_ni)
-    return trList
-
-def getSoup(html):
-
+def getsoup(html ):
     soup = BeautifulSoup(html, "html.parser")
-
     return soup
+
 
 def filterList(list, label):
     tempList = []
