@@ -6,7 +6,6 @@ import requests
 
 import re
 from SoccerGame import SoccerGame
-import HtmlParser
 import datetime
 import calendar
 

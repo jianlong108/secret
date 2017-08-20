@@ -3,31 +3,8 @@
 
 import requests
 import os
-import re
 import BeautifulSoupHelper
-
-
-class ElementModel:
-    def __init__(self,title,src):
-        self.title = title
-        self.src = src
-
-class BetCompany:
-    companyTitle = ''
-    orignal_top = ''
-    orignal_bottom = ''
-    orignal_Handicap = 0.0
-    now_top = ''
-    now_bottom = ''
-    now_Handicap = 0.0
-    orignal = ''
-    now = ''
-
-    falldown = False
-    rise = False
-    lowest = False
-    highest = False
-
+from SoccerModels import BetCompany
 
 
 class SoccerGame:
@@ -60,109 +37,45 @@ class SoccerGame:
         if BeautifulSoupHelper.isTagClass(companylist):
             for ele in companylist.children:
                 if BeautifulSoupHelper.isTagClass(ele):
-                    targetelelist = BeautifulSoupHelper.getelementlistwithlabel(ele, 'tr', {'class' : 'ni'})
-                    if len(targetelelist) > 0:
-                        handicompanylist.extend(targetelelist)
-                    targetelelist = []
-                    targetelelist = BeautifulSoupHelper.getelementlistwithlabel(ele, 'tr', {'class': 'ni2'})
-                    if len(targetelelist) > 0:
-                        handicompanylist.extend(targetelelist)
-
-        print handicompanylist
-
-
-    def parserHtml(self):
-
-        html = self.download(self.url)
-        soup = ''
-        try:
-            table = soup.find('table', attrs={'class': 'socai'})
-            list_ni = table.find_all('tr', attrs={'class': 'ni'})
-            list_ni2 = table.find_all('tr', attrs={'class': 'ni2'})
-            self.trlist.extend(list_ni)
-            self.trlist.extend(list_ni2)
-            for tr in self.trlist:
-                self.tdList.append(tr.find_all('td')[:7])
-
-            for td in self.tdList:
-                company = BetCompany()
-
-                for (i, value) in enumerate(td):
-                    if i == 0:
-                        match = re.findall('((\S)*(\S))', value.get_text())
-                        # print(match[0][0])
-                        company.companyTitle = match[0][0]
-                    elif i == 1:
-                        company.orignal_top = value.get_text()
-                    elif i == 2:
-                        company.orignal_Handicap = switchHandicap(value.get_text())
-                        company.orignal = value.get_text()
-                    elif i == 3:
-                        company.orignal_bottom = value.get_text()
-                    elif i == 4:
-                        company.now_top = value.get_text()
-                    elif i == 5:
-                        company.now_Handicap = switchHandicap(value.get_text())
-                        company.now = value.get_text()
-                    elif i == 6:
-                        company.now_bottom = value.get_text()
-                    else:
-                        pass
-                # if company.companyTitle == '澳彩':
-                #     print('初盘',company.orignal_Handicap,'当前盘',company.now_Handicap,self.url)
-                self.companyList.append(company)
-        except Exception, e:
-            print Exception, ":", e
+                    company = BetCompany()
+                    if ele.get('class')[0]  in  [u'ni', u'ni2']:
+                        targetelelist = BeautifulSoupHelper.getelementlistwithlabel(ele, 'td')
+                        if len(targetelelist) > 0:
+                            try:
+                                company.companyTitle = targetelelist[0].get_text().encode('utf-8')
+                                # print targetelelist[1].get_text().encode('utf-8')
+                                if targetelelist[1].get_text().encode('utf-8') == '':
+                                    continue
+                                company.orignal_top = float(targetelelist[1].get_text())
+                                company.orignal_Handicap = switchHandicap(targetelelist[2].get_text())
+                                company.orignal_bottom = float(targetelelist[3].get_text())
+                                company.now_top = float(targetelelist[4].get_text().encode('utf-8'))
+                                company.now_Handicap = switchHandicap(targetelelist[5].get_text())
+                                company.now_bottom = float(targetelelist[6].get_text())
+                                # 球队盘口走势 暂时忽略
+                                # company.companyTitle = targetelelist[7].get_text().encode('utf-8')
+                                subele = targetelelist[8]
+                                sublist = BeautifulSoupHelper.getelementlistwithlabel(subele, 'a')
+                                for aElement in sublist:
+                                    if aElement.get_text().encode('utf-8') == '同':
+                                        company.similerMatchURL = self.url + aElement.get('href').encode('utf-8')
+                            except ValueError , e:
+                                print e
+                                pass
 
 
-
-    def beginCaculte(self):
-
-        # print('公司 ge个数',len(self.companyList),self.url)
-        for company in self.companyList:
-            # print(company.companyTitle, company.now_Handicap, company.orignal_Handicap)
-
-            try:
-                if company.orignal_Handicap - company.now_Handicap > 0:
-                    if company.companyTitle== u'澳彩':
-                     # print(company.orignal_top,company.orignal_Handicap,company.orignal_bottom,company.now_Top,company.now_Handicap,company.now_Bottom,self.url,self.leauge,self.soccer)
-                     print(company.orignal_top,company.orignal,company.orignal_bottom,company.now_top, company.now,company.now_bottom, self.url, self.leauge, self.soccer)
-                     if self.soccer != None:
-                         par = (self.leauge, self.soccer, self.url, company.orignal_top, company.orignal,
-                                company.orignal_bottom, company.now_top, company.now, company.now_bottom)
-                         HtmlParser.insert_record(par)
-
-                     company.falldown = True
-                    else:
-                        pass
-                elif company.orignal_Handicap - company.now_Handicap < 0:
-                    if company.companyTitle== u'澳彩':
-                        print(company.orignal_top, company.orignal, company.orignal_bottom, company.now_top,
-                              company.now, company.now_bottom, self.url, self.leauge, self.soccer)
-                        if self.soccer != None:
-                            par = (self.leauge, self.soccer, self.url, company.orignal_top, company.orignal,
-                                   company.orignal_bottom, company.now_top, company.now, company.now_bottom)
-                            HtmlParser.insert_record(par)
-                        company.rise = True
-                    else:
-                        pass
-                elif float(company.now_top) < 0.85:
-                    company.lowest = True
-                elif float(company.now_top) > 1.1:
-                    company.highest = True
-                elif float(company.now_bottom) < 0.85:
-                    company.lowest = True
-                elif float(company.now_bottom) > 1.1:
-                    company.highest = True
-                else:
-                    pass
-            except:
-                pass
-            finally:
-                pass
+                        if company.orignal_top != 0.0:
+                            # 过滤没有开盘的数据
+                            handicompanylist.append(company)
 
 
+        print len(handicompanylist)
 
+    def getodddata(self):
+        instance = BeautifulSoupHelper.SoupHelper(self.oddurl)
+        oddsList_tab = instance.gethtmllistwithlabel('table', {'id':'oddsList_tab'})
+        if BeautifulSoupHelper.isTagClass(oddsList_tab):
+            pass
     def writeLocal(self):
         print('写文件')
         path = os.path.join('/Users/mi/Desktop', 'soccer.txt')

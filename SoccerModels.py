@@ -5,7 +5,7 @@
 博彩公司
 '''
 class BetCompany:
-    def __init__(self,title,src):
+    def __init__(self,title = '',src = ''):
         self.companyTitle = ''
         self.orignal_top = ''
         self.orignal_bottom = ''
@@ -15,6 +15,9 @@ class BetCompany:
         self.now_Handicap = 0.0
         self.orignal = ''
         self.now = ''
+
+        # 相似盘口的链接
+        self.similerMatchURL = ''
 
 
 

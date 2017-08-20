@@ -30,15 +30,16 @@ class SoupHelper(object):
         finally:
             print str(url)
 
-    def gethtmllistwithlabel(self, label, options={}):
+    def gethtmllistwithlabel(self, label, options={}, fromencoding = 'gb18030'):
         if self.html is None:
             return
-        soup = BeautifulSoup(self.html,"html.parser",from_encoding='gb18030')
+        soup = BeautifulSoup(self.html,"html.parser",from_encoding= fromencoding)
         elementlist = []
         templist = soup.find_all(label,attrs=options)
         elementlist.extend(templist)
         return elementlist
 
+    
 
 
 def isTagClass(obj):
@@ -46,6 +47,10 @@ def isTagClass(obj):
 
 
 def getelementlistwithlabel(tagObj, label, options={}):
+    """
+
+    :rtype: object
+    """
     if isinstance(tagObj, Tag):
         elementlist = []
         templist = tagObj.find_all(label, attrs=options)

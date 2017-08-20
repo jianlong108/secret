@@ -29,7 +29,7 @@ def main():
         for tr in table.children:
             if BeautifulSoupHelper.isTagClass(tr):
                 if tr.get('matchid') is not None:
-                    game = SoccerGame('http://www.310win.com/')
+                    game = SoccerGame('http://www.310win.com')
                     game.leauge = tr.get('gamename').encode("UTF-8")
 
                     for td in tr.descendants:
@@ -40,16 +40,17 @@ def main():
                                 game.soccer = td.get_text().encode("UTF-8")
                             elif td.get_text().encode("UTF-8") == '亚':
                                 # 获得比赛的亚盘 分析地址
-                                game.handiurl = game.url + td.get('href')
+                                game.handiurl = game.url + td.get('href').encode("UTF-8")
                             elif td.get_text().encode("UTF-8") == '欧':
                                 # 获得比赛的欧赔 分析地址
-                                game.oddurl = game.url + td.get('href')
+                                game.oddurl = game.url + td.get('href').encode("UTF-8")
                     allGameList.append(game)
                     # print(game.leauge, game.soccer, game.handiurl, game.oddurl)
 
         game = allGameList[0]
         if isinstance(game, SoccerGame):
-            game.gethandidata()
+            # game.gethandidata()
+            game.getodddata()
         # for soccer in allGameList:
         #     soccer.parserHtml()
         #     soccer.beginCaculte()

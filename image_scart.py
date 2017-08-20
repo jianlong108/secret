@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-import HtmlParser
-from bs4 import BeautifulSoup
+import BeautifulSoupHelper
 # from biplist import *
 
 
@@ -16,9 +15,11 @@ class OneGirl:
         # self.getNumImages()
 
     def getNumImages(self):
-        html = HtmlParser.download(self.url)
-        soup = BeautifulSoup(html, 'html.parser', from_encoding='gb18030')
-        span = soup.find('span', attrs={'class': 'page-ch'})
+        instance = BeautifulSoupHelper.SoupHelper(self.url)
+        span = instance.gethtmllistwithlabel('span', attrs={'class': 'page-ch'})
+        # html = HtmlParser.download(self.url)
+        # soup = BeautifulSoup(html, 'html.parser', from_encoding='gb18030')
+        # span = soup.find('span', attrs={'class': 'page-ch'})
         spanContent = span.get_text()
         num = spanContent[1:][:-1]
         if num.isdigit():
@@ -54,7 +55,6 @@ class OneGirl:
         self.plsitDic[self.name] = self.imageList
         return self.plsitDic
 
-
 class PageGirls:
     def __init__(self, name, url, website='http://www.mm131.com/'):
         self.name = name
@@ -71,20 +71,22 @@ class PageGirls:
 
     def parseronecategory(self, url):
         # url = "http://www.mm131.com/qingchun/"
-        html = HtmlParser.download(url)
-        mainSoup = BeautifulSoup(html, 'html.parser',from_encoding='gb18030')
-        dlList = mainSoup.find('dl', {'class': 'list-left public-box'})
+        # html = HtmlParser.download(url)
+        # mainSoup = BeautifulSoup(html, 'html.parser',from_encoding='gb18030')
+        instance = BeautifulSoupHelper.SoupHelper(url)
+        dlList = instance.gethtmllistwithlabel('dl', {'class': 'list-left public-box'})
+        # dlList = mainSoup.find('dl', {'class': 'list-left public-box'})
         # dlList = HtmlParser.getHtmlListWithLabel(html, 'dl', {'class': 'list-left public-box'})
 
         for child in dlList.descendants:
             if str(type(child)) == "<class 'bs4.element.Tag'>":
-                if child.get('src') != None and child.get('alt') != None:
+                if child.get('src') is not None and child.get('alt') is not None:
                     # print(child.parent.get('href'))
                     one = OneGirl(child.get('alt'),child.parent.get('href') ,child.get('src'))
                     # print(child.get('alt'),child.get('src'))
                     self.one_girl_list.append(one)
                 else:
-                    if child.get('href') != None and child.get_text()!= None:
+                    if child.get('href') is not None and child.get_text() is not None:
                         # pass
                         # print(child.get('href'))
                         if child.get('href') != self.website and child.get('href') != self.url:
@@ -127,11 +129,6 @@ class PageGirls:
             self.parserOneCategory(html)
         # writePlist(self.plist, "/Users/autohome/Desktop/channel.plist")
 
-
-
-
-
-
 class ChannelGirl:
     def __init__(self,name,url):
         self.channelName = name
@@ -142,9 +139,11 @@ class ChannelGirl:
         self.pagesHtmlList = {}
 
     def getAllPages(self):
-        html = HtmlParser.download(self.channelURL)
-        mainSoup = BeautifulSoup(html, 'html.parser',from_encoding='gb2312')
-        aList = mainSoup.find_all('a', {'class': 'page-en'})
+        instance = BeautifulSoupHelper.SoupHelper(self.channelURL)
+        aList = instance.gethtmllistwithlabel('a', {'class': 'page-en'}, fromencoding= 'gb2312')
+        # html = HtmlParser.download(self.channelURL)
+        # mainSoup = BeautifulSoup(html, 'html.parser',from_encoding='gb2312')
+        # aList = mainSoup.find_all('a', {'class': 'page-en'})
         if len(aList)>0:
             self.numPage = int(aList[-1].get('href')[7:][:-5])
             self.endPage = aList[-1].get('href')
@@ -169,9 +168,11 @@ class MainView:
         self.channelList = []
         self.loclDic ={}
     def getAllCateogry(self):
-        html = HtmlParser.download(self.url)
-        webSoup = HtmlParser.getSoup(html)
-        navHtml = webSoup.find('div', attrs={'class': 'nav'})
+        instance = BeautifulSoupHelper.SoupHelper(self.url)
+        navHtml = instance.gethtmllistwithlabel('div', attrs={'class': 'nav'})
+        # html = HtmlParser.download(self.url)
+        # webSoup = HtmlParser.getSoup(html)
+        # navHtml = webSoup.find('div', attrs={'class': 'nav'})
         for nav_child in navHtml.descendants:
             if str(type(nav_child)) == "<class 'bs4.element.Tag'>":
                 if nav_child.get('href') != None:

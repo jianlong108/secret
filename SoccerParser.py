@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 from urllib2 import Request
 import re
 from SoccerGame import SoccerGame
-import HtmlParser
 import datetime
 
 
@@ -78,8 +77,6 @@ def main():
         match = re.findall(r'(/[^# ]*html)', str(a))
         url = 'http://www.310win.com/' + match[0]
         urllist.append(url)
-        soup = BeautifulSoup(HtmlParser.download(url), 'html.parser')
-        list = soup.find_all('tr')
 
     soccerList = []
     for url in urllist:
