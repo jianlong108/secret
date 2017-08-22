@@ -99,8 +99,14 @@ def getYesterdaySoccer(timestr):
 
             onegame.soccerID = int(oneGameArray[0])
             onegame.leauge = dic.get(oneGameArray[1].encode('utf-8'))
-            if onegame.leauge not in leaguelist:
+            flag = False
+            for leaguestr in leaguelist:
+                if onegame.leauge in leaguestr:
+                    flag = True
+
+            if flag is False:
                 continue
+
             beginTime = oneGameArray[3].encode('utf-8')
             onegame.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[
                                                                                                      8:10] + ':' + beginTime[
