@@ -2,14 +2,11 @@
 # -*- coding: utf-8 -*-
 
 
-import time
-from urllib2 import Request
-import urllib2
-from bs4 import BeautifulSoup
+
 from DBHelper import *
-from SoccerModels import *
-from SoccerRound import *
+
 import datetime
+import time
 
 from SendMail import *
 from SoccerRound import *

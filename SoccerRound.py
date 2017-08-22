@@ -228,6 +228,8 @@ def getOneGameHandi(game):
                 companys.append(company)
 
         return companys
+    else:
+        return []
 
 
 '''
@@ -285,3 +287,5 @@ def getOneGameODD(game):
                 companys.append(company)
 
         return companys
+    else:
+        return []

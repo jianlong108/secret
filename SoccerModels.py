@@ -102,6 +102,9 @@ class FootballGame:
         self.allHome = 0
         self.allFriend = 0
 
+        self.bet365Handi = 0
+        self.bet365odd = (0,0,0)
+
 
 
     @property
@@ -112,6 +115,16 @@ class FootballGame:
             return 3
         else:
             return 0
+
+    @property
+    def winhandi(self):
+        num = self.allHome - self.allFriend
+        if num > 0:
+            return '赢盘'
+        elif num == 0:
+            return '走盘'
+        else:
+            return '输盘'
 
 
 '''

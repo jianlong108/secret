@@ -206,7 +206,7 @@ def getGameData(game):
     # 将比赛开始时间 对阵双方信息 录入
     contentstr = contentstr.join([str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ', str(game.soccerID)])
     contentstr += '\n'
-    print str(game.beginTime) + ':' + game.leauge + ':' + game.homeTeam + 'vs' + game.friendTeam
+    print str(game.beginTime) + ':' + game.leauge + ':' + game.homeTeam + 'vs' + game.friendTeam  +'  '+str(game.allHome)+ ' : ' + str(game.allFriend)
 
     # 获取亚盘数据
     handituple = getHandi(game ,c)
@@ -258,27 +258,20 @@ def getHandi(game, c):
             else:
                 lose_count += 1
 
-            if oneCompany.now >= 0:
-                if result[7] - result[10] - float(oneCompany.now) > 0:
-                    handi_win_count += 1
-                elif int(result[7]) - int(result[10]) - float(oneCompany.now) == 0:
-                    handi_draw_count += 1
-                else:
-                    handi_lose_count += 1
+            if int(result[7]) - int(result[10]) - float(oneCompany.now) > 0.0:
+                handi_win_count += 1
+            elif int(result[7]) - int(result[10]) - float(oneCompany.now) == 0.0:
+                handi_draw_count += 1
             else:
-                if int(result[10]) - int(result[7]) + float(oneCompany.now) > 0:
-                    handi_win_count += 1
-                elif int(result[10]) - int(result[7]) + float(oneCompany.now) == 0:
-                    handi_draw_count += 1
-                else:
-                    handi_lose_count += 1
+                handi_lose_count += 1
+
 
 
     if num > 0:
-        tempstr_one = ''.join(['  亚 ', '赢盘: ', str(float(handi_win_count) / float(num) * 100)[:5], '/100', ' 走盘:',
+        tempstr_one = ''.join(['  亚 ->',str(game.winhandi),'  盘口:',str(game.bet365Handi), '赢盘: ', str(float(handi_win_count) / float(num) * 100)[:5], '/100', ' 走盘:',
                                str(float(handi_draw_count) / float(num) * 100)[:5], '/100', '输盘',
                                str(float(handi_lose_count) / float(num) * 100)[:5], '/100  '])
-        tempstr_two = ''.join(['  亚: ', '胜: ', str(float(win_count) / float(num) * 100)[:5], '/100', ' 平:',
+        tempstr_two = ''.join(['  亚: ', str(game.soccer),'胜: ', str(float(win_count) / float(num) * 100)[:5], '/100', ' 平:',
                                str(float(draw_count) / float(num) * 100)[:5], '/100', '负',
                                str(float(lose_count) / float(num) * 100)[:5], '/100'])
 
@@ -289,8 +282,8 @@ def getHandi(game, c):
 
             # 终端的字符颜色是用转义序列控制的，是文本模式下的系统显示功能，和具体的语言无 关。
             # 转义序列是以 ESC 开头,可以用 \033 完成相同的工作（ESC 的 ASCII 码用十进制表 示就是 27， = 用八进制表示的 33）
-            print "\033[1;31;47m%s\033[0m" % tempstr_one
-            print "\033[1;31;47m%s\033[0m" % tempstr_two
+            print "\033[1;31;40m%s\033[0m" % tempstr_one
+            print "\033[1;31;40m%s\033[0m" % tempstr_two
         else:
             print '忽略' + tempstr_one
 
@@ -347,7 +340,7 @@ def getOdd(game, c):
 
             contentstr = contentstr + tempstr
 
-            print "\033[1;31;47m%s\033[0m" % tempstr
+            print "\033[1;31;40m%s\033[0m" % tempstr
             print '\n'
         else:
             print '忽略' + tempstr
