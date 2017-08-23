@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from BeautifulSoupHelper import *
+
 '''
 博彩公司
 '''
@@ -15,6 +17,9 @@ class BetCompany:
         self.now_Handicap = 0.0
         self.orignal = ''
         self.now = ''
+
+        self.homeWinningPercentage = ''
+        self.friendWiningPercentage = ''
 
         # 相似盘口的链接
         self.similerMatchURL = ''
@@ -32,6 +37,31 @@ class BetCompany:
         self.rise = False
         self.lowest = False
         self.highest = False
+
+    def getwiningpercentage(self):
+        if self.similerMatchURL is None:
+            return
+        instance = SoupHelper(self.similerMatchURL)
+        spanlist = instance.gethtmllistwithlabel('span', {'id': 'result'})
+        if len(spanlist) == 0 or spanlist is None:
+            return
+        span = spanlist[0]
+        divlist = getelementlistwithlabel(span,'div', {'align':'center'})
+        div = divlist[0]
+
+        tablelist = getelementlistwithlabel(div,'table',{'width':'750'})
+        if len(tablelist) > 0:
+            table = tablelist[0]
+            self.homeWinningPercentage = gettextlistwithlabel(table)
+
+        subdivlist = getelementlistwithlabel(div, 'div', {'align':'center'})
+        if len(subdivlist) > 0:
+            subdiv = subdivlist[0]
+            self.friendWiningPercentage = gettextlistwithlabel(subdiv)
+        print self.companyTitle + str(self.now_Handicap)
+        print self.homeWinningPercentage
+        print self.friendWiningPercentage
+
 
 class LotteryCorporations:
     def __init__(self):
@@ -118,7 +148,7 @@ class FootballGame:
 
     @property
     def winhandi(self):
-        num = self.allHome - self.allFriend
+        num = self.allHome - self.allFriend -self.bet365Handi
         if num > 0:
             return '赢盘'
         elif num == 0:

@@ -28,7 +28,7 @@ class SoupHelper(object):
         else:
             print '解析URL出错:' + str(url)
         finally:
-            print str(url)
+            pass
 
     def gethtmllistwithlabel(self, label, options={}, fromencoding = 'gb18030'):
         if self.html is None:
@@ -47,15 +47,23 @@ def isTagClass(obj):
 
 
 def getelementlistwithlabel(tagObj, label, options={}):
-    """
 
-    :rtype: object
-    """
     if isinstance(tagObj, Tag):
         elementlist = []
         templist = tagObj.find_all(label, attrs=options)
         elementlist.extend(templist)
         return elementlist
+    else:
+        print '传入的值有误,不是Tag类型 不作处理:' + tagObj
+        return None
+
+def gettextlistwithlabel(tagObj):
+
+    if isinstance(tagObj, Tag):
+
+        strlist = tagObj.get_text()
+
+        return strlist.encode('utf-8')
     else:
         print '传入的值有误,不是Tag类型 不作处理:' + tagObj
         return None

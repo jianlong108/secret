@@ -5,6 +5,7 @@ import requests
 import os
 import BeautifulSoupHelper
 from SoccerModels import BetCompany
+import time
 
 
 class SoccerGame:
@@ -32,6 +33,8 @@ class SoccerGame:
     def gethandidata(self):
         instance =  BeautifulSoupHelper.SoupHelper(self.handiurl)
         companycontainer=  instance.gethtmllistwithlabel('table', {'class' : 'socai','width' : "100%"})
+        if len(companycontainer) == 0:
+            return
         companylist = companycontainer[0]
         handicompanylist = []
         if BeautifulSoupHelper.isTagClass(companylist):
@@ -59,6 +62,8 @@ class SoccerGame:
                                 for aElement in sublist:
                                     if aElement.get_text().encode('utf-8') == '同':
                                         company.similerMatchURL = self.url + aElement.get('href').encode('utf-8')
+                                        company.getwiningpercentage()
+                                        time.sleep(0.5)
                             except ValueError , e:
                                 print e
                                 pass

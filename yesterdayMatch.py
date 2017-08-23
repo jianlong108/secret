@@ -143,18 +143,6 @@ def getYesterdaySoccer(timestr):
 
             time.sleep(3)
 
-        # i = datetime.now()
-        #
-        # if type == 1:
-        #     subjectstr = '精简足球分析'
-        # elif type == 2:
-        #     subjectstr = '十四场足球分析'
-        # else:
-        #     subjectstr = '竞彩分析'
-
-        # send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr)
-        # if type == 1 or type == 3:
-        #     runTask(anyaisegame, AllGames, AllBeginTimes)
 
 
 
