@@ -6,6 +6,11 @@ from SoccerGame import SoccerGame
 import datetime
 import BeautifulSoupHelper
 import time
+import sys
+import os
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 '''
 根据指定日期 获取每个公司的历史盘口胜率
@@ -13,8 +18,8 @@ import time
 
 def main():
     date_list = []
-    begin_date = datetime.datetime.strptime("2017-08-24", "%Y-%m-%d")
-    end_date = datetime.datetime.strptime("2017-08-24", "%Y-%m-%d")
+    begin_date = datetime.datetime.strptime("2017-08-25", "%Y-%m-%d")
+    end_date = datetime.datetime.strptime("2017-08-25", "%Y-%m-%d")
     # print begin_date,end_date.__class__
 
     while begin_date <= end_date:
@@ -61,7 +66,6 @@ def main():
                     allGameList.append(game)
 
 
-        # game = allGameList[0]
         for game in allGameList:
             if isinstance(game, SoccerGame):
                 print(game.soccer,game.hometeam,game.guestteam,game.matchid)
@@ -69,28 +73,6 @@ def main():
                 time.sleep(0.5)
 
 
-            # game.getodddata()
-        # for soccer in allGameList:
-        #     soccer.parserHtml()
-        #     soccer.beginCaculte()
-
-
-    # urllist = []
-    # for a in newImgList:
-    #     print(a)
-    #     match = re.findall(r'(/[^# ]*html)', str(a))
-    #     url = 'http://www.310win.com/' + match[0]
-    #     urllist.append(url)
-    #     soup = BeautifulSoup(HtmlParser.download(url), 'html.parser')
-    #     list = soup.find_all('tr')
-    #
-    # soccerList = []
-    # for url in urllist:
-    #     soccer = SoccerGame(url)
-    #     soccer.parserHtml()
-    #     soccer.beginCaculte()
-    #     soccer.canSaveLocal()
-    #     soccerList.append(soccer)
 
 
 

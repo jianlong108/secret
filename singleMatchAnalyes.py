@@ -5,6 +5,11 @@ from BeautifulSoupHelper import *
 from SoccerModels import *
 from soccerTool import *
 import time
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 
 '''
 获取单场比赛 各个公司的开盘历史胜率

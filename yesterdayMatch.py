@@ -1,27 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
-from datetime import timedelta
-
 import sys
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 from SendMail import *
-from SoccerRound import *
-
-import pycurl
-import StringIO
 from DBHelper import *
 
 global AllGames
 global AllBeginTimes
 
-
-def unicodeTostr(onestr):
-    str(onestr).encode('utf-8')
 
 def getYesterdaySoccer(timestr):
     try:
@@ -56,7 +46,7 @@ def getYesterdaySoccer(timestr):
 
         allLeague = leagueStr.split('!')
         dic = {}
-        location = os.path.expanduser('~/Desktop/league.txt')
+        location = os.path.join(os.path.abspath('.'), 'league.txt')
         leaguelistfile = open(location, 'r+')
         for league in allLeague:
             oneLeague = league.split('^')
@@ -139,17 +129,13 @@ def getYesterdaySoccer(timestr):
         insertGameList(AllGames)
 
 
-
 def main():
     now = datetime.now()
     aDay = timedelta(days=-1)
     now = now + aDay
     yesterdaystr = now.strftime('%Y-%m-%d')
-    getYesterdaySoccer('2017-08-23')
-# if sys.argv.__len__()==1:
-#     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
-#
-# if __name__ == '__main__':
-#     getYesterdaySoccer(sys.argv[1])
+    getYesterdaySoccer(yesterdaystr)
 
-main()
+if __name__ == '__main__':
+    main()
+
