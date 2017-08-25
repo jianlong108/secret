@@ -7,10 +7,14 @@ import datetime
 import BeautifulSoupHelper
 import time
 
+'''
+根据指定日期 获取每个公司的历史盘口胜率
+'''
+
 def main():
     date_list = []
-    begin_date = datetime.datetime.strptime("2017-08-22", "%Y-%m-%d")
-    end_date = datetime.datetime.strptime("2017-08-22", "%Y-%m-%d")
+    begin_date = datetime.datetime.strptime("2017-08-24", "%Y-%m-%d")
+    end_date = datetime.datetime.strptime("2017-08-24", "%Y-%m-%d")
     # print begin_date,end_date.__class__
 
     while begin_date <= end_date:
@@ -33,8 +37,17 @@ def main():
                     game = SoccerGame('http://www.310win.com')
                     game.leauge = tr.get('gamename').encode('utf-8')
 
+                    if BeautifulSoupHelper.getelementlistwithlabel(tr, 'a', {'id': True}):
+                        alist = BeautifulSoupHelper.getelementlistwithlabel(tr, 'a')
+                        game.hometeam = alist[1].get_text().encode('utf-8')
+                        home_a_id = alist[1].get('id').encode('utf-8')
+                        game.matchid = (home_a_id.split('_')[1]).encode('utf-8')
+                        game.guestteam = alist[2].get_text().encode('utf-8')
+
                     for td in tr.descendants:
                         if BeautifulSoupHelper.isTagClass(td):
+
+
 
                             if td.get('onmouseout') == "hide('WinOdds')":
                                 # 获得比分
@@ -51,7 +64,7 @@ def main():
         # game = allGameList[0]
         for game in allGameList:
             if isinstance(game, SoccerGame):
-                print(game.soccer)
+                print(game.soccer,game.hometeam,game.guestteam,game.matchid)
                 game.gethandidata()
                 time.sleep(0.5)
 

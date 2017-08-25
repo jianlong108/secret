@@ -6,6 +6,7 @@ import os
 import math
 from decimal import Decimal
 import sys
+from SoccerRound import *
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -55,7 +56,7 @@ def create_database():
     conn.close()
 
 '''
-插入单条联赛数据
+插入一个联赛 数据
 '''
 def insert_League(league):
     conn = sqlite3.connect(location)
@@ -67,6 +68,9 @@ def insert_League(league):
     c.close()
     conn.close()
 
+'''
+插入一条 比赛 数据
+'''
 def insert_Game(game):
     conn = sqlite3.connect(location)
     c = conn.cursor()
@@ -78,7 +82,9 @@ def insert_Game(game):
     c.close()
     conn.close()
 
-
+'''
+插入比赛列表
+'''
 def insertGameList(games):
     conn = sqlite3.connect(location)
     c = conn.cursor()
@@ -92,7 +98,7 @@ def insertGameList(games):
         if handi == None:
             pass
         else:
-            for company in handi:
+            for company  in handi:
                 params1 = (game.soccerID, company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
                            company.companyTitle.decode('utf-8'),
                            company.orignal_top, company.orignal, company.orignal_bottom, company.now_top, company.now,

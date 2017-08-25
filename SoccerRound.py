@@ -171,8 +171,6 @@ def creatGameModel(gameStr,leagueStr):
 '''
 获取一场比赛的亚盘数据
 '''
-
-
 def getOneGameHandi(game):
 
     resultStr = ''
@@ -182,13 +180,6 @@ def getOneGameHandi(game):
         # print handiURL
     except:
         pass
-
-    # response = requests.get(handiURL)
-    #
-    # if response.ok:
-    #     resultStr = response.content;
-    # else:
-    #     pass
 
     c = pycurl.Curl()
 
@@ -207,7 +198,7 @@ def getOneGameHandi(game):
         companys = []
         for unit in array:
             # print unit.decode('utf-8')
-            company = LotteryCorporations()
+            company = BetCompany()
             company.result = game.soccer
             company.homeSoccer = game.allHome
             company.friendSoccer = game.allFriend
@@ -243,12 +234,6 @@ def getOneGameODD(game):
     except:
         pass
 
-    # response = requests.get(oddURL)
-    #
-    # if response.ok:
-    #     resultStr = response.content;
-    # else:
-    #     pass
     c = pycurl.Curl()
 
     c.setopt(pycurl.URL, oddURL)
@@ -266,7 +251,7 @@ def getOneGameODD(game):
         companys = []
         for unit in array:
             # print unit.decode('utf-8')
-            company = LotteryCorporations()
+            company = BetCompany()
             company.result = game.soccer
             company.homeSoccer = game.allHome
             company.friendSoccer = game.allFriend

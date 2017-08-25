@@ -8,15 +8,14 @@ from BeautifulSoupHelper import *
 '''
 class BetCompany:
     def __init__(self,title = '',src = ''):
+        self.soccerGameId = ''
         self.companyTitle = ''
-        self.orignal_top = ''
-        self.orignal_bottom = ''
+        self.orignal_top = 0.0
+        self.orignal_bottom = 0.0
         self.orignal_Handicap = 0.0
-        self.now_top = ''
-        self.now_bottom = ''
+        self.now_top = 0.0
+        self.now_bottom = 0.0
         self.now_Handicap = 0.0
-        self.orignal = ''
-        self.now = ''
 
         self.homeWinningPercentage = ''
         self.friendWiningPercentage = ''
@@ -25,13 +24,29 @@ class BetCompany:
         self.similerMatchURL = ''
 
 
-
         # 胜赔
         self.winOdd = 0.00
         # 平赔
         self.drawOdd = 0.00
         # 负赔
         self.loseOdd = 0.00
+
+        # 初胜赔
+        self.orignal_winOdd = 0.00
+        # 初平赔
+        self.orignal_drawOdd = 0.00
+        # 初负赔
+        self.orignal_loseOdd = 0.00
+
+
+        self.result = 0
+        self.homeSoccer = 0
+        self.friendSoccer = 0
+
+        self.falldown = False
+        self.rise = False
+        self.lowest = False
+        self.highest = False
 
         self.falldown = False
         self.rise = False
@@ -58,48 +73,10 @@ class BetCompany:
         if len(subdivlist) > 0:
             subdiv = subdivlist[0]
             self.friendWiningPercentage = gettextlistwithlabel(subdiv)
+
         print self.companyTitle + str(self.now_Handicap)
         print self.homeWinningPercentage
         print self.friendWiningPercentage
-
-
-class LotteryCorporations:
-    def __init__(self):
-        self.soccerGameId = ''
-        self.companyTitle = ''
-        self.orignal_top = 0.0
-        self.orignal_bottom = 0.0
-        self.orignal_Handicap = 0.0
-        self.now_top = 0.0
-        self.now_bottom = 0.0
-        self.now_Handicap = 0.0
-        self.orignal = 0.0
-        self.now = 0.0
-
-        # 胜赔
-        self.winOdd = 0.00
-        # 平赔
-        self.drawOdd = 0.00
-        # 负赔
-        self.loseOdd = 0.00
-
-        # 初胜赔
-        self.orignal_winOdd = 0.00
-        # 初平赔
-        self.orignal_drawOdd = 0.00
-        # 初负赔
-        self.orignal_loseOdd = 0.00
-
-        self.result = 0
-        self.homeSoccer = 0
-        self.friendSoccer = 0
-
-        self.falldown = False
-        self.rise = False
-        self.lowest = False
-        self.highest = False
-
-
 
 
 '''
@@ -205,6 +182,9 @@ class League:
     #
     # aviableSeasonStr = property(get_aviableseasonstr, set_aviableseasonstr)
 
+'''
+国家对应的数据模型
+'''
 class CountrySoccer:
     def __init__(self):
         # 国家ID
@@ -216,6 +196,9 @@ class CountrySoccer:
         # 包含的联赛列表
         self.leagueList = []
 
+'''
+大洲对应的数据
+'''
 class ContinentSoccer:
     def __init__(self):
         # 洲名

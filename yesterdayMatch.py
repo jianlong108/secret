@@ -132,17 +132,11 @@ def getYesterdaySoccer(timestr):
             AllGames.append(onegame)
             onegame.oddCompanies = getOneGameODD(onegame)
             onegame.handiCompanies = getOneGameHandi(onegame)
+            print onegame.leauge +' ' + onegame.homeTeam +' '+ onegame.friendTeam +' '+ str(onegame.soccer)
 
-            tempstr = getGameData(onegame)
-            # try:
-            # except ValueError:
-            #     pass
-            # finally:
-            #     pass
+            time.sleep(1.5)
 
-
-            time.sleep(3)
-
+        insertGameList(AllGames)
 
 
 
@@ -151,7 +145,7 @@ def main():
     aDay = timedelta(days=-1)
     now = now + aDay
     yesterdaystr = now.strftime('%Y-%m-%d')
-    getYesterdaySoccer(yesterdaystr)
+    getYesterdaySoccer('2017-08-23')
 # if sys.argv.__len__()==1:
 #     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
 #
