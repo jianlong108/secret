@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import requests
-import re
+
 from SoccerGame import SoccerGame
 import datetime
 import BeautifulSoupHelper
 import time
 import sys
-import os
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -70,7 +68,7 @@ def main():
             if isinstance(game, SoccerGame):
                 print(game.soccer,game.hometeam,game.guestteam,game.matchid)
                 game.gethandidata()
-                time.sleep(0.5)
+                time.sleep(1.5)
 
 
 

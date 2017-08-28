@@ -68,7 +68,7 @@ class SoccerGame:
                                     if aElement.get_text().encode('utf-8') == '同':
                                         company.similerMatchURL = self.url + aElement.get('href').encode('utf-8')
                                         company.getwiningpercentage()
-                                        time.sleep(0.5)
+                                        time.sleep(1.5)
                             except ValueError , e:
                                 print e
                                 pass

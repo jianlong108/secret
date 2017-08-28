@@ -46,8 +46,8 @@ def getYesterdaySoccer(timestr):
 
         allLeague = leagueStr.split('!')
         dic = {}
-        location = os.path.join(os.path.abspath('.'), 'league.txt')
-        leaguelistfile = open(location, 'r+')
+        locationstr = os.path.join(os.path.abspath('.'), 'league.txt')
+        leaguelistfile = open(locationstr, 'r+')
         for league in allLeague:
             oneLeague = league.split('^')
             dic[oneLeague[1]] = oneLeague[0]
@@ -122,7 +122,8 @@ def getYesterdaySoccer(timestr):
             AllGames.append(onegame)
             onegame.oddCompanies = getOneGameODD(onegame)
             onegame.handiCompanies = getOneGameHandi(onegame)
-            print onegame.leauge +' ' + onegame.homeTeam +' '+ onegame.friendTeam +' '+ str(onegame.soccer)
+            getGameData(onegame)
+            # print onegame.leauge +' ' + onegame.homeTeam +' '+ onegame.friendTeam +' '+ str(onegame.soccer)
 
             time.sleep(1.5)
 
