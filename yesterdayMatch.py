@@ -127,7 +127,7 @@ def getYesterdaySoccer(timestr):
 
             time.sleep(1.5)
 
-        insertGameList(AllGames)
+        # insertGameList(AllGames)
 
 
 def main():

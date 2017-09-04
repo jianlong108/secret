@@ -212,7 +212,7 @@ def getGameData(game):
     # 将比赛开始时间 对阵双方信息 录入
     contentstr = contentstr.join([str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ', str(game.soccerID)])
     contentstr += '\n'
-    print str(game.beginTime) + ':' + game.leauge + ':' + game.homeTeam + 'vs' + game.friendTeam  +'  '+str(game.allHome)+ ' : ' + str(game.allFriend)
+    print str(game.beginTime) + ':' + game.leauge + ':' + game.homeTeam + 'vs' + game.friendTeam  +'  '+str(game.allHome)+ ' : ' + str(game.allFriend) + ' ' + str(game.soccerID)
 
     # 获取亚盘数据
     handituple = getHandi(game ,c)
@@ -232,7 +232,7 @@ def getHandi(game, c):
     allHandiGames = []
 
     # 如果这场比赛没有亚盘数据,就返回
-    if game.handiCompanies == None:
+    if game.handiCompanies is None:
         return (contentstr, allHandiGames)
 
 
@@ -274,6 +274,7 @@ def getHandi(game, c):
 
 
     if num > 0:
+
         tempstr_one = ''.join(['  亚 ->',str(game.winhandi),'  盘口:',str(game.bet365Handi), '赢盘: ', str(float(handi_win_count) / float(num) * 100)[:5], '/100', ' 走盘:',
                                str(float(handi_draw_count) / float(num) * 100)[:5], '/100', '输盘',
                                str(float(handi_lose_count) / float(num) * 100)[:5], '/100  '])
