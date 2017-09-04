@@ -61,7 +61,6 @@ def getYesterdaySoccer(timestr):
             gameStr = allArray[2]
 
         games = gameStr.split('!')
-        contentStr = ''
         for game in games:
             tempstr_utf_8 =  game.encode('utf-8')
             onegame = FootballGame()
