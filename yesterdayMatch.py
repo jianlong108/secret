@@ -12,9 +12,10 @@ from DBHelper import *
 
 
 
-'''
+"""
 全局变量定义
-'''
+"""
+
 AllGames = []
 AllBeginTimes = []
 
@@ -129,9 +130,10 @@ def getYesterdaySoccer(timestr):
                 onegame = None
                 print  e
 
-
-
-            if onegame is not None:
+            except BaseException, e:
+                onegame = None
+                print e
+            else:
                 AllGames.append(onegame)
                 onegame.oddCompanies = getOneGameODD(onegame)
                 onegame.handiCompanies = getOneGameHandi(onegame)
