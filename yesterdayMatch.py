@@ -6,13 +6,22 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+
 from SendMail import *
 from DBHelper import *
 
-global AllGames
-global AllBeginTimes
 
 
+'''
+全局变量定义
+'''
+AllGames = []
+AllBeginTimes = []
+
+
+'''
+主函数
+'''
 def getYesterdaySoccer(timestr):
     try:
         url = "http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=" + timestr + '&from=1&kind=3&r=1503367511&subversion=3'
@@ -32,8 +41,8 @@ def getYesterdaySoccer(timestr):
     c.perform()
     resultStr = b.getvalue().decode('utf8')
 
-    AllGames = []
-    AllBeginTimes = []
+    global AllGames
+    global AllBeginTimes
 
     if resultStr != '':
         # print resultStr
@@ -47,13 +56,13 @@ def getYesterdaySoccer(timestr):
         allLeague = leagueStr.split('!')
         dic = {}
         locationstr = os.path.join(os.path.abspath('.'), 'league.txt')
-        leaguelistfile = open(locationstr, 'w+')
+        leaguelistfile = open(locationstr, 'r+')
         for league in allLeague:
             oneLeague = league.split('^')
             dic[oneLeague[1]] = oneLeague[0]
-            leaguelistfile.write('%s:%s\n'%(oneLeague[1],oneLeague[0]))
-        # leaguelist = leaguelistfile.readlines()
-        return
+            # leaguelistfile.write('%s:%s\n'%(oneLeague[1],oneLeague[0]))
+        leaguelist = leaguelistfile.readlines()
+        # return
         gameStr = ''
         if type == 1:
             gameStr = allArray[1]
@@ -85,43 +94,49 @@ def getYesterdaySoccer(timestr):
             # 16 胜
             # 17 平
             # 18 负
+            try:
+                onegame.soccerID = int(oneGameArray[0])
+                onegame.leauge = dic.get(oneGameArray[1].encode('utf-8'))
+                flag = False
+                for leaguestr in leaguelist:
+                    if onegame.leauge in leaguestr:
+                        flag = True
 
-            onegame.soccerID = int(oneGameArray[0])
-            onegame.leauge = dic.get(oneGameArray[1].encode('utf-8'))
-            flag = False
-            for leaguestr in leaguelist:
-                if onegame.leauge in leaguestr:
-                    flag = True
+                if flag is False:
+                    continue
 
-            if flag is False:
-                continue
+                beginTime = oneGameArray[3].encode('utf-8')
+                onegame.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[
+                                                                                                         8:10] + ':' + beginTime[
+                                                                                                                       10:12]
 
-            beginTime = oneGameArray[3].encode('utf-8')
-            onegame.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[
-                                                                                                     8:10] + ':' + beginTime[
-                                                                                                                   10:12]
+                briefTimeStr = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[
+                                                                                                    8:10] + ':' + beginTime[
+                                                                                                                  10:12]
+                if briefTimeStr not in AllBeginTimes:
+                    AllBeginTimes.append(briefTimeStr)
 
-            briefTimeStr = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[
-                                                                                                8:10] + ':' + beginTime[
-                                                                                                              10:12]
-            if briefTimeStr not in AllBeginTimes:
-                AllBeginTimes.append(briefTimeStr)
+                onegame.homeTeam = oneGameArray[5]
+                onegame.friendTeam = oneGameArray[6]
+                onegame.allHome = int(oneGameArray[7])
+                onegame.allFriend = int(oneGameArray[8])
+                onegame.halfHome = int(oneGameArray[9])
+                onegame.halfFriend = int(oneGameArray[10])
 
-            onegame.homeTeam = oneGameArray[5]
-            onegame.friendTeam = oneGameArray[6]
-            onegame.allHome = int(oneGameArray[7])
-            onegame.allFriend = int(oneGameArray[8])
-            onegame.halfHome = int(oneGameArray[9])
-            onegame.halfFriend = int(oneGameArray[10])
-
-            if oneGameArray[15] !='' and oneGameArray[15] is not None:
-                onegame.bet365Handi = float(oneGameArray[15])
+                if oneGameArray[15] != '' and oneGameArray[15] is not None:
+                    onegame.bet365Handi = float(oneGameArray[15])
+            except ValueError as e:
+                onegame = None
+                print  e
 
 
-            AllGames.append(onegame)
-            onegame.oddCompanies = getOneGameODD(onegame)
-            onegame.handiCompanies = getOneGameHandi(onegame)
-            getGameData(onegame)
+
+            if onegame is not None:
+                AllGames.append(onegame)
+                onegame.oddCompanies = getOneGameODD(onegame)
+                onegame.handiCompanies = getOneGameHandi(onegame)
+                getGameData(onegame)
+
             # print onegame.leauge +' ' + onegame.homeTeam +' '+ onegame.friendTeam +' '+ str(onegame.soccer)
 
             time.sleep(1.5)
