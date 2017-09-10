@@ -17,7 +17,7 @@ import SendMail
 
 AllGames = []
 AllBeginTimes = []
-exitflag = 0
+exitflag = 1
 
 
 
@@ -132,7 +132,7 @@ class TimeingThread(threading.Thread):  # 继承父类threading.Thread
     def run(self):  # 把要执行的代码写到run函数里面 线程在创建后会直接运行run函数
         print "Starting " + self.name
         # 定时300秒 执行一次
-        timerAnalys(self.name, 300, len(AllBeginTimes))
+        timerAnalys(self.name, 60, len(AllBeginTimes))
         print "Exiting " + self.name
 
 
@@ -140,15 +140,19 @@ def timerAnalys(threadName, delay, counter):
     global AllBeginTimes
     global AllGames
     global exitflag
-    while counter:
+    while exitflag:
 
         now = datetime.now()
         nowstr = now.strftime('%Y-%m-%d %H:%M')
+        if nowstr == '2017-09-10 22:08':
+            nowstr = '2017-09-10 22:00'
         print nowstr
         if nowstr in AllBeginTimes:
-            if AllBeginTimes.index(nowstr) == AllBeginTimes.count() - 1:
-                exitflag = 1
+            # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
+                # exitflag = 1
+                # pass
             print nowstr
+            counter -= 1
             resultstr = ''
             for game in AllGames:
                 if isinstance(game, FootballGame):
@@ -162,13 +166,17 @@ def timerAnalys(threadName, delay, counter):
                 send_mail('临场分析', resultstr)
 
         time.sleep(delay)
+        if counter == 0:
+            exitflag = 0
         print "%s: %s" % (threadName, time.ctime(time.time()))
-        counter -= 1
 
-        if exitflag:
-            threading.Thread.exit()
 
-getTodaySoccer(3)
 
-thread1 = TimeingThread(1, "实时分析", 1)
-thread1.start()
+if sys.argv.__len__()==1:
+    sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
+
+if __name__ == '__main__':
+    # getTodaySoccer(sys.argv[1])
+    getTodaySoccer(3)
+    thread1 = TimeingThread(1, "实时分析", 1)
+    thread1.start()

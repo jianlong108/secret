@@ -12,11 +12,12 @@ sys.setdefaultencoding('utf8')
 
 location = os.path.expanduser('~/Desktop/Soccer.db')
 
-global conn
-global c
+conn = sqlite3.connect(location)
+c = conn.cursor()
 
 def create_database():
-
+    global conn
+    global c
     # 连接到SQLite数据库
     # 数据库文件是test.db
     # 如果文件不存在，会自动在当前目录创建:
@@ -59,8 +60,11 @@ def create_database():
 插入一个联赛 数据
 '''
 def insert_League(league):
-    conn = sqlite3.connect(location)
+    global conn
+    global c
+    # conn = sqlite3.connect(location)
     c = conn.cursor()
+
     params = (league.leagueID, league.leagueName.decode('utf-8'), league.breifLeagueName.decode('utf-8'), league.aviableSeasonStr.decode('utf-8'))
     c.execute("INSERT INTO League VALUES (NULL ,?,?,?,?)", params)
     # c.execute(sql)
@@ -72,8 +76,11 @@ def insert_League(league):
 插入一条 比赛 数据
 '''
 def insert_Game(game):
+    global conn
+    global c
     conn = sqlite3.connect(location)
     c = conn.cursor()
+
     params = (game.soccerID, game.leauge, game.beginTime, game.soccer, game.homeTeamLevel, game.homeTeam,
               game.allHome, game.friendTeamLevel, game.friendTeam, game.allFriend)
     c.execute("INSERT INTO Games VALUES (NULL ,?,?,?,?,?,?,?,?,?,?)", params)
@@ -86,6 +93,9 @@ def insert_Game(game):
 插入比赛列表
 '''
 def insertGameList(games):
+    global conn
+    global c
+
     conn = sqlite3.connect(location)
     c = conn.cursor()
 
@@ -127,6 +137,9 @@ def insertGameList(games):
 插入多条欧赔数据
 '''
 def insertGameHandiList(games):
+    global conn
+    global c
+
     conn = sqlite3.connect(location)
     c = conn.cursor()
 
@@ -142,6 +155,9 @@ def insertGameHandiList(games):
 插入多条欧赔数据
 '''
 def insertGameODDList(games):
+    global conn
+    global c
+
     conn = sqlite3.connect(location)
     c = conn.cursor()
 
@@ -156,6 +172,9 @@ def insertGameODDList(games):
 
 
 def insert_record(params):
+    global conn
+    global c
+
     conn = sqlite3.connect(location)
     c = conn.cursor()
     # sql = 'insert into ' + table_name + '(num, league,soccer,gameurl,otodds,orignalpan,ododds,ntodds,nowpan,ndodds) values (NULL,%s,%s,%s,%s,%s,%s,%s,%s,%s)'%(game.leauge,game.soccer,game.url,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
@@ -171,8 +190,12 @@ def insert_record(params):
 插入单条亚盘数据
 '''
 def insert_Handi(company):
+    global conn
+    global c
+
     conn = sqlite3.connect(location)
     c = conn.cursor()
+
     params = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer, company.companyTitle,
               company.orignal_top, company.orignal, company.orignal_bottom, company.now_top, company.now,
               company.now_bottom)
@@ -186,8 +209,12 @@ def insert_Handi(company):
 插入单条欧赔数据
 '''
 def insert_ODD(company):
+    global conn
+    global c
+
     conn = sqlite3.connect(location)
     c = conn.cursor()
+
     params = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer, company.companyTitle,
               company.orignal_winOdd, company.orignal_drawOdd,
               company.orignal_loseOdd, company.winOdd, company.drawOdd, company.loseOdd)
@@ -205,9 +232,11 @@ def getGameData(game):
 
     contentstr = ''
 
+    global conn
+    global c
+
     conn = sqlite3.connect(location)
     c = conn.cursor()
-
 
     # 将比赛开始时间 对阵双方信息 录入
     contentstr = contentstr.join([str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ', str(game.soccerID)])
@@ -405,6 +434,9 @@ def switchODDData(num):
 根据联赛id 获取联赛对应的详细信息
 '''
 def getLeagueDetail(tempLeagueID):
+    global conn
+    global c
+
     conn = sqlite3.connect(location)
     c = conn.cursor()
 

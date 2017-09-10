@@ -183,8 +183,3 @@ def getTodaySoccer(type):
 # if __name__ == '__main__':
 #     getTodaySoccer(sys.argv[1])
 getTodaySoccer(3)
-
-
-
-
-# getexchange(1255863)
