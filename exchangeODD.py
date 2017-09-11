@@ -47,11 +47,11 @@ def getexchange(soccerid=0):
             colorResultStr += ' '
             colorResultStr += unitStrList[7]
             colorResultStr += ' 实际: '
-            colorResultStr += unitStrList[8]
-            colorResultStr += ' '
             colorResultStr += unitStrList[9]
             colorResultStr += ' '
             colorResultStr += unitStrList[10]
+            colorResultStr += ' '
+            colorResultStr += unitStrList[11]
             colorResultStr += ' '
             colorResultStr += '\n'
             try:
@@ -84,4 +84,4 @@ def getexchange(soccerid=0):
 # if __name__ == '__main__':
 #     getexchange(sys.argv[1])
 
-getexchange(1401828)
+# getexchange(1401828)
