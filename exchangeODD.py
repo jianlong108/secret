@@ -40,7 +40,20 @@ def getexchange(soccerid=0):
 
             oneCompany.companyTitle = unitStrList[0]
             colorResultStr += unitStrList[0]
+            colorResultStr += ' 转换后: '
+            colorResultStr += unitStrList[5]
             colorResultStr += ' '
+            colorResultStr += unitStrList[6]
+            colorResultStr += ' '
+            colorResultStr += unitStrList[7]
+            colorResultStr += ' 实际: '
+            colorResultStr += unitStrList[8]
+            colorResultStr += ' '
+            colorResultStr += unitStrList[9]
+            colorResultStr += ' '
+            colorResultStr += unitStrList[10]
+            colorResultStr += ' '
+            colorResultStr += '\n'
             try:
                 # 胜平负
                 oneCompany.winOdd = float(unitStrList[1])
@@ -54,21 +67,6 @@ def getexchange(soccerid=0):
                 oneCompany.now_top = float(unitStrList[8])
                 # oneCompany.now_Handicap = switchHandicap(unitStrList[9])
                 oneCompany.now_top = float(unitStrList[10])
-                colorResultStr += unitStrList[5]
-                colorResultStr += ' '
-                colorResultStr += unitStrList[6]
-                colorResultStr += ' '
-                colorResultStr += unitStrList[7]
-                colorResultStr += ' '
-                colorResultStr += unitStrList[8]
-                colorResultStr += ' '
-                colorResultStr += unitStrList[9]
-                colorResultStr += ' '
-                colorResultStr += unitStrList[10]
-                colorResultStr += ' '
-                colorResultStr += '\n'
-
-
 
             except BaseException as e:
                 print e
@@ -86,4 +84,4 @@ def getexchange(soccerid=0):
 # if __name__ == '__main__':
 #     getexchange(sys.argv[1])
 
-# getexchange(1401828)
+getexchange(1401828)
