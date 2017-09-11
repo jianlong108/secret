@@ -13,6 +13,11 @@ class BetCompany:
         self.orignal_top = 0.0
         self.orignal_bottom = 0.0
         self.orignal_Handicap = 0.0
+
+        self.exchange_top = 0.0
+        self.exchange_bottom = 0.0
+        self.exchange_Handicap = 0.0
+
         self.now_top = 0.0
         self.now_bottom = 0.0
         self.now_Handicap = 0.0

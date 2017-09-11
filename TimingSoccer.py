@@ -6,7 +6,7 @@
 '''
 
 from DBHelper import *
-
+import exchangeODD
 import threading
 from SendMail import *
 from SoccerRound import *
@@ -162,6 +162,7 @@ def timerAnalys(threadName, delay, counter):
                         game.oddCompanies = getOneGameODD(game)
                         game.handiCompanies = getOneGameHandi(game)
                         resultstr +=  getGameData(game)
+                        resultstr +=  exchangeODD.getexchange(game.soccerID)
             if resultstr != '' or resultstr is not None:
                 send_mail('临场分析', resultstr)
 
