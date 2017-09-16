@@ -144,8 +144,8 @@ def timerAnalys(threadName, delay, counter):
 
         now = datetime.now()
         nowstr = now.strftime('%Y-%m-%d %H:%M')
-        if nowstr == '2017-09-10 22:08':
-            nowstr = '2017-09-10 22:00'
+        if nowstr == '2017-09-16 13:30':
+            nowstr = '2017-09-16 13:00'
         print nowstr
         if nowstr in AllBeginTimes:
             # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
@@ -163,6 +163,8 @@ def timerAnalys(threadName, delay, counter):
                         game.handiCompanies = getOneGameHandi(game)
                         resultstr +=  getGameData(game)
                         resultstr +=  exchangeODD.getexchange(game.soccerID)
+                        resultstr += '\n'
+                        resultstr += '\n'
             if resultstr != '' or resultstr is not None:
                 send_mail('临场分析', resultstr)
 
@@ -173,8 +175,8 @@ def timerAnalys(threadName, delay, counter):
 
 
 
-if sys.argv.__len__()==1:
-    sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
+# if sys.argv.__len__()==1:
+#     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
 
 if __name__ == '__main__':
     # getTodaySoccer(sys.argv[1])

@@ -311,7 +311,7 @@ def getHandi(game, c):
                                str(float(draw_count) / float(num) * 100)[:5], '/100', '负',
                                str(float(lose_count) / float(num) * 100)[:5], '/100'])
 
-        if float(handi_win_count) / float(num) > 0.4 or float(handi_draw_count) / float(num) > 0.4 or float(handi_lose_count) / float(num) > 0.4:
+        if float(handi_win_count) / float(num) > 0.55 or float(handi_draw_count) / float(num) > 0.55 or float(handi_lose_count) / float(num) > 0.55:
             contentstr += tempstr_one
             contentstr += '\n'
             contentstr += tempstr_two
@@ -324,9 +324,10 @@ def getHandi(game, c):
             print '忽略' + tempstr_one
 
             print '忽略' + tempstr_two
-            contentstr += ('忽略' + tempstr_one)
-            contentstr += '\n'
-            contentstr += ('忽略' + tempstr_two)
+            # 当概率小于55%.就不通过邮件发送
+            # contentstr += ('忽略' + tempstr_one)
+            # contentstr += '\n'
+            # contentstr += ('忽略' + tempstr_two)
     else:
         print '无亚盘数据'
         contentstr = contentstr + '无亚盘数据'
@@ -371,8 +372,8 @@ def getOdd(game, c):
                            str(float(drawcount) / float(num) * 100)[:5], '/100', '负',
                            str(float(losecount) / float(num) * 100)[:5], '/100'])
 
-        if float(wincount) / float(num) > 0.4 or float(drawcount) / float(num) > 0.4 or float(losecount) / float(
-                num) > 0.4:
+        if float(wincount) / float(num) > 0.55 or float(drawcount) / float(num) > 0.55 or float(losecount) / float(
+                num) > 0.55:
 
             contentstr = contentstr + tempstr
 
@@ -380,7 +381,7 @@ def getOdd(game, c):
             print '\n'
         else:
             print '忽略' + tempstr
-            contentstr = contentstr + '忽略' + tempstr
+            # contentstr = contentstr + '忽略' + tempstr
     else:
         print '无欧赔数据'
         contentstr = contentstr + '无欧赔数据'
