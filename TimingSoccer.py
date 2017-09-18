@@ -82,7 +82,7 @@ def getTodaySoccer(type):
             oneGameArray = game.split('^')
             oneGameArray.remove('')
             onegame.soccerID = int(oneGameArray[0])
-            onegame.leauge = dic.get(oneGameArray[1].encode('utf-8'))
+            onegame.leauge = dic.get(oneGameArray[1].encode('utf-8')).encode('utf-8')
             beginTime = oneGameArray[3].encode('utf-8')
             onegame.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[
                                                                                                      8:10] + ':' + beginTime[
@@ -108,7 +108,7 @@ def getgame(game):
     print '开始分析比赛'
     getOneGameODD(game)
     getOneGameHandi(game)
-    getGameData(game)
+    getHandiProbability(game)
 
 class gameThread(threading.Thread):
     def __init__(self, threadID, name, game):
@@ -161,7 +161,8 @@ def timerAnalys(threadName, delay, counter):
                         # gameThread(2, '比赛线程', game)
                         game.oddCompanies = getOneGameODD(game)
                         game.handiCompanies = getOneGameHandi(game)
-                        resultstr +=  getGameData(game)
+                        resultstr +=  getHandiProbability(game)
+                        resultstr += '\n'
                         resultstr +=  exchangeODD.getexchange(game.soccerID)
                         resultstr += '\n'
                         resultstr += '\n'

@@ -8,19 +8,24 @@ from BeautifulSoupHelper import *
 '''
 class BetCompany:
     def __init__(self,title = '',src = ''):
+        self.companyID = 0
         self.soccerGameId = ''
+        self.league = ''
         self.companyTitle = ''
+
         self.orignal_top = 0.0
         self.orignal_bottom = 0.0
         self.orignal_Handicap = 0.0
 
-        self.exchange_top = 0.0
-        self.exchange_bottom = 0.0
-        self.exchange_Handicap = 0.0
 
         self.now_top = 0.0
         self.now_bottom = 0.0
         self.now_Handicap = 0.0
+
+
+        self.exchange_top = 0.0
+        self.exchange_bottom = 0.0
+        self.exchange_Handicap = 0.0
 
         self.homeWinningPercentage = ''
         self.friendWiningPercentage = ''
@@ -114,8 +119,11 @@ class FootballGame:
         self.allHome = 0
         self.allFriend = 0
 
-        self.bet365Handi = 0
-        self.bet365odd = (0,0,0)
+        self.now_aomenHandi = 0
+        self.now_aomenOdd = (0.0, 0.0, 0.0)
+
+        self.orignal_aomenHandi = 0
+        self.orignal_aomenOdd = (0.0, 0.0, 0.0)
 
 
 
@@ -130,7 +138,7 @@ class FootballGame:
 
     @property
     def winhandi(self):
-        num = self.allHome - self.allFriend -self.bet365Handi
+        num = self.allHome - self.allFriend -self.now_aomenHandi
         if num > 0:
             return '赢盘'
         elif num == 0:

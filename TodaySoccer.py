@@ -120,7 +120,7 @@ def getTodaySoccer(type):
         dic = {}
         for league in allLeague:
             oneLeague = league.split('^')
-            dic[oneLeague[1]] = oneLeague[0]
+            dic[oneLeague[1]] = oneLeague[0].encode('utf-8')
 
         gameStr = ''
         if type == 1:
@@ -135,7 +135,7 @@ def getTodaySoccer(type):
             oneGameArray = game.split('^')
             oneGameArray.remove('')
             onegame.soccerID = int(oneGameArray[0])
-            onegame.leauge = dic.get(oneGameArray[1].encode('utf-8'))
+            onegame.leauge = dic.get(oneGameArray[1])
             beginTime = oneGameArray[3].encode('utf-8')
             onegame.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[8:10] + ':' + beginTime[10:12]
 
@@ -156,11 +156,11 @@ def getTodaySoccer(type):
             onegame.oddCompanies = getOneGameODD(onegame)
             onegame.handiCompanies = getOneGameHandi(onegame)
             # templist = getexchange(onegame.soccerID)
-            tempstr = getGameData(onegame)
+            tempstr = getHandiProbability(onegame)
+            # tempstr = getGameData(onegame)
             if tempstr != None:
                 contentStr = contentStr + tempstr
                 contentStr = contentStr + '\n'
-                # contentStr = contentStr.join(templist)
             time.sleep(3)
 
         i = datetime.now()

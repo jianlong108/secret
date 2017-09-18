@@ -5,8 +5,10 @@ import sqlite3
 import os
 import math
 from decimal import Decimal
-import sys
+
 from SoccerRound import *
+from SoccerModels import *
+import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -105,15 +107,19 @@ def insertGameList(games):
         c.execute("INSERT INTO Games VALUES (NULL ,?,?,?,?,?,?,?,?,?,?)", params)
 
         handi = game.handiCompanies
-        if handi == None:
+        if handi is None:
             pass
         else:
             for company  in handi:
-                params1 = (game.soccerID, company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
-                           company.companyTitle.decode('utf-8'),
-                           company.orignal_top, company.orignal, company.orignal_bottom, company.now_top, company.now,
-                           company.now_bottom)
-                c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,? ,?,?,?,?,?,?,?,?,?,?,?)", params1)
+                if isinstance(company, BetCompany):
+                    params1 = (
+                    game.soccerID, company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
+                    company.companyTitle.decode('utf-8'),
+                    company.orignal_top, company.orignal_Handicap, company.orignal_bottom, company.now_top, company.now_Handicap,
+                    company.now_bottom)
+
+                    c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,? ,?,?,?,?,?,?,?,?,?,?,?)", params1)
+
 
 
 
@@ -134,7 +140,7 @@ def insertGameList(games):
     conn.close()
 
 '''
-插入多条欧赔数据
+插入多条亚赔数据
 '''
 def insertGameHandiList(games):
     global conn
@@ -144,8 +150,15 @@ def insertGameHandiList(games):
     c = conn.cursor()
 
     for company in games:
-        params = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,company.companyTitle,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
-        c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params)
+        if isinstance(company, BetCompany):
+            params = (
+            company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer, company.companyTitle,
+            company.orignal_top, company.orignal_Handicap, company.orignal_bottom, company.now_top, company.now_Handicap,
+            company.now_bottom)
+
+            c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params)
+
+
 
     conn.commit()
     c.close()
@@ -171,20 +184,6 @@ def insertGameODDList(games):
     conn.close()
 
 
-def insert_record(params):
-    global conn
-    global c
-
-    conn = sqlite3.connect(location)
-    c = conn.cursor()
-    # sql = 'insert into ' + table_name + '(num, league,soccer,gameurl,otodds,orignalpan,ododds,ntodds,nowpan,ndodds) values (NULL,%s,%s,%s,%s,%s,%s,%s,%s,%s)'%(game.leauge,game.soccer,game.url,company.orignal_top,company.orignal,company.orignal_bottom,company.now_top,company.now,company.now_bottom)
-
-    c.execute("INSERT INTO Soccer VALUES (NULL ,?,?,?,?,?,?,?,?,?)", params)
-    # c.execute(sql)
-    conn.commit()
-    c.close()
-    conn.close()
-
 
 '''
 插入单条亚盘数据
@@ -195,11 +194,12 @@ def insert_Handi(company):
 
     conn = sqlite3.connect(location)
     c = conn.cursor()
+    if isinstance(company, BetCompany):
+        params = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer, company.companyTitle,
+                  company.orignal_top, company.orignal_Handicap, company.orignal_bottom, company.now_top, company.now_Handicap,
+                  company.now_bottom)
+        c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params)
 
-    params = (company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer, company.companyTitle,
-              company.orignal_top, company.orignal, company.orignal_bottom, company.now_top, company.now,
-              company.now_bottom)
-    c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?)", params)
     # c.execute(sql)
     conn.commit()
     c.close()
@@ -224,6 +224,227 @@ def insert_ODD(company):
     c.close()
     conn.close()
 
+
+def getHandiProbability(game):
+    if isinstance(game, FootballGame):
+        contentstr = ''
+        if game.handiCompanies is None:
+            return
+        global conn
+        global c
+
+        conn = sqlite3.connect(location)
+        c = conn.cursor()
+
+        # 将比赛开始时间 对阵双方信息 录入
+        titlestr = ''.join(
+            [str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ',
+             str(game.soccerID), '澳盘: ',str(game.orignal_aomenHandi), ' -> ',str(game.now_aomenHandi)])
+        contentstr += titlestr
+        print titlestr
+
+        # 总场次
+        totalcount = 0
+
+        # 亚盘 胜场数
+        handi_win_count = 0
+        win_count = 0
+        unit_handi_win_count= 0
+        unit_win_count = 0
+        # 亚盘 平场数
+        handi_draw_count = 0
+        draw_count = 0
+        unit_handi_draw_count= 0
+        unit_draw_count = 0
+
+        # 亚盘 输场数
+        handi_lose_count = 0
+        lose_count = 0
+        unit_handi_lose_count= 0
+        unit_lose_count = 0
+        for oneCompany in game.handiCompanies:
+            if isinstance(oneCompany ,BetCompany):
+                c.execute("SELECT * FROM Games WHERE soccerID IN "
+                          "(select soccerID from CompanyHandicap where company == ? and orignalpan == ? "
+                          "and otodds == ? and ododds >= ? ) AND league == ?",
+                          (oneCompany.companyTitle.decode('utf-8'), oneCompany.orignal_Handicap, oneCompany.orignal_top,
+                           oneCompany.orignal_bottom, game.leauge.decode('utf-8')))
+                r = c.fetchall()
+                totalcount += len(r)
+                unit_totalcount = len(r)
+                for result in r:
+                    if result[4] == 3:
+                        win_count += 1
+                        unit_win_count += 1
+                    elif result[4] == 1:
+                        draw_count += 1
+                        unit_draw_count += 1
+                    else:
+                        lose_count += 1
+                        unit_lose_count += 1
+
+                    offset = int(result[7]) - int(result[10]) - float(oneCompany.orignal_Handicap)
+                    if offset > 0.0:
+                        handi_win_count += 1
+                        unit_handi_win_count += 1
+                    elif offset == 0.0:
+                        handi_draw_count += 1
+                        unit_handi_draw_count += 1
+                    else:
+                        handi_lose_count += 1
+                        unit_handi_lose_count += 1
+
+                if unit_totalcount > 0:
+                    unit_str_handi = ''.join(
+                        [oneCompany.companyTitle, ': ', str(oneCompany.orignal_Handicap), ' 总数: ',
+                         str(unit_totalcount), '赢盘: ',
+                         str(float(unit_handi_win_count) / float(unit_totalcount) * 100)[:5], ' 走盘:',
+                         str(float(unit_handi_draw_count) / float(unit_totalcount) * 100)[:5], '输盘',
+                         str(float(unit_handi_lose_count) / float(unit_totalcount) * 100)[:5], ])
+                    unit_str = ''.join(
+                        ['胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
+                         str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
+                         str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
+                    contentstr += '\n'
+                    contentstr += unit_str_handi
+                    contentstr += unit_str
+                    print unit_str_handi
+                    print unit_str
+
+                unit_handi_win_count = 0
+                unit_win_count = 0
+                unit_handi_draw_count = 0
+                unit_draw_count = 0
+                unit_handi_lose_count = 0
+                unit_lose_count = 0
+
+        if totalcount == 0:
+            return
+        tempstr_one = ''.join(['初盘概率 ->', '总数: ', str(totalcount), '  赢盘: ',
+                               str(float(handi_win_count) / float(totalcount) * 100)[:5], ' 走盘:',
+                               str(float(handi_draw_count) / float(totalcount) * 100)[:5], '输盘',
+                               str(float(handi_lose_count) / float(totalcount) * 100)[:5], ])
+        tempstr_two = ''.join(
+            ['胜: ', str(float(win_count) / float(totalcount) * 100)[:5], '/100', ' 平:',
+             str(float(draw_count) / float(totalcount) * 100)[:5], '/100', '负',
+             str(float(lose_count) / float(totalcount) * 100)[:5], '/100'])
+        contentstr += '\n'
+        contentstr += tempstr_two
+        contentstr += tempstr_one
+        contentstr += '\n'
+        print tempstr_one
+        print tempstr_two
+    else:
+        pass
+    contentstr += getnowHandiProbability( game)
+    return contentstr
+
+def getnowHandiProbability(game):
+    contentstr = ''
+    if isinstance(game, FootballGame):
+        if game.handiCompanies is None:
+            return contentstr
+        global conn
+        global c
+
+        conn = sqlite3.connect(location)
+        c = conn.cursor()
+
+        # 总场次
+        totalcount = 0
+
+        # 亚盘 胜场数
+        handi_win_count = 0
+        win_count = 0
+        unit_handi_win_count= 0
+        unit_win_count = 0
+        # 亚盘 平场数
+        handi_draw_count = 0
+        draw_count = 0
+        unit_handi_draw_count= 0
+        unit_draw_count = 0
+
+        # 亚盘 输场数
+        handi_lose_count = 0
+        lose_count = 0
+        unit_handi_lose_count= 0
+        unit_lose_count = 0
+        for oneCompany in game.handiCompanies:
+            if isinstance(oneCompany ,BetCompany):
+                c.execute("SELECT * FROM Games WHERE soccerID IN "
+                          "(select soccerID from CompanyHandicap where company == ? and nowpan == ? "
+                          "and ntodds == ? and ndodds >= ? ) AND league == ?",
+                          (oneCompany.companyTitle.decode('utf-8'), oneCompany.now_Handicap, oneCompany.now_top,
+                           oneCompany.now_bottom, game.leauge.decode('utf-8')))
+                r = c.fetchall()
+                totalcount += len(r)
+                unit_totalcount = len(r)
+                for result in r:
+                    if result[4] == 3:
+                        win_count += 1
+                        unit_win_count += 1
+                    elif result[4] == 1:
+                        draw_count += 1
+                        unit_draw_count += 1
+                    else:
+                        lose_count += 1
+                        unit_lose_count += 1
+
+                    offset = int(result[7]) - int(result[10]) - float(oneCompany.now_Handicap)
+                    if offset > 0.0:
+                        handi_win_count += 1
+                        unit_handi_win_count += 1
+                    elif offset == 0.0:
+                        handi_draw_count += 1
+                        unit_handi_draw_count += 1
+                    else:
+                        handi_lose_count += 1
+                        unit_handi_lose_count += 1
+
+                if unit_totalcount > 0:
+                    unit_str_handi = ''.join(
+                        [oneCompany.companyTitle, ': ', str(oneCompany.now_Handicap), ' 总数: ',
+                         str(unit_totalcount), '赢盘: ',
+                         str(float(unit_handi_win_count) / float(unit_totalcount) * 100)[:5], ' 走盘:',
+                         str(float(unit_handi_draw_count) / float(unit_totalcount) * 100)[:5], '输盘',
+                         str(float(unit_handi_lose_count) / float(unit_totalcount) * 100)[:5], ])
+                    unit_str = ''.join(
+                        ['胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
+                         str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
+                         str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
+                    contentstr += '\n'
+                    contentstr += unit_str
+                    contentstr += unit_str_handi
+                    contentstr += '\n'
+                    print unit_str_handi
+                    print unit_str
+
+                unit_handi_win_count = 0
+                unit_win_count = 0
+                unit_handi_draw_count = 0
+                unit_draw_count = 0
+                unit_handi_lose_count = 0
+                unit_lose_count = 0
+
+        if totalcount == 0:
+            return contentstr
+        tempstr_one = ''.join(['终盘概率 ->', '总数: ', str(totalcount), '赢盘: ',
+                               str(float(handi_win_count) / float(totalcount) * 100)[:5], ' 走盘:',
+                               str(float(handi_draw_count) / float(totalcount) * 100)[:5], '输盘',
+                               str(float(handi_lose_count) / float(totalcount) * 100)[:5], ])
+        tempstr_two = ''.join(
+            ['胜: ', str(float(win_count) / float(totalcount) * 100)[:5], '/100', ' 平:',
+             str(float(draw_count) / float(totalcount) * 100)[:5], '/100', '负',
+             str(float(lose_count) / float(totalcount) * 100)[:5], '/100'])
+        contentstr += '\n'
+        contentstr += tempstr_two
+        contentstr += tempstr_one
+        contentstr += '\n'
+        print tempstr_one
+        print tempstr_two
+    else:
+        pass
+    return contentstr
 
 '''
 分析一场比赛的数据
@@ -281,30 +502,41 @@ def getHandi(game, c):
     lose_count = 0
 
     for oneCompany in game.handiCompanies:
-        c.execute("SELECT * FROM Games WHERE soccerID IN (select soccerID from CompanyHandicap where company == ? and orignalpan == ? and nowpan == ? and ntodds >= ? and ntodds < ? and ndodds >= ? and ndodds < ? AND otodds >= ? AND otodds < ? AND ododds >= ? AND ododds < ?)", (oneCompany.companyTitle.decode('utf-8'), oneCompany.orignal, oneCompany.now, switchData(oneCompany.now_bottom)[0], switchData(oneCompany.now_bottom)[1], switchData(oneCompany.now_top)[0], switchData(oneCompany.now_top)[1], switchData(oneCompany.orignal_top)[0], switchData(oneCompany.orignal_top)[1], switchData(oneCompany.orignal_bottom)[0], switchData(oneCompany.orignal_bottom)[1]))
-        r = c.fetchall()
-        num += len(r)
-        for result in r:
-            allHandiGames.append(result)
-            if result[4] == 3:
-                win_count += 1
-            elif result[4] == 1:
-                draw_count += 1
-            else:
-                lose_count += 1
+        if isinstance(oneCompany, BetCompany):
+            c.execute("SELECT * FROM Games WHERE soccerID IN "
+                      "(select soccerID from CompanyHandicap where company == ? and orignalpan == ? "
+                      "and nowpan == ? and ntodds >= ? and ntodds < ? and ndodds >= ? and ndodds < ? AND otodds >= ? "
+                      "AND otodds < ? AND ododds >= ? AND ododds < ?) AND league == ?",
+                      (oneCompany.companyTitle.decode('utf-8'), oneCompany.orignal_Handicap, oneCompany.now_Handicap,
+                       switchData(oneCompany.now_bottom)[0],
+                       switchData(oneCompany.now_bottom)[1], switchData(oneCompany.now_top)[0],
+                       switchData(oneCompany.now_top)[1], switchData(oneCompany.orignal_top)[0],
+                       switchData(oneCompany.orignal_top)[1], switchData(oneCompany.orignal_bottom)[0],
+                       switchData(oneCompany.orignal_bottom)[1], game.leauge.decode('utf-8')))
+            r = c.fetchall()
+            num += len(r)
+            for result in r:
+                allHandiGames.append(result)
+                if result[4] == 3:
+                    win_count += 1
+                elif result[4] == 1:
+                    draw_count += 1
+                else:
+                    lose_count += 1
 
-            if int(result[7]) - int(result[10]) - float(oneCompany.now) > 0.0:
-                handi_win_count += 1
-            elif int(result[7]) - int(result[10]) - float(oneCompany.now) == 0.0:
-                handi_draw_count += 1
-            else:
-                handi_lose_count += 1
+                if int(result[7]) - int(result[10]) - float(oneCompany.now_Handicap) > 0.0:
+                    handi_win_count += 1
+                elif int(result[7]) - int(result[10]) - float(oneCompany.now_Handicap) == 0.0:
+                    handi_draw_count += 1
+                else:
+                    handi_lose_count += 1
+
 
 
 
     if num > 0:
 
-        tempstr_one = ''.join(['  亚 ->',str(game.winhandi),'  盘口:',str(game.bet365Handi), '赢盘: ', str(float(handi_win_count) / float(num) * 100)[:5], '/100', ' 走盘:',
+        tempstr_one = ''.join(['  亚 ->',str(game.winhandi),'总数: ',str(num),'  盘口:',str(game.bet365Handi), '赢盘: ', str(float(handi_win_count) / float(num) * 100)[:5], '/100', ' 走盘:',
                                str(float(handi_draw_count) / float(num) * 100)[:5], '/100', '输盘',
                                str(float(handi_lose_count) / float(num) * 100)[:5], '/100  '])
         tempstr_two = ''.join(['  亚: ', str(game.soccer),'胜: ', str(float(win_count) / float(num) * 100)[:5], '/100', ' 平:',
@@ -348,13 +580,17 @@ def getOdd(game, c):
 
     for oneOdd in game.oddCompanies:
         c.execute(
-            "SELECT * FROM Games WHERE soccerID IN (select soccerID from CompanyODD where company == ? and ori_winODD >= ? and ori_winODD <= ? and ori_drawODD >= ? and ori_drawODD <= ? and ori_loseODD >= ? and ori_loseODD <= ? and winODD >= ? and winODD <= ? AND drawODD >= ? and drawODD <= ? AND loseODD >= ? and loseODD <= ?)",
+            "SELECT * FROM Games WHERE soccerID IN "
+            "(select soccerID from CompanyODD where company == ? and ori_winODD >= ? and ori_winODD <= ? "
+            "and ori_drawODD >= ? and ori_drawODD <= ? and ori_loseODD >= ? and ori_loseODD <= ? "
+            "and winODD >= ? and winODD <= ? AND drawODD >= ? and drawODD <= ? AND loseODD >= ? "
+            "and loseODD <= ?) AND league == ?",
             (oneOdd.companyTitle.decode('utf-8'), switchODDData(oneOdd.orignal_winOdd)[0],
              switchODDData(oneOdd.orignal_winOdd)[1], switchODDData(oneOdd.orignal_drawOdd)[0],
              switchODDData(oneOdd.orignal_drawOdd)[1], switchODDData(oneOdd.orignal_loseOdd)[0],
              switchODDData(oneOdd.orignal_loseOdd)[1], switchODDData(oneOdd.winOdd)[0], switchODDData(oneOdd.winOdd)[1],
              switchODDData(oneOdd.drawOdd)[0], switchODDData(oneOdd.drawOdd)[1], switchODDData(oneOdd.loseOdd)[0],
-             switchODDData(oneOdd.loseOdd)[1])
+             switchODDData(oneOdd.loseOdd)[1],game.leauge.decode('utf-8'))
         )
         r = c.fetchall()
         num += len(r)
@@ -368,7 +604,7 @@ def getOdd(game, c):
                 losecount += 1
 
     if num > 0:
-        tempstr = ''.join(['  欧: ', '胜: ', str(float(wincount) / float(num) * 100)[:5], '/100', ' 平:',
+        tempstr = ''.join(['  欧: ', '总数: ',str(num), '胜: ', str(float(wincount) / float(num) * 100)[:5], '/100', ' 平:',
                            str(float(drawcount) / float(num) * 100)[:5], '/100', '负',
                            str(float(losecount) / float(num) * 100)[:5], '/100'])
 

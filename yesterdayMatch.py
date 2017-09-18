@@ -137,7 +137,7 @@ def getYesterdaySoccer(timestr):
                 AllGames.append(onegame)
                 onegame.oddCompanies = getOneGameODD(onegame)
                 onegame.handiCompanies = getOneGameHandi(onegame)
-                getGameData(onegame)
+                getHandiProbability(onegame)
 
             # print onegame.leauge +' ' + onegame.homeTeam +' '+ onegame.friendTeam +' '+ str(onegame.soccer)
 
@@ -151,7 +151,7 @@ def main():
     aDay = timedelta(days=-1)
     now = now + aDay
     yesterdaystr = now.strftime('%Y-%m-%d')
-    getYesterdaySoccer(yesterdaystr)
+    getYesterdaySoccer('2017-09-16')
 
 if __name__ == '__main__':
     main()

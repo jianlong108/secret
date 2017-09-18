@@ -190,33 +190,33 @@ def getOneGameHandi(game):
     c.setopt(pycurl.FOLLOWLOCATION, 1)
     c.setopt(pycurl.MAXREDIRS, 5)
     c.perform()
-    resultStr = b.getvalue().decode('utf8')
+    resultStr = b.getvalue().encode('utf-8')
 
     if resultStr != '':
         array = resultStr.split('!')
 
         companys = []
         for unit in array:
-            # print unit.decode('utf-8')
             company = BetCompany()
             company.result = game.soccer
+            company.league = game.leauge
             company.homeSoccer = game.allHome
             company.friendSoccer = game.allFriend
             company.soccerGameId = game.soccerID
             unitArray = unit.split('^')
 
-            company.companyTitle = unitArray[0].encode('utf-8')
+            company.companyTitle = unitArray[0]
+            company.companyID = int(unitArray[1])
             company.orignal_top = float(unitArray[2])
-            company.orignal = float(unitArray[3])
-
+            company.orignal_Handicap = float(unitArray[3])
             company.orignal_bottom = float(unitArray[4])
-
             company.now_top = float(unitArray[5])
-
-            company.now = float(unitArray[6])
+            company.now_Handicap = float(unitArray[6])
             company.now_bottom = float(unitArray[7])
-            if company.companyTitle in ['10BET', 'Bet365', 'SB', '澳彩', '韦德']:
-                companys.append(company)
+            if company.companyTitle == '澳门':
+                game.orignal_aomenHandi = company.orignal_Handicap
+                game.now_aomenHandi = company.now_Handicap
+            companys.append(company)
 
         return companys
     else:
@@ -252,6 +252,7 @@ def getOneGameODD(game):
         for unit in array:
             # print unit.decode('utf-8')
             company = BetCompany()
+            company.league = game.leauge;
             company.result = game.soccer
             company.homeSoccer = game.allHome
             company.friendSoccer = game.allFriend
@@ -270,6 +271,9 @@ def getOneGameODD(game):
             company.loseOdd = float(unitArray[7])
             if company.companyTitle in ['竞彩官方', '10BET', 'bet 365', 'bwin', 'Interwetten', 'SB', '澳门', '立博', '威廉希尔', '香港马会', '伟德']:
                 companys.append(company)
+                if company.companyTitle == '澳门':
+                    game.orignal_aomenOdd = (company.orignal_winOdd, company.orignal_drawOdd, company.orignal_loseOdd)
+                    game.now_aomenOdd = (company.winOdd, company.drawOdd, company.loseOdd)
 
         return companys
     else:
