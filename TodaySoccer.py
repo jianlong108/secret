@@ -156,11 +156,18 @@ def getTodaySoccer(type):
             onegame.oddCompanies = getOneGameODD(onegame)
             onegame.handiCompanies = getOneGameHandi(onegame)
             # templist = getexchange(onegame.soccerID)
-            tempstr = getHandiProbability(onegame)
+            tempHandistr = getHandiProbability(onegame)
+
             # tempstr = getGameData(onegame)
-            if tempstr != None:
-                contentStr = contentStr + tempstr
-                contentStr = contentStr + '\n'
+            if tempHandistr is not None:
+                contentStr += tempHandistr
+                contentStr += '\n'
+
+            tempOddstr = getOrignalODDProbability(onegame)
+            if tempOddstr is not None:
+                contentStr += tempOddstr
+                contentStr += '\n'
+
             time.sleep(3)
 
         i = datetime.now()

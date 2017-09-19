@@ -224,6 +224,168 @@ def insert_ODD(company):
     c.close()
     conn.close()
 
+def getOrignalODDProbability(game):
+    if isinstance(game, FootballGame):
+        contentstr = ''
+        if game.oddCompanies is None:
+            return
+        global conn
+        global c
+
+        conn = sqlite3.connect(location)
+        c = conn.cursor()
+
+        # 将比赛开始时间 对阵双方信息 录入
+        titlestr = ''.join(
+            [str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ',
+             str(game.soccerID)])
+        contentstr += titlestr
+        print titlestr
+
+        # 总场次
+        totalcount = 0
+
+        # 欧赔 胜场数
+        win_count = 0
+        unit_win_count = 0
+        # 欧赔 平场数
+        draw_count = 0
+        unit_draw_count = 0
+
+        # 欧赔 输场数
+        lose_count = 0
+        unit_lose_count = 0
+        for oneCompany in game.oddCompanies:
+            if isinstance(oneCompany ,BetCompany):
+                c.execute("SELECT * FROM Games WHERE soccerID IN "
+                          "(select soccerID from CompanyODD where company == ? and ori_winODD == ? "
+                          "and ori_drawODD == ? and ori_loseODD >= ? ) AND league == ?",
+                          (oneCompany.companyTitle.decode('utf-8'), oneCompany.orignal_winOdd, oneCompany.orignal_drawOdd,
+                           oneCompany.orignal_loseOdd, game.leauge.decode('utf-8')))
+                r = c.fetchall()
+                totalcount += len(r)
+                unit_totalcount = len(r)
+                for result in r:
+                    if result[4] == 3:
+                        win_count += 1
+                        unit_win_count += 1
+                    elif result[4] == 1:
+                        draw_count += 1
+                        unit_draw_count += 1
+                    else:
+                        lose_count += 1
+                        unit_lose_count += 1
+
+
+                if unit_totalcount > 0:
+
+                    unit_str = ''.join(
+                        [oneCompany.companyTitle, ' 总数:',str(unit_totalcount) , ' 胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
+                         str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
+                         str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
+                    contentstr += '\n'
+                    contentstr += unit_str
+                    print unit_str
+                    print '\n'
+
+                unit_win_count = 0
+                unit_draw_count = 0
+                unit_lose_count = 0
+
+        if totalcount == 0:
+            return
+        tempstr_two = ''.join(
+            ['胜: ', str(float(win_count) / float(totalcount) * 100)[:5], '/100', ' 平:',
+             str(float(draw_count) / float(totalcount) * 100)[:5], '/100', '负',
+             str(float(lose_count) / float(totalcount) * 100)[:5], '/100'])
+        contentstr += '\n'
+        contentstr += tempstr_two
+        contentstr += '\n'
+        print tempstr_two
+    else:
+        pass
+    return contentstr
+def getnowODDProbability(game):
+    if isinstance(game, FootballGame):
+        contentstr = ''
+        if game.oddCompanies is None:
+            return
+        global conn
+        global c
+
+        conn = sqlite3.connect(location)
+        c = conn.cursor()
+
+        # 将比赛开始时间 对阵双方信息 录入
+        titlestr = ''.join(
+            [str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ',
+             str(game.soccerID)])
+        contentstr += titlestr
+        print titlestr
+
+        # 总场次
+        totalcount = 0
+
+        # 欧赔 胜场数
+        win_count = 0
+        unit_win_count = 0
+        # 欧赔 平场数
+        draw_count = 0
+        unit_draw_count = 0
+
+        # 欧赔 输场数
+        lose_count = 0
+        unit_lose_count = 0
+        for oneCompany in game.oddCompanies:
+            if isinstance(oneCompany ,BetCompany):
+                c.execute("SELECT * FROM Games WHERE soccerID IN "
+                          "(select soccerID from CompanyODD where company == ? and winODD == ? "
+                          "and drawODD == ? and loseODD >= ? ) AND league == ?",
+                          (oneCompany.companyTitle.decode('utf-8'), oneCompany.winOdd, oneCompany.drawOdd,
+                           oneCompany.loseOdd, game.leauge.decode('utf-8')))
+                r = c.fetchall()
+                totalcount += len(r)
+                unit_totalcount = len(r)
+                for result in r:
+                    if result[4] == 3:
+                        win_count += 1
+                        unit_win_count += 1
+                    elif result[4] == 1:
+                        draw_count += 1
+                        unit_draw_count += 1
+                    else:
+                        lose_count += 1
+                        unit_lose_count += 1
+
+
+                if unit_totalcount > 0:
+
+                    unit_str = ''.join(
+                        [oneCompany.companyTitle, ' 总数:',str(unit_totalcount) , ' 胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
+                         str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
+                         str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
+                    # contentstr += '\n'
+                    # contentstr += unit_str
+                    # print unit_str
+                    # print '\n'
+
+                unit_win_count = 0
+                unit_draw_count = 0
+                unit_lose_count = 0
+
+        if totalcount == 0:
+            return
+        tempstr_two = ''.join(
+            [str(totalcount), '胜: ', str(float(win_count) / float(totalcount) * 100)[:5], '/100', ' 平:',
+             str(float(draw_count) / float(totalcount) * 100)[:5], '/100', '负',
+             str(float(lose_count) / float(totalcount) * 100)[:5], '/100'])
+        contentstr += '\n'
+        contentstr += tempstr_two
+        contentstr += '\n'
+        print tempstr_two
+    else:
+        pass
+    return contentstr
 
 def getHandiProbability(game):
     if isinstance(game, FootballGame):
@@ -336,7 +498,7 @@ def getHandiProbability(game):
         print tempstr_two
     else:
         pass
-    contentstr += getnowHandiProbability( game)
+    # contentstr += getnowHandiProbability( game)
     return contentstr
 
 def getnowHandiProbability(game):
@@ -412,12 +574,13 @@ def getnowHandiProbability(game):
                         ['胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
                          str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
                          str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
-                    contentstr += '\n'
-                    contentstr += unit_str
-                    contentstr += unit_str_handi
-                    contentstr += '\n'
-                    print unit_str_handi
-                    print unit_str
+                    # contentstr += '\n'
+                    # contentstr += unit_str
+                    # contentstr += unit_str_handi
+                    # contentstr += '\n'
+                    # print unit_str_handi
+                    # print unit_str
+                    # print '\n'
 
                 unit_handi_win_count = 0
                 unit_win_count = 0
@@ -442,6 +605,7 @@ def getnowHandiProbability(game):
         contentstr += '\n'
         print tempstr_one
         print tempstr_two
+        print '\n'
     else:
         pass
     return contentstr

@@ -151,7 +151,7 @@ def main():
     aDay = timedelta(days=-1)
     now = now + aDay
     yesterdaystr = now.strftime('%Y-%m-%d')
-    getYesterdaySoccer('2017-09-16')
+    getYesterdaySoccer(yesterdaystr)
 
 if __name__ == '__main__':
     main()

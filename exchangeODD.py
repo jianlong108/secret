@@ -69,7 +69,7 @@ def getexchange(soccerid=0):
                 oneCompany.now_top = float(unitStrList[10])
 
             except BaseException as e:
-                print e
+                pass
             else:
                 companieslist.append(oneCompany)
 

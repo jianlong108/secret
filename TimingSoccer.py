@@ -144,8 +144,8 @@ def timerAnalys(threadName, delay, counter):
 
         now = datetime.now()
         nowstr = now.strftime('%Y-%m-%d %H:%M')
-        if nowstr == '2017-09-16 13:30':
-            nowstr = '2017-09-16 13:00'
+        if nowstr == '2017-09-20 00:39':
+            nowstr = '2017-09-20 00:30'
         print nowstr
         if nowstr in AllBeginTimes:
             # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
@@ -161,8 +161,17 @@ def timerAnalys(threadName, delay, counter):
                         # gameThread(2, '比赛线程', game)
                         game.oddCompanies = getOneGameODD(game)
                         game.handiCompanies = getOneGameHandi(game)
-                        resultstr +=  getHandiProbability(game)
+                        nowOddStr = getnowODDProbability(game)
+                        nowHandistr = getnowHandiProbability(game)
+                        if nowHandistr is not None:
+                            resultstr += nowHandistr
+
                         resultstr += '\n'
+
+                        if nowOddStr is not None:
+                            resultstr += nowOddStr
+
+
                         resultstr +=  exchangeODD.getexchange(game.soccerID)
                         resultstr += '\n'
                         resultstr += '\n'
