@@ -162,9 +162,6 @@ class GetCup:
                 pass
 
 
-
-
-
 class GetLeague:
     def __init__(self, model):
         if isinstance(model, League):
@@ -329,13 +326,13 @@ class GetLeague:
             self.getAllData()
 
 if __name__ == '__main__':
-    leagueArray = getLeagueDetail(17)
+    leagueArray = getLeagueDetail(15)
     leagueModel = League()
-    if leagueArray != None:
+    if leagueArray is not None:
         leagueModel.leagueID = leagueArray[1]
-        leagueModel.leagueName = leagueArray[2]
-        leagueModel.breifLeagueName = leagueArray[3]
-        leagueModel.aviableSeasonStr = leagueArray[4]
+        leagueModel.leagueName = leagueArray[2].encode('utf-8')
+        leagueModel.breifLeagueName = leagueArray[3].encode('utf-8')
+        leagueModel.aviableSeasonStr = leagueArray[4].encode('utf-8')
         leagueModel.creatSeasonList()
 
         # 杯赛去请求杯赛接口,逻辑

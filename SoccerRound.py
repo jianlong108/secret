@@ -195,30 +195,37 @@ def getOneGameHandi(game):
     if resultStr != '':
         array = resultStr.split('!')
 
-        companys = []
-        for unit in array:
-            company = BetCompany()
-            company.result = game.soccer
-            company.league = game.leauge
-            company.homeSoccer = game.allHome
-            company.friendSoccer = game.allFriend
-            company.soccerGameId = game.soccerID
-            unitArray = unit.split('^')
+        if isinstance(game, FootballGame):
+            companys = []
+            for unit in array:
+                company = BetCompany()
+                company.result = game.soccer
+                company.league = game.leauge
+                company.homeSoccer = game.allHome
+                company.friendSoccer = game.allFriend
+                company.soccerGameId = game.soccerID
+                unitArray = unit.split('^')
 
-            company.companyTitle = unitArray[0]
-            company.companyID = int(unitArray[1])
-            company.orignal_top = float(unitArray[2])
-            company.orignal_Handicap = float(unitArray[3])
-            company.orignal_bottom = float(unitArray[4])
-            company.now_top = float(unitArray[5])
-            company.now_Handicap = float(unitArray[6])
-            company.now_bottom = float(unitArray[7])
-            if company.companyTitle == '澳门':
-                game.orignal_aomenHandi = company.orignal_Handicap
-                game.now_aomenHandi = company.now_Handicap
-            companys.append(company)
+                company.companyTitle = unitArray[0]
+                company.companyID = int(unitArray[1])
+                company.orignal_top = float(unitArray[2])
+                company.orignal_Handicap = float(unitArray[3])
+                if company.orignal_Handicap not in game.orignalHandiList:
+                    game.orignalHandiList.append(company.orignal_Handicap)
+                company.orignal_bottom = float(unitArray[4])
+                company.now_top = float(unitArray[5])
+                company.now_Handicap = float(unitArray[6])
+                company.now_bottom = float(unitArray[7])
+                if company.companyTitle == '澳门':
+                    game.orignal_aomenHandi = company.orignal_Handicap
+                    game.now_aomenHandi = company.now_Handicap
+                companys.append(company)
+            return companys
+        else:
+            return []
 
-        return companys
+
+
     else:
         return []
 

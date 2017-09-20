@@ -155,18 +155,23 @@ def getTodaySoccer(type):
 
             onegame.oddCompanies = getOneGameODD(onegame)
             onegame.handiCompanies = getOneGameHandi(onegame)
-            # templist = getexchange(onegame.soccerID)
-            tempHandistr = getHandiProbability(onegame)
 
-            # tempstr = getGameData(onegame)
-            if tempHandistr is not None:
-                contentStr += tempHandistr
-                contentStr += '\n'
+            # tempHandistr = getHandiProbability(onegame)
+            contentStr = ''
+            if len(onegame.orignalHandiList) > 2:
+                contentStr += '初盘混乱\n'
+                contentStr += ''.join(
+                    [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
+                     str(onegame.soccerID)])
 
-            tempOddstr = getOrignalODDProbability(onegame)
-            if tempOddstr is not None:
-                contentStr += tempOddstr
-                contentStr += '\n'
+            # if tempHandistr is not None:
+            #     contentStr += tempHandistr
+            #     contentStr += '\n'
+            #
+            # tempOddstr = getOrignalODDProbability(onegame)
+            # if tempOddstr is not None:
+            #     contentStr += tempOddstr
+            #     contentStr += '\n'
 
             time.sleep(3)
 
@@ -189,4 +194,4 @@ def getTodaySoccer(type):
 #
 # if __name__ == '__main__':
 #     getTodaySoccer(sys.argv[1])
-getTodaySoccer(3)
+getTodaySoccer(1)

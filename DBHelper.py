@@ -4,12 +4,12 @@
 import sqlite3
 import os
 import math
-from decimal import Decimal
 
-from SoccerRound import *
 from SoccerModels import *
 import sys
+
 reload(sys)
+
 sys.setdefaultencoding('utf8')
 
 location = os.path.expanduser('~/Desktop/Soccer.db')

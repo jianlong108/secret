@@ -125,6 +125,8 @@ class FootballGame:
         self.orignal_aomenHandi = 0
         self.orignal_aomenOdd = (0.0, 0.0, 0.0)
 
+        # 初盘的种类.
+        self.orignalHandiList = []
 
 
     @property
