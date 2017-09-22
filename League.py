@@ -33,6 +33,8 @@ class GetCup:
             self.allGames = []
 
             self.GamesArray = []
+            self.finalGame = None
+            self.cupName = ''
 
         else:
             return None
@@ -41,27 +43,18 @@ class GetCup:
     def getOfficialLeague(self):
 
         for season in self.leagueModel.aviableSeasonList:
-
-            # if self.leagueModel.leagueID == 23:
-            #     if season in ['2007-2008']:
-            #         print season
-            #     else:
-            #        continue
-            # else:
-            #     print season
-
             self.currentSeason = season
             self.GamesArray = []
-            self.getCupDetails()
-            self.getAllData()
+            self.getCupDetails(season)
+            self.getAllData(season)
 
-
-    def getCupDetails(self):
+    # 获取指定赛季的详情数据
+    def getCupDetails(self,season):
 
         resultStr = ''
 
         self.orignalCupURL = 'http://ios.win007.com/phone/CupSaiCheng.aspx?ID=' + str(self.leagueModel.leagueID).encode(
-            'utf-8') + '&lang=0&Season=' + self.currentSeason
+            'utf-8') + '&lang=0&Season=' + season
         print self.orignalCupURL
         response = requests.get(self.orignalCupURL)
 
@@ -114,22 +107,24 @@ class GetCup:
             else:
                 pass
 
-    def getAllData(self):
+    # 获取指定赛季的所有数据
+    def getAllData(self,season):
         for gameDic in self.GamesArray:
             gameID = gameDic['id']
-            self.getGames(gameID)
+            self.getGames(gameID,season)
             time.sleep(1)
 
         if len(self.allGames) > 0:
             insertGameList(self.allGames)
+            self.allGames = []
 
         time.sleep(2)
 
 
-    def getGames(self, gameID):
+    def getGames(self, gameID,season):
 
         responseStr = ''
-        url = 'http://ios.win007.com/phone/CupSaiCheng.aspx?ID=' + str(self.leagueModel.leagueID) + '&lang=0&Season=' + self.currentSeason + '&GroupId=' + str(gameID)
+        url = 'http://ios.win007.com/phone/CupSaiCheng.aspx?ID=' + str(self.leagueModel.leagueID) + '&lang=0&Season=' + season + '&GroupId=' + str(gameID)
         print url
         response = requests.get(url)
         if response.ok:
@@ -161,7 +156,7 @@ class GetCup:
             else:
                 pass
 
-
+# 获取联赛数据
 class GetLeague:
     def __init__(self, model):
         if isinstance(model, League):
@@ -326,7 +321,7 @@ class GetLeague:
             self.getAllData()
 
 if __name__ == '__main__':
-    leagueArray = getLeagueDetail(15)
+    leagueArray = getLeagueDetail(84)
     leagueModel = League()
     if leagueArray is not None:
         leagueModel.leagueID = leagueArray[1]
@@ -338,10 +333,12 @@ if __name__ == '__main__':
         # 杯赛去请求杯赛接口,逻辑
         if '杯' in leagueModel.breifLeagueName:
             cup = GetCup(leagueModel)
+            cup.cupName = leagueModel.breifLeagueName
             cup.getOfficialLeague()
         #     否则全部视为联赛
         else:
             league = GetLeague(leagueModel)
+
             league.getOfficialLeague()
 
     else:

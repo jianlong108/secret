@@ -1,14 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+from SendMail import *
+from DBHelper import *
+
+import pycurl
+import StringIO
+import getHandiOrignalTime
+import SoccerRound
+import time
+
 import sys
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
-
-from SendMail import *
-from DBHelper import *
 
 
 
@@ -135,9 +141,13 @@ def getYesterdaySoccer(timestr):
                 print e
             else:
                 AllGames.append(onegame)
-                onegame.oddCompanies = getOneGameODD(onegame)
-                onegame.handiCompanies = getOneGameHandi(onegame)
+                onegame.oddCompanies = SoccerRound.getOneGameODD(onegame)
+                onegame.handiCompanies = SoccerRound.getOneGameHandi(onegame)
                 getHandiProbability(onegame)
+                flag = getHandiOrignalTime.gethandiTime(onegame.soccerID)
+                if flag:
+                    print '澳门早开'.join(
+                        [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
 
             # print onegame.leauge +' ' + onegame.homeTeam +' '+ onegame.friendTeam +' '+ str(onegame.soccer)
 

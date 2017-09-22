@@ -13,6 +13,7 @@ from SoccerRound import *
 
 import pycurl
 import StringIO
+import getHandiOrignalTime
 
 global AllGames
 global AllBeginTimes
@@ -152,18 +153,18 @@ def getTodaySoccer(type):
                 onegame.friendTeam = oneGameArray[5].encode('utf-8')
 
             AllGames.append(onegame)
-
-            onegame.oddCompanies = getOneGameODD(onegame)
-            onegame.handiCompanies = getOneGameHandi(onegame)
-
+            flag = getHandiOrignalTime.gethandiTime(onegame.soccerID)
+            if flag:
+               print ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+            # onegame.oddCompanies = getOneGameODD(onegame)
+            # onegame.handiCompanies = getOneGameHandi(onegame)
+            #
+            # if len(onegame.orignalHandiList) > 2:
+            #     contentStr += '初盘混乱\n'
+            #     contentStr += ''.join(
+            #         [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+            #
             # tempHandistr = getHandiProbability(onegame)
-            contentStr = ''
-            if len(onegame.orignalHandiList) > 2:
-                contentStr += '初盘混乱\n'
-                contentStr += ''.join(
-                    [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
-                     str(onegame.soccerID)])
-
             # if tempHandistr is not None:
             #     contentStr += tempHandistr
             #     contentStr += '\n'
@@ -184,7 +185,7 @@ def getTodaySoccer(type):
         else:
             subjectstr = '竞彩分析'
 
-        send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr)
+        # send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr)
         # if type == 1 or type == 3:
         #     runTask(anyaisegame, AllGames, AllBeginTimes)
 

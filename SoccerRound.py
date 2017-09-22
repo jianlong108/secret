@@ -39,24 +39,24 @@ def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
 
     return games
 
-def creatCupGameModelWithComplexStr(complexStr,leagueStr):
+def creatCupGameModelWithComplexStr(complexStr,leagueStr,isCup = False):
     array = complexStr.split('!')
     games = []
     for unit in array:
         print unit.decode('utf-8')
         if '$$' in unit:
             onegame = unit.split('$$')[1]
-            model = creatCupGameModel(onegame, leagueStr)
-            if model != None:
+            model = creatCupGameModel(onegame, leagueStr,isCup)
+            if model is not None:
                 games.append(model)
 
         else:
-            model = creatCupGameModel(unit, leagueStr)
-            if model != None:
+            model = creatCupGameModel(unit, leagueStr,isCup)
+            if model is not None:
                 games.append(model)
     return games
 
-def creatCupGameModel(gameStr,leagueStr):
+def creatCupGameModel(gameStr,leagueStr,isCup=False):
     print gameStr
     if isinstance(gameStr, str):
 
@@ -121,7 +121,7 @@ def creatGameModelWithComplexStr(complexStr,leagueStr):
                 games.append(model)
     return games
 
-def creatGameModel(gameStr,leagueStr):
+def creatGameModel(gameStr,leagueStr,isCup=False):
     print gameStr
     if isinstance(gameStr, str):
 
@@ -134,8 +134,6 @@ def creatGameModel(gameStr,leagueStr):
                 return creatGameModel(onestr[1], leagueStr)
             else:
                 gameArray = gameStr.split('^')
-
-                model.soccerID = int(gameArray[0])
                 beginTime = gameArray[1].encode('utf-8')
                 model.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + '-' + beginTime[
                                                                                                        8:10] + ':' + beginTime[
@@ -150,11 +148,23 @@ def creatGameModel(gameStr,leagueStr):
                 model.allFriend = int(gameArray[8])
                 model.halfHome = int(gameArray[9])
                 model.halfFriend = int(gameArray[10])
-                if gameArray[11] != '':
-                    model.homeTeamLevel = int(gameArray[11])
+                if isCup:
+                    model.soccerID = int(gameArray[11])
 
-                if gameArray[12] != '':
-                    model.friendTeamLevel = int(gameArray[12])
+                    if gameArray[13] != '':
+                        model.homeTeamLevel = int(gameArray[13])
+
+                    if gameArray[14] != '':
+                        model.friendTeamLevel = int(gameArray[14])
+                else:
+                    model.soccerID = int(gameArray[0])
+
+                    if gameArray[11] != '':
+                        model.homeTeamLevel = int(gameArray[11])
+
+                    if gameArray[12] != '':
+                        model.friendTeamLevel = int(gameArray[12])
+
 
                 time.sleep(1.5)
                 model.oddCompanies = getOneGameODD(model)
