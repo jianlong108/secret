@@ -155,24 +155,24 @@ def getTodaySoccer(type):
             AllGames.append(onegame)
             flag = getHandiOrignalTime.gethandiTime(onegame.soccerID)
             if flag:
-               print ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
-            # onegame.oddCompanies = getOneGameODD(onegame)
-            # onegame.handiCompanies = getOneGameHandi(onegame)
-            #
-            # if len(onegame.orignalHandiList) > 2:
-            #     contentStr += '初盘混乱\n'
-            #     contentStr += ''.join(
-            #         [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
-            #
-            # tempHandistr = getHandiProbability(onegame)
-            # if tempHandistr is not None:
-            #     contentStr += tempHandistr
-            #     contentStr += '\n'
-            #
-            # tempOddstr = getOrignalODDProbability(onegame)
-            # if tempOddstr is not None:
-            #     contentStr += tempOddstr
-            #     contentStr += '\n'
+               contentStr += '澳盘开盘早\n'.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+            onegame.oddCompanies = getOneGameODD(onegame)
+            onegame.handiCompanies = getOneGameHandi(onegame)
+
+            if len(onegame.orignalHandiList) > 2:
+                contentStr += '初盘混乱\n'
+                contentStr += ''.join(
+                    [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+
+            tempHandistr = getHandiProbability(onegame)
+            if tempHandistr is not None:
+                contentStr += tempHandistr
+                contentStr += '\n'
+
+            tempOddstr = getOrignalODDProbability(onegame)
+            if tempOddstr is not None:
+                contentStr += tempOddstr
+                contentStr += '\n'
 
             time.sleep(3)
 
@@ -195,4 +195,4 @@ def getTodaySoccer(type):
 #
 # if __name__ == '__main__':
 #     getTodaySoccer(sys.argv[1])
-getTodaySoccer(1)
+getTodaySoccer(3)
