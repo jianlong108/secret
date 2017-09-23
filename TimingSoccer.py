@@ -176,7 +176,7 @@ def timerAnalys(threadName, delay, counter):
                         resultstr += '\n'
                         resultstr += '\n'
             if resultstr != '' or resultstr is not None:
-                send_mail('临场分析', resultstr)
+                send_mail("%s %s" % ('临场分析',nowstr), resultstr)
 
         time.sleep(delay)
         if counter == 0:
