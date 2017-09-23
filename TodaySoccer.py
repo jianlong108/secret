@@ -183,9 +183,9 @@ def getTodaySoccer(type):
         elif type == 2:
             subjectstr = '十四场足球分析'
         else:
-            subjectstr = '竞彩分析'
+            subjectstr = '初盘分析'
 
-        # send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr)
+        send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr)
         # if type == 1 or type == 3:
         #     runTask(anyaisegame, AllGames, AllBeginTimes)
 
