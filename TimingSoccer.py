@@ -22,11 +22,11 @@ exitflag = 1
 
 
 
-def getTodaySoccer(type):
+def getTodaySoccer(type = 3):
     # type == 3 竞彩
     # type == 1 精简
     # type == 2 十四场
-    type = int(type)
+
     try:
         url = "http://27.45.161.37:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=6.2&from=2&r=" + str(
             int(time.time()))
@@ -185,11 +185,11 @@ def timerAnalys(threadName, delay, counter):
 
 
 
-# if sys.argv.__len__()==1:
-#     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
+if sys.argv.__len__()==1:
+    sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
 
 if __name__ == '__main__':
-    # getTodaySoccer(sys.argv[1])
-    getTodaySoccer(3)
+    getTodaySoccer(sys.argv[1])
+    # getTodaySoccer(3)
     thread1 = TimeingThread(1, "实时分析", 1)
     thread1.start()
