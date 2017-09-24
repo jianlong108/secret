@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time
-import requests
+# import time
+# import requests
 from DBHelper import *
 from SoccerRound import *
+import sys
 # http://112.91.160.46:8072/phone/txt/analysisheader/cn/1/25/1253496.txt?an=iosQiuTan&av=5.9&from=2&r=1490440206
 # http://112.91.160.46:8072/phone/Handicap.aspx?ID=1252358&an=iosQiuTan&av=5.9&from=2&lang=0&r=1490449083
 
@@ -36,8 +37,6 @@ class GetCup:
             self.finalGame = None
             self.cupName = ''
 
-        else:
-            return None
 
 
     def getOfficialLeague(self):
@@ -59,14 +58,13 @@ class GetCup:
         response = requests.get(self.orignalCupURL)
 
         if response.ok:
-            resultStr = response.content;
+            resultStr = response.content
         else:
             pass
 
         # 1.非顶级联赛;正在进行的赛季
         if resultStr != '':
 
-            # print  resultStr
             if '$$$$' in resultStr:
                 # 非小组赛
                 array = resultStr.split('$$$$')
@@ -176,6 +174,7 @@ class GetLeague:
             self.superLeague = True
 
             self.allGames = []
+            self.allSubLeagues = []
         else:
             return None
 
@@ -186,7 +185,6 @@ class GetLeague:
 
     def GetLeagueDetails(self):
         resultStr = ''
-
 
         self.orignalLeagueURL = 'http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=' \
                                     + str(self.leagueModel.leagueID).encode('utf-8') + '&season=' + self.currentSeason + '&subid=0&apiversion=1&from=2'
@@ -202,126 +200,107 @@ class GetLeague:
         if resultStr != '':
 
             print resultStr
+
             array = resultStr.split('$$')
-
-            if ('联赛' in array[0]) and ('附加赛' in array[0]) and ('附加赛决赛' in array[0]):
-                # 非顶级联赛 且 过往赛季
+            if '!' in array[0]:
                 leagueStr = array[0]
-                leagueArray = leagueStr.split('!')
-                officalStr = leagueArray[0]
-                self.leagueSubID = int(officalStr.split('^')[0])
-                self.countOfGounds = int(officalStr.split('^')[4])
-                self.currentGound = int(officalStr.split('^')[5])
+                subLeagueArray = leagueStr.split('!')
+                for subLeagueStr in subLeagueArray:
+                    if len(subLeagueStr) > 0:
+                        gameIDArray = subLeagueStr.split('^')
+                        newDic = {}
+                        if len(gameIDArray) > 2:
+                            newDic['id'] = gameIDArray[0]
+                            newDic['dec'] = gameIDArray[1]
+                            newDic['subdec'] = gameIDArray[2]
+                            newDic['flag'] = gameIDArray[3]
+                            newDic['count'] = gameIDArray[4]
+                            newDic['round'] = gameIDArray[5]
 
-                additionalLeagueStr = leagueArray[1]
-                additionalArray = additionalLeagueStr.split('^')
-                self.addtionalSubID = int(additionalArray[0])
-
-                finalLeagueStr = leagueArray[2]
-                finalArray = finalLeagueStr.split('^')
-                self.finalSubID = int(finalArray[0])
-
-
-
-            elif '联赛' in array[0]:
-                # 非顶级联赛 正在进行赛季
-                header = array[0]
-                print '非顶级联赛 正在进行赛季' + 'header' + header
-
-                leagueArray = header.split('^')
-                self.leagueSubID = int(leagueArray[0])
-                self.countOfGounds = int(leagueArray[4])
-                self.currentGound = int(leagueArray[5])
-
-
+                        if len(newDic) > 0:
+                            self.allSubLeagues.append(newDic)
             else:
-                # 顶级联赛
-                header = array[0]
-                print '顶级联赛' + 'header' + header
-                headerArray = header.split('^')
-                self.countOfGounds = int(headerArray[0])
-                self.currentGound = int(headerArray[1])
+                print '不包含附加赛' + 'header' + array[0]
+                gameIDArray = array[0].split('^')
+                newDic = {}
+                if len(gameIDArray) > 3:
+                    newDic['id'] = gameIDArray[0]
+                    newDic['dec'] = gameIDArray[1]
+                    newDic['subdec'] = gameIDArray[2]
+                    newDic['flag'] = gameIDArray[3]
+                    newDic['count'] = gameIDArray[4]
+                    newDic['round'] = gameIDArray[5]
+
+                else:
+                    newDic['count'] = gameIDArray[0]
+                    newDic['round'] = gameIDArray[1]
+
+                if len(newDic) > 0:
+                    self.allSubLeagues.append(newDic)
 
 
     def getAllData(self):
-        if self.finalSubID != 0:
-            self.getAddtionalFinalLeague()
-            pass
-        if self.addtionalSubID != 0:
-            pass
-            self.getAddtionalLeague()
+        for leagueDic in self.allSubLeagues:
+            leagueId = 0
+            leagueDec = ''
+            if 'id' in leagueDic:
+                leagueId = leagueDic['id']
+                leagueDec = leagueDic['dec']
+                flag = leagueDic['flag']
 
-        self.getLeagueGame()
+                countOfRound = leagueDic['count']
+                currentRound = leagueDic['round']
+            else:
+                countOfRound = leagueDic['count']
+                currentRound = leagueDic['round']
 
+            self.getLeagueGame(leagueId, int(countOfRound), int(currentRound))
 
-    def getAddtionalLeague(self):
-        games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.addtionalSubID, 0,
-                         self.currentSeason)
-        print '获取附加赛数据' + self.currentSeason + str(len(games))
-        self.allGames.extend(games)
-
-    def getAddtionalFinalLeague(self):
-
-        games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.finalSubID, 0,
-                         self.currentSeason)
-        print '获取附加赛决赛数据' + self.currentSeason + str(len(games))
-        self.allGames.extend(games)
-
-    def getLeagueGame(self):
-        while (self.currentGound <= self.countOfGounds and self.currentGound >= 1):
-            # if self.currentGound > 3:
-            #     self.currentGound -= 1
-            #     continue
-
-            games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, self.leagueSubID,
-                             self.currentGound,
+    def getLeagueGame(self, leagueSubID = 0, countRound = 0, currentRound = 0):
+        if countRound == 0 and currentRound == 0:
+            games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, leagueSubID,
+                             countRound,
                              self.currentSeason)
-
             self.allGames.extend(games)
-            print '获取正赛数据 ' + self.currentSeason +' '+str(self.currentGound) + ' '+ str(len(games))
-            self.currentGound -= 1
-            if len(self.allGames) != 0:
-                insertGameList(self.allGames)
+            return
+        else:
+            while (currentRound > 0):
 
-            # self.currentGound = self.countOfGounds
-            del self.allGames[:]
-
-            time.sleep(3)
-            if self.currentGound == 0:
-
+                games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, leagueSubID,
+                                 currentRound,
+                                 self.currentSeason)
+                self.allGames.extend(games)
+                print '获取正赛数据 ' + self.currentSeason + ' ' + str(currentRound) + ' ' + str(len(games))
+                currentRound -= 1
                 # if len(self.allGames) != 0:
                 #     insertGameList(self.allGames)
-                #
-                self.currentGound = self.countOfGounds
                 # del self.allGames[:]
-                break
-                time.sleep(10)
+
+                time.sleep(3)
+
 
     def getOfficialLeague(self):
 
         for season in self.leagueModel.aviableSeasonList:
-
-            # if self.leagueModel.leagueID == 23:
-            #     if season in ['2007-2008']:
-            #         print season
-            #     else:
-            #        continue
-            # else:
-            #     print season
-
 
 
             if season != self.currentSeason:
                 self.currentGound = self.countOfGounds
 
             self.currentSeason = season
-            print '================'
 
             self.GetLeagueDetails()
             self.getAllData()
+            self.allSubLeagues = []
+            if len(self.allGames) != 0:
+                insertGameList(self.allGames)
+            self.allGames  = []
 
-if __name__ == '__main__':
-    leagueArray = getLeagueDetail(60)
+
+def getLeagueData(leagueid = -1):
+    if leagueid < 0:
+        print '联赛id 非法'
+    leagueArray = getLeagueDetail(leagueid)
     leagueModel = League()
     if leagueArray is not None:
         leagueModel.leagueID = leagueArray[1]
@@ -338,11 +317,19 @@ if __name__ == '__main__':
         #     否则全部视为联赛
         else:
             league = GetLeague(leagueModel)
-
             league.getOfficialLeague()
 
-    else:
-        pass
+
+if sys.argv.__len__()==1:
+    sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:联赛id\n事例: python League.pyc 36\033[0m')
+
+if __name__ == '__main__':
+    leagueid = sys.argv[1]
+    getLeagueData(leagueid)
+
+
+
+
 
 
 
