@@ -387,6 +387,9 @@ def getnowODDProbability(game):
         pass
     return contentstr
 
+'''
+获取初盘的概率
+'''
 def getHandiProbability(game):
     if isinstance(game, FootballGame):
         contentstr = ''

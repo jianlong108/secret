@@ -156,6 +156,7 @@ def getTodaySoccer(type):
             flag = getHandiOrignalTime.gethandiTime(onegame.soccerID)
             if flag:
                contentStr += '澳盘开盘早\n'.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+
             onegame.oddCompanies = getOneGameODD(onegame)
             onegame.handiCompanies = getOneGameHandi(onegame)
 
