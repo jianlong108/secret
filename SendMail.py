@@ -23,14 +23,14 @@ mail_pass = "wangge108"  #163邮箱smtp生成的密码
 
 
 
-def send_mail(sub, content):
+def send_mail(sub, content,contentType = 'plain'):
     me = "足球"+"<"+mail_user+">"
     # msg = MIMEText(str(content), 'plain', 'utf-8')
     msg = MIMEMultipart('alternative')
     msg['Subject'] = sub
     msg['From'] = me
     msg['To'] = ";".join(mailto_list)
-    msg.attach(MIMEText(str(content), 'plain', 'utf-8'))
+    msg.attach(MIMEText(str(content), contentType, 'utf-8'))
     # msg.attach(MIMEText('<html><body><h1>Hello</h1></body></html>', 'html', 'utf-8'))
     try:
         server = smtplib.SMTP()
@@ -44,5 +44,6 @@ def send_mail(sub, content):
         print '发送失败 ' + str(e)
         return False
 
+contentstr = '<html><body><h1 style="color:red;">你好,世界</h1></body></html>'
 
-
+send_mail('测试',contentstr,'html')
