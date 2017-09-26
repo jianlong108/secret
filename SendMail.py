@@ -44,6 +44,6 @@ def send_mail(sub, content,contentType = 'plain'):
         print '发送失败 ' + str(e)
         return False
 
-contentstr = '<html><body><h1 style="color:red;">你好,世界</h1></body></html>'
-
-send_mail('测试',contentstr,'html')
+# contentstr = '<html><body><h1 style="color:red;">你好,世界</h1></body></html>'
+#
+# send_mail('测试',contentstr,'html')

@@ -137,7 +137,7 @@ class GetCup:
                 subGameStr = array[1]
 
                 if len(subGameStr) > 0:
-                    games = creatCupGameModelWithComplexStr(subGameStr, self.leagueModel.leagueName)
+                    games = creatCupGameModelWithComplexStr(subGameStr, self.leagueModel.breifLeagueName)
                     self.allGames.extend(games)
 
 
@@ -147,7 +147,7 @@ class GetCup:
                 array = responseStr.split('$$')
                 subGameStr = array[2]
                 if len(subGameStr) > 0:
-                    games = creatCupGameModelWithComplexStr(subGameStr, self.leagueModel.leagueName)
+                    games = creatCupGameModelWithComplexStr(subGameStr, self.leagueModel.breifLeagueName)
                     self.allGames.extend(games)
 
 
