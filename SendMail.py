@@ -52,6 +52,4 @@ def send_mail(sub, content,contentType = 'plain'):
 #             "<td><a >贴吧</a><a >图片</a><a >百科</a></td></tr>" \
 #              "<tr bgcolor=\"white\" align=\"center\"><td>1</td><td align=\"left\">暴走大事件</td><td><img src=\"images/up.jpg\"></td><td>623557</td><td>4088311</td><td><a >贴吧</a><a >图片</a><a >百科</a></td>" \
 #              "</table></body></html>"
-#
-#
 # send_mail('测试',contentstr,'html')
