@@ -144,8 +144,8 @@ def timerAnalys(threadName, delay, counter):
 
         now = datetime.now()
         nowstr = now.strftime('%Y-%m-%d %H:%M')
-        if nowstr == '2017-09-23 21:41':
-            nowstr = '2017-09-23 21:30'
+        if nowstr == '2017-09-27 00:05':
+            nowstr = '2017-09-26 23:59'
         print nowstr
         if nowstr in AllBeginTimes:
             # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:

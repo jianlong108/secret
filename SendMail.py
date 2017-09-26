@@ -44,6 +44,14 @@ def send_mail(sub, content,contentType = 'plain'):
         print '发送失败 ' + str(e)
         return False
 
-# contentstr = '<html><body><h1 style="color:red;">你好,世界</h1></body></html>'
+# contentstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>预测展示</title></head>" \
+#              "<body>" \
+#              "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h2>今日小说排行榜</h2></caption>" \
+#              "<tr bgcolor=#663399><th>排名</th><th>关键词</th><th>趋势</th><th>今日搜索</th><th>最近七日</th><th>相关链接</th></tr> " \
+#              "<tr bgcolor=\"white\" ><td>1</td><td align=\"left\">暴走大事件</td> <td><img src=\"images/up.jpg\"></td><td>623557</td><td>4088311</td>" \
+#             "<td><a >贴吧</a><a >图片</a><a >百科</a></td></tr>" \
+#              "<tr bgcolor=\"white\" align=\"center\"><td>1</td><td align=\"left\">暴走大事件</td><td><img src=\"images/up.jpg\"></td><td>623557</td><td>4088311</td><td><a >贴吧</a><a >图片</a><a >百科</a></td>" \
+#              "</table></body></html>"
+#
 #
 # send_mail('测试',contentstr,'html')
