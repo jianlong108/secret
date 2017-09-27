@@ -311,7 +311,7 @@ def getOrignalODDProbability(game):
             ['胜: ', str(float(win_count) / float(totalcount) * 100)[:5], '/100', ' 平:',
              str(float(draw_count) / float(totalcount) * 100)[:5], '/100', '负',
              str(float(lose_count) / float(totalcount) * 100)[:5], '/100'])
-        contentstr += "<tr bgcolor=\"red\" ><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+        contentstr += "<tr bgcolor=\"red\" style=\"color:white\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
                       "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % ('总数',
                                                                         str(totalcount),
                                                                         '',
@@ -390,6 +390,19 @@ def getnowODDProbability(game):
                         [oneCompany.companyTitle, ' 总数:',str(unit_totalcount) , ' 胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
                          str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
                          str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
+                    contentstr += "<tr bgcolor=\"white\" ><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                                  "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
+                                                                                    str(unit_totalcount),
+                                                                                    str(oneCompany.orignal_winOdd),
+                                                                                    str(oneCompany.orignal_drawOdd),
+                                                                                    str(oneCompany.orignal_loseOdd),
+
+                                                                                    str(float(unit_win_count) / float(
+                                                                                        unit_totalcount) * 100)[:5],
+                                                                                    str(float(unit_draw_count) / float(
+                                                                                        unit_totalcount) * 100)[:5],
+                                                                                    str(float(unit_lose_count) / float(
+                                                                                        unit_totalcount) * 100)[:5])
                     # contentstr += '\n'
                     # contentstr += unit_str
                     # print unit_str
@@ -405,9 +418,22 @@ def getnowODDProbability(game):
             [str(totalcount), '胜: ', str(float(win_count) / float(totalcount) * 100)[:5], '/100', ' 平:',
              str(float(draw_count) / float(totalcount) * 100)[:5], '/100', '负',
              str(float(lose_count) / float(totalcount) * 100)[:5], '/100'])
-        contentstr += '\n'
-        contentstr += tempstr_two
-        contentstr += '\n'
+        contentstr += "<tr bgcolor=\"red\" style=\"color:white\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                      "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % ('总数',
+                                                                        str(totalcount),
+                                                                        '',
+                                                                        '',
+                                                                        '',
+
+                                                                        str(float(win_count) / float(
+                                                                            totalcount) * 100)[:5],
+                                                                        str(float(draw_count) / float(
+                                                                            totalcount) * 100)[:5],
+                                                                        str(float(lose_count) / float(
+                                                                            totalcount) * 100)[:5])
+        # contentstr += '\n'
+        # contentstr += tempstr_two
+        # contentstr += '\n'
         print tempstr_two
     else:
         pass
@@ -533,7 +559,7 @@ def getHandiProbability(game):
         # contentstr += tempstr_two
         # contentstr += tempstr_one
         # contentstr += '\n'
-        contentstr += "<tr bgcolor=\"red\" ><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+        contentstr += "<tr bgcolor=\"red\" style=\"color:white\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
                       "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % ('总数',
                                                                         '',
                                                                         str(totalcount),
@@ -623,6 +649,25 @@ def getnowHandiProbability(game):
                         ['胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
                          str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
                          str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
+                    contentstr += "<tr bgcolor=\"white\" ><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                                  "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
+                                                                                    oneCompany.orignal_Handicap,
+                                                                                    str(unit_totalcount),
+                                                                                    str(float(
+                                                                                        unit_handi_win_count) / float(
+                                                                                        unit_totalcount) * 100)[:5],
+                                                                                    str(float(
+                                                                                        unit_handi_draw_count) / float(
+                                                                                        unit_totalcount) * 100)[:5],
+                                                                                    str(float(
+                                                                                        unit_handi_lose_count) / float(
+                                                                                        unit_totalcount) * 100)[:5],
+                                                                                    str(float(unit_win_count) / float(
+                                                                                        unit_totalcount) * 100)[:5],
+                                                                                    str(float(unit_draw_count) / float(
+                                                                                        unit_totalcount) * 100)[:5],
+                                                                                    str(float(unit_lose_count) / float(
+                                                                                        unit_totalcount) * 100)[:5])
                     # contentstr += '\n'
                     # contentstr += unit_str
                     # contentstr += unit_str_handi
@@ -648,10 +693,26 @@ def getnowHandiProbability(game):
             ['胜: ', str(float(win_count) / float(totalcount) * 100)[:5], '/100', ' 平:',
              str(float(draw_count) / float(totalcount) * 100)[:5], '/100', '负',
              str(float(lose_count) / float(totalcount) * 100)[:5], '/100'])
-        contentstr += '\n'
-        contentstr += tempstr_two
-        contentstr += tempstr_one
-        contentstr += '\n'
+        contentstr += "<tr bgcolor=\"red\" style=\"color:white\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                      "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % ('终盘概率',
+                                                                        '总数',
+                                                                        str(totalcount),
+                                                                        str(float(handi_win_count) / float(
+                                                                            totalcount) * 100)[:5],
+                                                                        str(float(handi_draw_count) / float(
+                                                                            totalcount) * 100)[:5],
+                                                                        str(float(handi_lose_count) / float(
+                                                                            totalcount) * 100)[:5],
+                                                                        str(float(win_count) / float(totalcount) * 100)[
+                                                                        :5],
+                                                                        str(float(draw_count) / float(
+                                                                            totalcount) * 100)[:5],
+                                                                        str(float(lose_count) / float(
+                                                                            totalcount) * 100)[:5])
+        # contentstr += '\n'
+        # contentstr += tempstr_two
+        # contentstr += tempstr_one
+        # contentstr += '\n'
         print tempstr_one
         print tempstr_two
         print '\n'

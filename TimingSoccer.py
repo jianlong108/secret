@@ -144,8 +144,8 @@ def timerAnalys(threadName, delay, counter):
 
         now = datetime.now()
         nowstr = now.strftime('%Y-%m-%d %H:%M')
-        if nowstr == '2017-09-27 00:05':
-            nowstr = '2017-09-26 23:59'
+        if nowstr == '2017-09-28 01:08':
+            nowstr = '2017-09-27 23:59'
         print nowstr
         if nowstr in AllBeginTimes:
             # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
@@ -153,30 +153,49 @@ def timerAnalys(threadName, delay, counter):
                 # pass
             print nowstr
             counter -= 1
-            resultstr = ''
-            for game in AllGames:
-                if isinstance(game, FootballGame):
+            resultstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>临场预测</title></head><body>"
+            for onegame in AllGames:
+                if isinstance(onegame, FootballGame):
 
-                    if game.beginTime == nowstr:
+                    if onegame.beginTime == nowstr:
                         # gameThread(2, '比赛线程', game)
-                        game.oddCompanies = getOneGameODD(game)
-                        game.handiCompanies = getOneGameHandi(game)
-                        nowOddStr = getnowODDProbability(game)
-                        nowHandistr = getnowHandiProbability(game)
-                        if nowHandistr is not None:
-                            resultstr += nowHandistr
+                        onegame.oddCompanies = getOneGameODD(onegame)
+                        onegame.handiCompanies = getOneGameHandi(onegame)
+                        titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs',
+                                            onegame.friendTeam, ' id: ',
+                                            str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ',
+                                            str(onegame.now_aomenHandi)])
+                        resultstr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
 
-                        resultstr += '\n'
+
+                        nowOddStr = getnowODDProbability(onegame)
+
+
+
+                        nowHandistr = getnowHandiProbability(onegame)
+                        if nowHandistr is not None:
+                            resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
+                                         "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
+
+                            resultstr += nowHandistr
+                            resultstr += '</table>'
+
+                        # resultstr += '\n'
 
                         if nowOddStr is not None:
+                            resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧赔</h5></caption>" \
+                                         "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
                             resultstr += nowOddStr
+                            resultstr += '</table>'
 
-
-                        resultstr +=  exchangeODD.getexchange(game.soccerID)
-                        resultstr += '\n'
-                        resultstr += '\n'
+                        resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧亚转换</h5></caption>" \
+                                     "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>转换后</td><td>主</td><td>盘口</td><td>客</td><td>实际</td><td>主</td><td>盘口</td><td>客</td>"
+                        resultstr +=  exchangeODD.getexchange(onegame.soccerID)
+                        resultstr += '</table>'
+                        # resultstr += '\n'
+                        # resultstr += '\n'
             if resultstr != '' or resultstr is not None:
-                send_mail("%s %s" % ('临场分析',nowstr), resultstr)
+                send_mail("%s %s" % ('临场分析',nowstr), resultstr,'html')
 
         time.sleep(delay)
         if counter == 0:
@@ -185,11 +204,11 @@ def timerAnalys(threadName, delay, counter):
 
 
 
-if sys.argv.__len__()==1:
-    sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
+# if sys.argv.__len__()==1:
+#     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
 
 if __name__ == '__main__':
-    getTodaySoccer(sys.argv[1])
-    # getTodaySoccer(3)
+    # getTodaySoccer(sys.argv[1])
+    getTodaySoccer(3)
     thread1 = TimeingThread(1, "实时分析", 1)
     thread1.start()

@@ -31,6 +31,7 @@ def getexchange(soccerid=0):
 
     companieslist = []
     colorResultStr = ''
+    htmlstr = ''
     for tr in trlist:
         if isTagClass(tr):
             oneCompany = BetCompany()
@@ -54,6 +55,15 @@ def getexchange(soccerid=0):
             colorResultStr += unitStrList[11]
             colorResultStr += ' '
             colorResultStr += '\n'
+            tdColor = 'white'
+            titleColor = 'black'
+            if unitStrList[6] != unitStrList[10]:
+                tdColor = 'red'
+                titleColor = 'white'
+            htmlstr += "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                          "<td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (tdColor,titleColor,oneCompany.companyTitle[:5],
+                                                                            '',unitStrList[5],unitStrList[6],unitStrList[7],
+                                                                            '',unitStrList[9],unitStrList[10],unitStrList[11])
             try:
                 # 胜平负
                 oneCompany.winOdd = float(unitStrList[1])
@@ -74,7 +84,7 @@ def getexchange(soccerid=0):
                 companieslist.append(oneCompany)
 
     print "\033[1;31;40m%s\033[0m" % colorResultStr
-    return colorResultStr
+    return htmlstr
 
 
 
