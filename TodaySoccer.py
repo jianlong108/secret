@@ -130,8 +130,11 @@ def getTodaySoccer(type):
             gameStr = allArray[2]
 
         games = gameStr.split('!')
-        contentStr = ''
+        firstobject = games[0]
+        contentStr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>初盘预测</title></head><body>"
         for game in games:
+            # if game is not firstobject:
+            #     continue;
             onegame = FootballGame()
             oneGameArray = game.split('^')
             oneGameArray.remove('')
@@ -153,27 +156,41 @@ def getTodaySoccer(type):
                 onegame.friendTeam = oneGameArray[5].encode('utf-8')
 
             AllGames.append(onegame)
-            flag = getHandiOrignalTime.gethandiTime(onegame.soccerID)
-            if flag:
-               contentStr += '澳盘开盘早\n'.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
-
+            # 获取欧赔,亚盘数据
             onegame.oddCompanies = getOneGameODD(onegame)
             onegame.handiCompanies = getOneGameHandi(onegame)
 
-            if len(onegame.orignalHandiList) > 2:
-                contentStr += '初盘混乱\n'
-                contentStr += ''.join(
-                    [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+            titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
+                     str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ', str(onegame.now_aomenHandi)])
+            contentStr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
 
+            # 获取开盘时间
+            flag = getHandiOrignalTime.gethandiTime(onegame.soccerID)
+            if flag:
+                # contentStr += '澳盘开盘早\n'.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+                contentStr += "<h4 style=\"color:red;\" align=\"center\">澳盘开盘早</h4>"
+            # 获取初始盘口数量
+            if len(onegame.orignalHandiList) > 2:
+                contentStr += "<h4 style=\"color:red;\" align=\"center\">初盘混乱</h4>"
+                # contentStr += '初盘混乱\n'
+                # contentStr += ''.join(
+                #     [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+
+            contentStr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
+                          "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
             tempHandistr = getHandiProbability(onegame)
             if tempHandistr is not None:
                 contentStr += tempHandistr
-                contentStr += '\n'
+                # contentStr += '\n'
 
+            contentStr += '</table>'
+            contentStr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧赔</h5></caption>" \
+                          "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
             tempOddstr = getOrignalODDProbability(onegame)
             if tempOddstr is not None:
                 contentStr += tempOddstr
-                contentStr += '\n'
+                # contentStr += '\n'
+            contentStr += '</table>'
 
             time.sleep(3)
 
@@ -186,7 +203,7 @@ def getTodaySoccer(type):
         else:
             subjectstr = '初盘分析'
 
-        send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr)
+        send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr,'html')
         # if type == 1 or type == 3:
         #     runTask(anyaisegame, AllGames, AllBeginTimes)
 

@@ -47,7 +47,7 @@ def send_mail(sub, content,contentType = 'plain'):
 # contentstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>预测展示</title></head>" \
 #              "<body>" \
 #              "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h2>今日小说排行榜</h2></caption>" \
-#              "<tr bgcolor=#663399><th>排名</th><th>关键词</th><th>趋势</th><th>今日搜索</th><th>最近七日</th><th>相关链接</th></tr> " \
+#              "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>总数</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr>" \
 #              "<tr bgcolor=\"white\" ><td>1</td><td align=\"left\">暴走大事件</td> <td><img src=\"images/up.jpg\"></td><td>623557</td><td>4088311</td>" \
 #             "<td><a >贴吧</a><a >图片</a><a >百科</a></td></tr>" \
 #              "<tr bgcolor=\"white\" align=\"center\"><td>1</td><td align=\"left\">暴走大事件</td><td><img src=\"images/up.jpg\"></td><td>623557</td><td>4088311</td><td><a >贴吧</a><a >图片</a><a >百科</a></td>" \
