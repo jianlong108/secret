@@ -393,9 +393,9 @@ def getnowODDProbability(game):
                     contentstr += "<tr bgcolor=\"white\" ><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
                                   "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
                                                                                     str(unit_totalcount),
-                                                                                    str(oneCompany.orignal_winOdd),
-                                                                                    str(oneCompany.orignal_drawOdd),
-                                                                                    str(oneCompany.orignal_loseOdd),
+                                                                                    str(oneCompany.winOdd),
+                                                                                    str(oneCompany.drawOdd),
+                                                                                    str(oneCompany.loseOdd),
 
                                                                                     str(float(unit_win_count) / float(
                                                                                         unit_totalcount) * 100)[:5],
