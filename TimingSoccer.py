@@ -159,13 +159,13 @@ def timerAnalys(threadName, delay, counter):
             # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
             # exitflag = 1
             # pass
-            print nowstr
+            print nowstr_offset_oneHour
             counter -= 1
             resultstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>临场预测</title></head><body>"
             for onegame in AllGames:
                 if isinstance(onegame, FootballGame):
 
-                    if onegame.beginTime == nowstr:
+                    if onegame.beginTime == nowstr_offset_oneHour:
                         # gameThread(2, '比赛线程', game)
                         onegame.oddCompanies = getOneGameODD(onegame)
                         onegame.handiCompanies = getOneGameHandi(onegame)
@@ -212,7 +212,7 @@ def timerAnalys(threadName, delay, counter):
             for onegame in AllGames:
                 if isinstance(onegame, FootballGame):
 
-                    if onegame.beginTime == nowstr:
+                    if onegame.beginTime == nowstr_offset_fiveMinute:
                         # gameThread(2, '比赛线程', game)
                         onegame.oddCompanies = getOneGameODD(onegame)
                         onegame.handiCompanies = getOneGameHandi(onegame)

@@ -4,7 +4,6 @@
     <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TimingSoccer.py" afterPath="$PROJECT_DIR$/TimingSoccer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/league.txt" afterPath="$PROJECT_DIR$/league.txt" />
     </list>
     <ignored path="Soccer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,7 +22,7 @@
     <SUITE FILE_PATH="coverage/Soccer$yesterday.coverage" NAME="yesterday Coverage Results" MODIFIED="1506016836300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$match.coverage" NAME="match Coverage Results" MODIFIED="1503671938588" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$sendMail.coverage" NAME="sendMail Coverage Results" MODIFIED="1506526149886" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Soccer$.coverage" NAME="实时分析 Coverage Results" MODIFIED="1506695862479" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Soccer$.coverage" NAME="实时分析 Coverage Results" MODIFIED="1506699618313" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -115,14 +114,12 @@
       <file leaf-file-name="TimingSoccer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TimingSoccer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="310" column="20" selection-start-line="310" selection-start-column="20" selection-end-line="311" selection-end-column="19" />
+            <state relative-caret-position="-2018">
+              <caret line="214" column="68" selection-start-line="214" selection-start-column="68" selection-end-line="214" selection-end-column="68" />
               <folding>
                 <element signature="e#77#99#0" expanded="true" />
                 <element signature="e#3573#3880#0" expanded="false" />
-                <element signature="e#5075#8007#0" expanded="false" />
-                <element signature="e#8075#11007#0" expanded="false" />
-                <element signature="e#11057#13996#0" expanded="false" />
+                <element signature="e#5551#7904#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -1129,7 +1126,14 @@
       <option name="project" value="LOCAL" />
       <updated>1506532358249</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="发送格式换位HTML">
+      <created>1506696538691</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1506696538691</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1228,11 +1232,6 @@
           <line>758</line>
           <option name="timeStamp" value="213" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/TimingSoccer.py</url>
-          <line>153</line>
-          <option name="timeStamp" value="269" />
-        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -1244,7 +1243,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="270" />
+      <option name="time" value="272" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1644,14 +1643,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/TimingSoccer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="310" column="20" selection-start-line="310" selection-start-column="20" selection-end-line="311" selection-end-column="19" />
+        <state relative-caret-position="-2018">
+          <caret line="214" column="68" selection-start-line="214" selection-start-column="68" selection-end-line="214" selection-end-column="68" />
           <folding>
             <element signature="e#77#99#0" expanded="true" />
             <element signature="e#3573#3880#0" expanded="false" />
-            <element signature="e#5075#8007#0" expanded="false" />
-            <element signature="e#8075#11007#0" expanded="false" />
-            <element signature="e#11057#13996#0" expanded="false" />
+            <element signature="e#5551#7904#0" expanded="false" />
           </folding>
         </state>
       </provider>
