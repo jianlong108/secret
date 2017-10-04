@@ -297,7 +297,7 @@ class GetLeague:
             self.allGames  = []
 
 
-def getLeagueData(leagueid = -1):
+def getLeagueData(leagueid = -1,isCup = False):
     if leagueid < 0:
         print '联赛id 非法'
     leagueArray = getLeagueDetail(leagueid)
@@ -310,7 +310,7 @@ def getLeagueData(leagueid = -1):
         leagueModel.creatSeasonList()
 
         # 杯赛去请求杯赛接口,逻辑
-        if '杯' in leagueModel.breifLeagueName:
+        if isCup:
             cup = GetCup(leagueModel)
             cup.cupName = leagueModel.breifLeagueName
             cup.getOfficialLeague()
@@ -321,11 +321,12 @@ def getLeagueData(leagueid = -1):
 
 
 if sys.argv.__len__()==1:
-    sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:联赛id\n事例: python League.pyc 36\033[0m')
+    sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 36 True\033[0m')
 
 if __name__ == '__main__':
     leagueid = sys.argv[1]
-    getLeagueData(leagueid)
+    isCup = sys.argv[2]
+    getLeagueData(leagueid, isCup)
 
 
 
