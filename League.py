@@ -321,7 +321,7 @@ def getLeagueData(leagueid = -1,isCup = False):
 
 
 if sys.argv.__len__()==1:
-    sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 36 True\033[0m')
+    sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 144 True\033[0m')
 
 if __name__ == '__main__':
     leagueid = sys.argv[1]
