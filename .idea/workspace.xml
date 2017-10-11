@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/League.py" afterPath="$PROJECT_DIR$/League.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DBHelper.py" afterPath="$PROJECT_DIR$/DBHelper.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TodaySoccer.py" afterPath="$PROJECT_DIR$/TodaySoccer.py" />
     </list>
     <ignored path="Soccer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -19,10 +20,10 @@
     <SUITE FILE_PATH="coverage/Soccer$exchange.coverage" NAME="exchange Coverage Results" MODIFIED="1495340824727" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$todyay.coverage" NAME="实时分析 Coverage Results" MODIFIED="1505052312327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$League.coverage" NAME="League Coverage Results" MODIFIED="1507104427411" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Soccer$yesterday.coverage" NAME="yesterday Coverage Results" MODIFIED="1506016836300" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Soccer$yesterday.coverage" NAME="yesterday Coverage Results" MODIFIED="1507105059330" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$match.coverage" NAME="match Coverage Results" MODIFIED="1503671938588" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$sendMail.coverage" NAME="sendMail Coverage Results" MODIFIED="1506526149886" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Soccer$.coverage" NAME="实时分析 Coverage Results" MODIFIED="1506699618313" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Soccer$.coverage" NAME="今日比赛 Coverage Results" MODIFIED="1507734583225" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -44,8 +45,8 @@
       <file leaf-file-name="TodaySoccer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TodaySoccer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-149">
-              <caret line="197" column="0" selection-start-line="197" selection-start-column="0" selection-end-line="197" selection-end-column="0" />
+            <state relative-caret-position="375">
+              <caret line="185" column="42" selection-start-line="185" selection-start-column="42" selection-end-line="185" selection-end-column="42" />
               <folding>
                 <element signature="e#49#71#0" expanded="true" />
               </folding>
@@ -53,35 +54,35 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DBHelper.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="DBHelper.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DBHelper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6808">
+            <state relative-caret-position="370">
               <caret line="349" column="22" selection-start-line="349" selection-start-column="22" selection-end-line="349" selection-end-column="22" />
               <folding>
                 <element signature="e#8025#11099#0" expanded="false" />
-                <marker date="1506611303000" expanded="true" signature="2428:2469" ph="INSERT INTO League... " />
-                <marker date="1506611303000" expanded="true" signature="2886:2938" ph="INSERT INTO Games... " />
-                <marker date="1506611303000" expanded="true" signature="3458:3510" ph="INSERT INTO Games... " />
-                <marker date="1506611303000" expanded="true" signature="4109:4176" ph="INSERT INTO CompanyHandicap... " />
-                <marker date="1506611303000" expanded="true" signature="4700:4761" ph="INSERT INTO CompanyODD... " />
-                <marker date="1506611303000" expanded="true" signature="5348:5412" ph="INSERT INTO CompanyHandicap... " />
-                <marker date="1506611303000" expanded="true" signature="5910:5969" ph="INSERT INTO CompanyODD... " />
-                <marker date="1506611303000" expanded="true" signature="6511:6575" ph="INSERT INTO CompanyHandicap... " />
-                <marker date="1506611303000" expanded="true" signature="7073:7132" ph="INSERT INTO CompanyODD... " />
-                <marker date="1506611303000" expanded="true" signature="8091:8318" ph="SELECT * FRO... Games" />
-                <marker date="1506611303000" expanded="true" signature="8159:8300" ph="select socce... CompanyODD" />
-                <marker date="1506611303000" expanded="true" signature="13577:13792" ph="SELECT * FRO... Games" />
-                <marker date="1506611303000" expanded="true" signature="13645:13774" ph="select socce... CompanyODD" />
-                <marker date="1506611303000" expanded="true" signature="19300:19522" ph="SELECT * FRO... Games" />
-                <marker date="1506611303000" expanded="true" signature="19368:19504" ph="select socce... CompanyHandicap" />
-                <marker date="1506611303000" expanded="true" signature="26315:26533" ph="SELECT * FRO... Games" />
-                <marker date="1506611303000" expanded="true" signature="26383:26515" ph="select socce... CompanyHandicap" />
-                <marker date="1506611303000" expanded="true" signature="35056:35402" ph="SELECT * FRO... Games" />
-                <marker date="1506611303000" expanded="true" signature="36661:38105" ph="..." />
-                <marker date="1506611303000" expanded="true" signature="38492:38866" ph="SELECT * FRO... Games" />
-                <marker date="1506611303000" expanded="true" signature="38492:38882" ph="SELECT * FRO... Games" />
-                <marker date="1506611303000" expanded="true" signature="41751:41791" ph="SELECT * FRO... League" />
+                <marker date="1507735023000" expanded="true" signature="2428:2469" ph="INSERT INTO League... " />
+                <marker date="1507735023000" expanded="true" signature="2886:2938" ph="INSERT INTO Games... " />
+                <marker date="1507735023000" expanded="true" signature="3458:3510" ph="INSERT INTO Games... " />
+                <marker date="1507735023000" expanded="true" signature="4109:4176" ph="INSERT INTO CompanyHandicap... " />
+                <marker date="1507735023000" expanded="true" signature="4700:4761" ph="INSERT INTO CompanyODD... " />
+                <marker date="1507735023000" expanded="true" signature="5348:5412" ph="INSERT INTO CompanyHandicap... " />
+                <marker date="1507735023000" expanded="true" signature="5910:5969" ph="INSERT INTO CompanyODD... " />
+                <marker date="1507735023000" expanded="true" signature="6511:6575" ph="INSERT INTO CompanyHandicap... " />
+                <marker date="1507735023000" expanded="true" signature="7073:7132" ph="INSERT INTO CompanyODD... " />
+                <marker date="1507735023000" expanded="true" signature="8091:8318" ph="SELECT * FRO... Games" />
+                <marker date="1507735023000" expanded="true" signature="8159:8300" ph="select socce... CompanyODD" />
+                <marker date="1507735023000" expanded="true" signature="13579:13794" ph="SELECT * FRO... Games" />
+                <marker date="1507735023000" expanded="true" signature="13647:13776" ph="select socce... CompanyODD" />
+                <marker date="1507735023000" expanded="true" signature="19302:19524" ph="SELECT * FRO... Games" />
+                <marker date="1507735023000" expanded="true" signature="19370:19506" ph="select socce... CompanyHandicap" />
+                <marker date="1507735023000" expanded="true" signature="26317:26535" ph="SELECT * FRO... Games" />
+                <marker date="1507735023000" expanded="true" signature="26385:26517" ph="select socce... CompanyHandicap" />
+                <marker date="1507735023000" expanded="true" signature="35058:35404" ph="SELECT * FRO... Games" />
+                <marker date="1507735023000" expanded="true" signature="36663:38107" ph="..." />
+                <marker date="1507735023000" expanded="true" signature="38494:38868" ph="SELECT * FRO... Games" />
+                <marker date="1507735023000" expanded="true" signature="38494:38884" ph="SELECT * FRO... Games" />
+                <marker date="1507735023000" expanded="true" signature="41753:41793" ph="SELECT * FRO... League" />
               </folding>
             </state>
           </provider>
@@ -90,7 +91,7 @@
       <file leaf-file-name="exchangeODD.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/exchangeODD.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="403">
+            <state relative-caret-position="1380">
               <caret line="63" column="105" selection-start-line="63" selection-start-column="105" selection-end-line="63" selection-end-column="105" />
               <folding />
             </state>
@@ -114,12 +115,15 @@
       <file leaf-file-name="TimingSoccer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TimingSoccer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="23">
-              <caret line="214" column="68" selection-start-line="214" selection-start-column="68" selection-end-line="214" selection-end-column="68" />
+            <state relative-caret-position="973">
+              <caret line="311" column="35" selection-start-line="311" selection-start-column="35" selection-end-line="311" selection-end-column="35" />
               <folding>
                 <element signature="e#77#99#0" expanded="true" />
                 <element signature="e#3573#3880#0" expanded="false" />
+                <element signature="e#5075#8037#0" expanded="false" />
                 <element signature="e#5551#7904#0" expanded="false" />
+                <element signature="e#8105#11055#0" expanded="false" />
+                <element signature="e#11105#14044#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -140,17 +144,17 @@
       <file leaf-file-name="league.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/league.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="416">
+            <state relative-caret-position="989">
               <caret line="43" column="7" selection-start-line="43" selection-start-column="7" selection-end-line="43" selection-end-column="7" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="League.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="League.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/League.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
+            <state relative-caret-position="6670">
               <caret line="323" column="82" selection-start-line="323" selection-start-column="82" selection-end-line="323" selection-end-column="82" />
               <folding>
                 <element signature="e#79#101#0" expanded="true" />
@@ -164,11 +168,10 @@
       <file leaf-file-name="yesterdayMatch.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/yesterdayMatch.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="157" column="0" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+            <state relative-caret-position="-92">
+              <caret line="53" column="23" selection-start-line="53" selection-start-column="23" selection-end-line="53" selection-end-column="23" />
               <folding>
                 <element signature="e#48#70#0" expanded="true" />
-                <element signature="e#1011#5015#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -218,12 +221,12 @@
         <option value="$PROJECT_DIR$/html_study.html" />
         <option value="$PROJECT_DIR$/RESULT_HTML_STRING.html" />
         <option value="$PROJECT_DIR$/SendMail.py" />
-        <option value="$PROJECT_DIR$/TodaySoccer.py" />
         <option value="$PROJECT_DIR$/exchangeODD.py" />
-        <option value="$PROJECT_DIR$/DBHelper.py" />
         <option value="$PROJECT_DIR$/TimingSoccer.py" />
         <option value="$PROJECT_DIR$/league.txt" />
         <option value="$PROJECT_DIR$/League.py" />
+        <option value="$PROJECT_DIR$/TodaySoccer.py" />
+        <option value="$PROJECT_DIR$/DBHelper.py" />
       </list>
     </option>
   </component>
@@ -235,8 +238,8 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="y" value="23" />
-    <option name="width" value="1440" />
-    <option name="height" value="830" />
+    <option name="width" value="2560" />
+    <option name="height" value="977" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -282,6 +285,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -302,8 +307,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -320,7 +323,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.yesterday">
+  <component name="RunManager" selected="Python.今日比赛">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -1040,7 +1043,14 @@
       <option name="project" value="LOCAL" />
       <updated>1507104878734</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="联赛数据获取优化">
+      <created>1507104954919</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1507104954920</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1053,20 +1063,20 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="830" extended-state="6" />
+    <frame x="0" y="23" width="2560" height="977" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13976945" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14114833" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32756633" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3202765" sideWeight="0.5079745" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32991204" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3202765" sideWeight="0.49202552" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32871974" sideWeight="0.4984051" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23156682" sideWeight="0.488437" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3587082" sideWeight="0.488437" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24974516" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298731" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39779004" sideWeight="0.49434572" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39779004" sideWeight="0.49434572" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1442,9 +1452,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="483">
           <caret line="21" column="35" selection-start-line="21" selection-start-column="35" selection-end-line="21" selection-end-column="35" />
-          <folding>
-            <element signature="n#style#0;n#caption#0;n#table#0;n#body#0;n#html#0;n#!!top" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1478,53 +1485,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DBHelper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6808">
-          <caret line="349" column="22" selection-start-line="349" selection-start-column="22" selection-end-line="349" selection-end-column="22" />
-          <folding>
-            <element signature="e#8025#11099#0" expanded="false" />
-            <marker date="1506611303000" expanded="true" signature="2428:2469" ph="INSERT INTO League... " />
-            <marker date="1506611303000" expanded="true" signature="2886:2938" ph="INSERT INTO Games... " />
-            <marker date="1506611303000" expanded="true" signature="3458:3510" ph="INSERT INTO Games... " />
-            <marker date="1506611303000" expanded="true" signature="4109:4176" ph="INSERT INTO CompanyHandicap... " />
-            <marker date="1506611303000" expanded="true" signature="4700:4761" ph="INSERT INTO CompanyODD... " />
-            <marker date="1506611303000" expanded="true" signature="5348:5412" ph="INSERT INTO CompanyHandicap... " />
-            <marker date="1506611303000" expanded="true" signature="5910:5969" ph="INSERT INTO CompanyODD... " />
-            <marker date="1506611303000" expanded="true" signature="6511:6575" ph="INSERT INTO CompanyHandicap... " />
-            <marker date="1506611303000" expanded="true" signature="7073:7132" ph="INSERT INTO CompanyODD... " />
-            <marker date="1506611303000" expanded="true" signature="8091:8318" ph="SELECT * FRO... Games" />
-            <marker date="1506611303000" expanded="true" signature="8159:8300" ph="select socce... CompanyODD" />
-            <marker date="1506611303000" expanded="true" signature="13577:13792" ph="SELECT * FRO... Games" />
-            <marker date="1506611303000" expanded="true" signature="13645:13774" ph="select socce... CompanyODD" />
-            <marker date="1506611303000" expanded="true" signature="19300:19522" ph="SELECT * FRO... Games" />
-            <marker date="1506611303000" expanded="true" signature="19368:19504" ph="select socce... CompanyHandicap" />
-            <marker date="1506611303000" expanded="true" signature="26315:26533" ph="SELECT * FRO... Games" />
-            <marker date="1506611303000" expanded="true" signature="26383:26515" ph="select socce... CompanyHandicap" />
-            <marker date="1506611303000" expanded="true" signature="35056:35402" ph="SELECT * FRO... Games" />
-            <marker date="1506611303000" expanded="true" signature="36661:38105" ph="..." />
-            <marker date="1506611303000" expanded="true" signature="38492:38866" ph="SELECT * FRO... Games" />
-            <marker date="1506611303000" expanded="true" signature="38492:38882" ph="SELECT * FRO... Games" />
-            <marker date="1506611303000" expanded="true" signature="41751:41791" ph="SELECT * FRO... League" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TimingSoccer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="23">
-          <caret line="214" column="68" selection-start-line="214" selection-start-column="68" selection-end-line="214" selection-end-column="68" />
-          <folding>
-            <element signature="e#77#99#0" expanded="true" />
-            <element signature="e#3573#3880#0" expanded="false" />
-            <element signature="e#5551#7904#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/league.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
+        <state relative-caret-position="989">
           <caret line="43" column="7" selection-start-line="43" selection-start-column="7" selection-end-line="43" selection-end-column="7" />
           <folding />
         </state>
@@ -1532,41 +1495,87 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/exchangeODD.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="403">
+        <state relative-caret-position="1380">
           <caret line="63" column="105" selection-start-line="63" selection-start-column="105" selection-end-line="63" selection-end-column="105" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TodaySoccer.py">
+    <entry file="file://$PROJECT_DIR$/League.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-149">
-          <caret line="197" column="0" selection-start-line="197" selection-start-column="0" selection-end-line="197" selection-end-column="0" />
+        <state relative-caret-position="6670">
+          <caret line="323" column="82" selection-start-line="323" selection-start-column="82" selection-end-line="323" selection-end-column="82" />
           <folding>
-            <element signature="e#49#71#0" expanded="true" />
+            <element signature="e#79#101#0" expanded="true" />
+            <element signature="e#2695#3229#0" expanded="false" />
+            <element signature="e#4014#4731#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/yesterdayMatch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="157" column="0" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+        <state relative-caret-position="-92">
+          <caret line="53" column="23" selection-start-line="53" selection-start-column="23" selection-end-line="53" selection-end-column="23" />
           <folding>
             <element signature="e#48#70#0" expanded="true" />
-            <element signature="e#1011#5015#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/League.py">
+    <entry file="file://$PROJECT_DIR$/TimingSoccer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="323" column="82" selection-start-line="323" selection-start-column="82" selection-end-line="323" selection-end-column="82" />
+        <state relative-caret-position="973">
+          <caret line="311" column="35" selection-start-line="311" selection-start-column="35" selection-end-line="311" selection-end-column="35" />
           <folding>
-            <element signature="e#79#101#0" expanded="true" />
-            <element signature="e#2695#3229#0" expanded="false" />
-            <element signature="e#4014#4731#0" expanded="false" />
+            <element signature="e#77#99#0" expanded="true" />
+            <element signature="e#3573#3880#0" expanded="false" />
+            <element signature="e#5075#8037#0" expanded="false" />
+            <element signature="e#5551#7904#0" expanded="false" />
+            <element signature="e#8105#11055#0" expanded="false" />
+            <element signature="e#11105#14044#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TodaySoccer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="185" column="42" selection-start-line="185" selection-start-column="42" selection-end-line="185" selection-end-column="42" />
+          <folding>
+            <element signature="e#49#71#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DBHelper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="370">
+          <caret line="349" column="22" selection-start-line="349" selection-start-column="22" selection-end-line="349" selection-end-column="22" />
+          <folding>
+            <element signature="e#8025#11099#0" expanded="false" />
+            <marker date="1507735023000" expanded="true" signature="2428:2469" ph="INSERT INTO League... " />
+            <marker date="1507735023000" expanded="true" signature="2886:2938" ph="INSERT INTO Games... " />
+            <marker date="1507735023000" expanded="true" signature="3458:3510" ph="INSERT INTO Games... " />
+            <marker date="1507735023000" expanded="true" signature="4109:4176" ph="INSERT INTO CompanyHandicap... " />
+            <marker date="1507735023000" expanded="true" signature="4700:4761" ph="INSERT INTO CompanyODD... " />
+            <marker date="1507735023000" expanded="true" signature="5348:5412" ph="INSERT INTO CompanyHandicap... " />
+            <marker date="1507735023000" expanded="true" signature="5910:5969" ph="INSERT INTO CompanyODD... " />
+            <marker date="1507735023000" expanded="true" signature="6511:6575" ph="INSERT INTO CompanyHandicap... " />
+            <marker date="1507735023000" expanded="true" signature="7073:7132" ph="INSERT INTO CompanyODD... " />
+            <marker date="1507735023000" expanded="true" signature="8091:8318" ph="SELECT * FRO... Games" />
+            <marker date="1507735023000" expanded="true" signature="8159:8300" ph="select socce... CompanyODD" />
+            <marker date="1507735023000" expanded="true" signature="13579:13794" ph="SELECT * FRO... Games" />
+            <marker date="1507735023000" expanded="true" signature="13647:13776" ph="select socce... CompanyODD" />
+            <marker date="1507735023000" expanded="true" signature="19302:19524" ph="SELECT * FRO... Games" />
+            <marker date="1507735023000" expanded="true" signature="19370:19506" ph="select socce... CompanyHandicap" />
+            <marker date="1507735023000" expanded="true" signature="26317:26535" ph="SELECT * FRO... Games" />
+            <marker date="1507735023000" expanded="true" signature="26385:26517" ph="select socce... CompanyHandicap" />
+            <marker date="1507735023000" expanded="true" signature="35058:35404" ph="SELECT * FRO... Games" />
+            <marker date="1507735023000" expanded="true" signature="36663:38107" ph="..." />
+            <marker date="1507735023000" expanded="true" signature="38494:38868" ph="SELECT * FRO... Games" />
+            <marker date="1507735023000" expanded="true" signature="38494:38884" ph="SELECT * FRO... Games" />
+            <marker date="1507735023000" expanded="true" signature="41753:41793" ph="SELECT * FRO... League" />
           </folding>
         </state>
       </provider>

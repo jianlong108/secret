@@ -183,6 +183,10 @@ def getTodaySoccer(type):
                 contentStr += tempHandistr
                 # contentStr += '\n'
 
+            tempNowHandistr = getnowHandiProbability(onegame)
+            if tempNowHandistr is not None:
+                contentStr += tempNowHandistr
+
             contentStr += '</table>'
             contentStr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧赔</h5></caption>" \
                           "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
@@ -190,6 +194,10 @@ def getTodaySoccer(type):
             if tempOddstr is not None:
                 contentStr += tempOddstr
                 # contentStr += '\n'
+
+            tempNowOddstr = getnowODDProbability(onegame)
+            if tempNowOddstr is not None:
+                contentStr += tempNowOddstr
             contentStr += '</table>'
 
             time.sleep(3)

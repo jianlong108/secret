@@ -346,7 +346,7 @@ def getnowODDProbability(game):
         titlestr = ''.join(
             [str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ',
              str(game.soccerID)])
-        contentstr += titlestr
+        # contentstr += titlestr
         print titlestr
 
         # 总场次
