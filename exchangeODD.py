@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from BeautifulSoupHelper import *
 from SoccerModels import *
-from soccerTool import *
 import sys
 
 reload(sys)
@@ -88,10 +86,10 @@ def getexchange(soccerid=0):
 
 
 
-# if sys.argv.__len__()==1:
-#     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n事例: python TodaySoccer.pyc 12344\033[0m')
+if sys.argv.__len__()==1:
+    sys.exit('\033[0;36;40m使用说明:\n1个参数:\n事例: python TodaySoccer.pyc 12344\033[0m')
 
-# if __name__ == '__main__':
-#     getexchange(sys.argv[1])
+if __name__ == '__main__':
+    getexchange(sys.argv[1])
 
-# getexchange(1401828)
+# getexchange(1444073)
