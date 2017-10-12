@@ -160,7 +160,6 @@ def timerAnalys(threadName, delay, counter):
             # exitflag = 1
             # pass
             print nowstr_offset_oneHour
-            counter -= 1
             resultstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>临场预测</title></head><body>"
             for onegame in AllGames:
                 if isinstance(onegame, FootballGame):
@@ -207,7 +206,6 @@ def timerAnalys(threadName, delay, counter):
             # exitflag = 1
             # pass
             print nowstr
-            counter -= 1
             resultstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>临场预测</title></head><body>"
             for onegame in AllGames:
                 if isinstance(onegame, FootballGame):
