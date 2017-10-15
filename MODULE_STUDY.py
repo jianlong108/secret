@@ -3,6 +3,17 @@
 import time
 from datetime import datetime,timedelta
 
+import os
+
+result_locationstr = os.path.join('/Users/dalong/Desktop', '%s-result.txt' % ('d222',))
+result_leaguelistfile = open(result_locationstr, 'a')
+i = 10
+while( i > 0 ):
+    result_leaguelistfile.write('hello%d\n' % (i,))
+    i-= 1
+
+
+
 """
 time
 表示日常所用时间的类，是用C实现的内嵌类。

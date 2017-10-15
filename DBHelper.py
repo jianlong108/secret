@@ -224,11 +224,19 @@ def insert_ODD(company):
     c.close()
     conn.close()
 
-def getOrignalODDProbability(game):
+'''
+获取初始欧赔的概率
+'''
+def getOrignalODDProbability(game, isYesterday = False):
+    contentstr = ''
+    resultTuple = (0,0,0)
     if isinstance(game, FootballGame):
-        contentstr = ''
+
         if game.oddCompanies is None:
-            return
+            if isYesterday:
+                return resultTuple
+            else:
+                return contentstr
         global conn
         global c
 
@@ -255,6 +263,10 @@ def getOrignalODDProbability(game):
         # 欧赔 输场数
         lose_count = 0
         unit_lose_count = 0
+
+        maxIndex = 0
+        resultSet = []
+
         for oneCompany in game.oddCompanies:
             if isinstance(oneCompany ,BetCompany):
                 c.execute("SELECT * FROM Games WHERE soccerID IN "
@@ -283,19 +295,26 @@ def getOrignalODDProbability(game):
                         [oneCompany.companyTitle, ' 总数:',str(unit_totalcount) , ' 胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
                          str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
                          str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
-                    contentstr += "<tr bgcolor=\"white\" ><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
-                                  "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
-                                                                                    str(unit_totalcount),
-                                                                                    str(oneCompany.orignal_winOdd),
-                                                                                    str(oneCompany.orignal_drawOdd),
-                                                                                    str(oneCompany.orignal_loseOdd),
-
-                                                                                    str(float(unit_win_count) / float(
-                                                                                        unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_draw_count) / float(
-                                                                                        unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_lose_count) / float(
-                                                                                        unit_totalcount) * 100)[:5])
+                    # contentstr += "<tr bgcolor=\"white\" ><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                    #               "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
+                    #                                                                 str(unit_totalcount),
+                    #                                                                 str(oneCompany.orignal_winOdd),
+                    #                                                                 str(oneCompany.orignal_drawOdd),
+                    #                                                                 str(oneCompany.orignal_loseOdd),
+                    #
+                    #                                                                 str(float(unit_win_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_draw_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_lose_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5])
+                    unitTuple = (
+                    unit_totalcount, oneCompany.companyTitle, str(oneCompany.winOdd), str(oneCompany.drawOdd),
+                    str(oneCompany.loseOdd),
+                    str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],
+                    str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],
+                    str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5])
+                    resultSet.append(unitTuple)
                     # contentstr += '\n'
                     # contentstr += unit_str
                     print unit_str
@@ -305,12 +324,41 @@ def getOrignalODDProbability(game):
                 unit_draw_count = 0
                 unit_lose_count = 0
 
+        maxCount = (resultSet[0])[0]
+        for oneTuple in resultSet:
+            if maxCount < oneTuple[0]:
+                maxCount = oneTuple[0]
+                maxIndex = resultSet.index(oneTuple)
+
+        for oneTuple in resultSet:
+            index = resultSet.index(oneTuple)
+            if maxIndex == index:
+                bgcolor = 'red'
+                textColor = 'white'
+            else:
+                bgcolor = 'white'
+                textColor = 'black'
+
+            tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                            "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor, oneTuple[1],
+                                                                              str(oneTuple[0]),
+                                                                              oneTuple[2],
+                                                                              oneTuple[3],
+                                                                              oneTuple[4],
+                                                                              oneTuple[5],
+                                                                              oneTuple[6],
+                                                                              oneTuple[7])
+
+            contentstr += tempResultStr
+
         if totalcount == 0:
-            return
-        tempstr_two = ''.join(
-            ['胜: ', str(float(win_count) / float(totalcount) * 100)[:5], '/100', ' 平:',
-             str(float(draw_count) / float(totalcount) * 100)[:5], '/100', '负',
-             str(float(lose_count) / float(totalcount) * 100)[:5], '/100'])
+            if isYesterday:
+                return resultTuple
+            else:
+                return contentstr
+        odd_winPercent = float(win_count) / float(totalcount) * 100
+        odd_drawPercent = float(draw_count) / float(totalcount) * 100
+        odd_losePercent = float(lose_count) / float(totalcount) * 100
         contentstr += "<tr bgcolor=\"red\" style=\"color:white\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
                       "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % ('总数',
                                                                         str(totalcount),
@@ -318,24 +366,30 @@ def getOrignalODDProbability(game):
                                                                         '',
                                                                         '',
 
-                                                                        str(float(win_count) / float(
-                                                                            totalcount) * 100)[:5],
-                                                                        str(float(draw_count) / float(
-                                                                            totalcount) * 100)[:5],
-                                                                        str(float(lose_count) / float(
-                                                                            totalcount) * 100)[:5])
-        # contentstr += '\n'
-        # contentstr += tempstr_two
-        # contentstr += '\n'
-        print tempstr_two
+                                                                        str(odd_winPercent)[:5],
+                                                                        str(odd_drawPercent)[:5],
+                                                                        str(odd_losePercent)[:5])
+        resultTuple = (odd_winPercent, odd_drawPercent, odd_losePercent)
+
     else:
         pass
-    return contentstr
-def getnowODDProbability(game):
+    if isYesterday:
+        return resultTuple
+    else:
+        return contentstr
+
+'''
+获取即时欧赔的概率
+'''
+def getnowODDProbability(game, isYesterday = False):
     if isinstance(game, FootballGame):
         contentstr = ''
+        resultTuple = (0, 0, 0)
         if game.oddCompanies is None:
-            return
+            if isYesterday:
+                return resultTuple
+            else:
+                return contentstr
         global conn
         global c
 
@@ -362,6 +416,10 @@ def getnowODDProbability(game):
         # 欧赔 输场数
         lose_count = 0
         unit_lose_count = 0
+
+        maxIndex = 0
+        resultSet = []
+
         for oneCompany in game.oddCompanies:
             if isinstance(oneCompany ,BetCompany):
                 c.execute("SELECT * FROM Games WHERE soccerID IN "
@@ -386,67 +444,96 @@ def getnowODDProbability(game):
 
                 if unit_totalcount > 0:
 
-                    unit_str = ''.join(
-                        [oneCompany.companyTitle, ' 总数:',str(unit_totalcount) , ' 胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
-                         str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
-                         str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
-                    contentstr += "<tr bgcolor=\"white\" ><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
-                                  "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
-                                                                                    str(unit_totalcount),
-                                                                                    str(oneCompany.winOdd),
-                                                                                    str(oneCompany.drawOdd),
-                                                                                    str(oneCompany.loseOdd),
-
-                                                                                    str(float(unit_win_count) / float(
-                                                                                        unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_draw_count) / float(
-                                                                                        unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_lose_count) / float(
-                                                                                        unit_totalcount) * 100)[:5])
-                    # contentstr += '\n'
-                    # contentstr += unit_str
-                    # print unit_str
-                    # print '\n'
+                    # contentstr += "<tr bgcolor=\"white\" ><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                    #               "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
+                    #                                                                 str(unit_totalcount),
+                    #                                                                 str(oneCompany.winOdd),
+                    #                                                                 str(oneCompany.drawOdd),
+                    #                                                                 str(oneCompany.loseOdd),
+                    #
+                    #                                                                 str(float(unit_win_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_draw_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_lose_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5])
+                    unitTuple = (unit_totalcount, oneCompany.companyTitle, str(oneCompany.winOdd),str(oneCompany.drawOdd),str(oneCompany.loseOdd),
+                                 str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5])
+                    resultSet.append(unitTuple)
 
                 unit_win_count = 0
                 unit_draw_count = 0
                 unit_lose_count = 0
 
+        maxCount = (resultSet[0])[0]
+        for oneTuple in resultSet:
+            if maxCount < oneTuple[0]:
+                maxCount = oneTuple[0]
+                maxIndex = resultSet.index(oneTuple)
+
+        for oneTuple in resultSet:
+            index = resultSet.index(oneTuple)
+            if maxIndex == index:
+                bgcolor = 'red'
+                textColor = 'white'
+            else:
+                bgcolor = 'white'
+                textColor = 'black'
+
+            tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                              "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor,oneTuple[1],
+                                                                                str(oneTuple[0]),
+                                                                                oneTuple[2],
+                                                                                oneTuple[3],
+                                                                                oneTuple[4],
+                                                                                oneTuple[5],
+                                                                                oneTuple[6],
+                                                                                oneTuple[7])
+
+            contentstr += tempResultStr
+
         if totalcount == 0:
-            return
-        tempstr_two = ''.join(
-            [str(totalcount), '胜: ', str(float(win_count) / float(totalcount) * 100)[:5], '/100', ' 平:',
-             str(float(draw_count) / float(totalcount) * 100)[:5], '/100', '负',
-             str(float(lose_count) / float(totalcount) * 100)[:5], '/100'])
-        contentstr += "<tr bgcolor=\"red\" style=\"color:white\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+            if isYesterday:
+                return resultTuple
+            else:
+                return contentstr
+        odd_winPercent = float(win_count) / float(totalcount) * 100
+        odd_drawPercent = float(draw_count) / float(totalcount) * 100
+        odd_losePercent = float(lose_count) / float(totalcount) * 100
+        contentstr += "<tr bgcolor=\"white\" style=\"color:white\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
                       "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % ('总数',
                                                                         str(totalcount),
                                                                         '',
                                                                         '',
                                                                         '',
 
-                                                                        str(float(win_count) / float(
-                                                                            totalcount) * 100)[:5],
-                                                                        str(float(draw_count) / float(
-                                                                            totalcount) * 100)[:5],
-                                                                        str(float(lose_count) / float(
-                                                                            totalcount) * 100)[:5])
-        # contentstr += '\n'
-        # contentstr += tempstr_two
-        # contentstr += '\n'
-        print tempstr_two
+                                                                        str(odd_winPercent)[:5],
+                                                                        str(odd_drawPercent)[:5],
+                                                                        str(odd_losePercent)[:5])
+        resultTuple = (odd_winPercent, odd_drawPercent, odd_losePercent)
+
     else:
         pass
-    return contentstr
+    if isYesterday:
+        return resultTuple
+    else:
+        return contentstr
 
 '''
 获取初盘的概率
 '''
-def getHandiProbability(game):
+def getHandiProbability(game, isYesterday = False):
     if isinstance(game, FootballGame):
         contentstr = ''
+        resultTuple = (0,0,0)
         if game.handiCompanies is None:
-            return
+            if isYesterday:
+                return resultTuple
+            else:
+                return contentstr
+
         global conn
         global c
 
@@ -479,6 +566,8 @@ def getHandiProbability(game):
         lose_count = 0
         unit_handi_lose_count= 0
         unit_lose_count = 0
+        maxIndex = 0
+        resultSet = []
         for oneCompany in game.handiCompanies:
             if isinstance(oneCompany ,BetCompany):
                 c.execute("SELECT * FROM Games WHERE soccerID IN "
@@ -512,31 +601,26 @@ def getHandiProbability(game):
                         unit_handi_lose_count += 1
 
                 if unit_totalcount > 0:
-                    unit_str_handi = ''.join(
-                        [oneCompany.companyTitle, ': ', str(oneCompany.orignal_Handicap), ' 总数: ',
-                         str(unit_totalcount), '赢盘: ',
-                         str(float(unit_handi_win_count) / float(unit_totalcount) * 100)[:5], ' 走盘:',
-                         str(float(unit_handi_draw_count) / float(unit_totalcount) * 100)[:5], '输盘',
-                         str(float(unit_handi_lose_count) / float(unit_totalcount) * 100)[:5], ])
-                    unit_str = ''.join(
-                        ['胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
-                         str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
-                         str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
-                    contentstr += "<tr bgcolor=\"white\" ><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
-                                  "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
-                                                                                    oneCompany.orignal_Handicap,
-                                                                                    str(unit_totalcount),
-                                                                                    str(float(unit_handi_win_count) / float(unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_handi_draw_count) / float(unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_handi_lose_count) / float(unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5])
-                    # contentstr += '\n'
-                    # contentstr += unit_str_handi
-                    # contentstr += unit_str
-                    print unit_str_handi
-                    print unit_str
+
+                    # tempResultStr = "<tr bgcolor=\"white\" ><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                    #               "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
+                    #                                                                 oneCompany.orignal_Handicap,
+                    #                                                                 str(unit_totalcount),
+                    #                                                                 str(float(unit_handi_win_count) / float(unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_handi_draw_count) / float(unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_handi_lose_count) / float(unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5])
+                    # contentstr += tempResultStr
+                    unitTuple = (unit_totalcount,oneCompany.companyTitle,oneCompany.orignal_Handicap,
+                                 str(float(unit_handi_win_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_handi_draw_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_handi_lose_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5])
+                    resultSet.append(unitTuple)
 
                 unit_handi_win_count = 0
                 unit_win_count = 0
@@ -545,42 +629,77 @@ def getHandiProbability(game):
                 unit_handi_lose_count = 0
                 unit_lose_count = 0
 
+        maxCount = (resultSet[0])[0]
+        for oneTuple in resultSet:
+            if maxCount < oneTuple[0]:
+                maxCount = oneTuple[0]
+                maxIndex = resultSet.index(oneTuple)
+
+        for oneTuple in resultSet:
+            index = resultSet.index(oneTuple)
+            if maxIndex == index:
+                bgcolor = 'red'
+                textColor = 'white'
+            else:
+                bgcolor = 'white'
+                textColor = 'black'
+            tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                            "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor, oneTuple[1],
+                                                                              oneTuple[2],
+                                                                            str(oneTuple[0]),
+                                                                              oneTuple[3],
+                                                                              oneTuple[4],
+                                                                              oneTuple[5],
+                                                                              oneTuple[6],
+                                                                              oneTuple[7],
+                                                                              oneTuple[8])
+            contentstr += tempResultStr
+
         if totalcount == 0:
-            return
-        tempstr_one = ''.join(['初盘概率 ->', '总数: ', str(totalcount), '  赢盘: ',
-                               str(float(handi_win_count) / float(totalcount) * 100)[:5], ' 走盘:',
-                               str(float(handi_draw_count) / float(totalcount) * 100)[:5], '输盘',
-                               str(float(handi_lose_count) / float(totalcount) * 100)[:5], ])
-        tempstr_two = ''.join(
-            ['胜: ', str(float(win_count) / float(totalcount) * 100)[:5], '/100', ' 平:',
-             str(float(draw_count) / float(totalcount) * 100)[:5], '/100', '负',
-             str(float(lose_count) / float(totalcount) * 100)[:5], '/100'])
-        # contentstr += '\n'
-        # contentstr += tempstr_two
-        # contentstr += tempstr_one
-        # contentstr += '\n'
-        contentstr += "<tr bgcolor=\"red\" style=\"color:white\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+            if isYesterday:
+                return resultTuple
+            else:
+                return contentstr
+
+
+        handi_winPercent = float(handi_win_count) / float(totalcount) * 100
+        handi_drawPercent = float(handi_draw_count) / float(totalcount) * 100
+        handi_losePercent = float(handi_lose_count) / float(totalcount) * 100
+        odd_winPercent = float(win_count) / float(totalcount) * 100
+        odd_drawPercent = float(draw_count) / float(totalcount) * 100
+        odd_losePercent = float(lose_count) / float(totalcount) * 100
+        contentstr += "<tr><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
                       "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % ('总数',
                                                                         '',
                                                                         str(totalcount),
-                                                                        str(float(handi_win_count) / float(totalcount) * 100)[:5],
-                                                                        str(float(handi_draw_count) / float(totalcount) * 100)[:5],
-                                                                        str(float(handi_lose_count) / float(totalcount) * 100)[:5],
-                                                                        str(float(win_count) / float(totalcount) * 100)[:5],
-                                                                        str(float(draw_count) / float(totalcount) * 100)[:5],
-                                                                        str(float(lose_count) / float(totalcount) * 100)[:5])
-        print tempstr_one
-        print tempstr_two
+                                                                        str(handi_winPercent)[:5],
+                                                                        str(handi_drawPercent)[:5],
+                                                                        str(handi_losePercent)[:5],
+                                                                        str(odd_winPercent)[:5],
+                                                                        str(odd_drawPercent)[:5],
+                                                                        str(odd_losePercent)[:5])
+        resultTuple = (handi_winPercent,handi_drawPercent,handi_losePercent)
+
     else:
         pass
-    # contentstr += getnowHandiProbability( game)
-    return contentstr
 
-def getnowHandiProbability(game):
+    if isYesterday:
+        return resultTuple
+    else:
+        return contentstr
+
+'''
+获取即时盘口的概率
+'''
+def getnowHandiProbability(game, isYesterday = False):
     contentstr = ''
+    resultTuple = (0, 0, 0)
     if isinstance(game, FootballGame):
         if game.handiCompanies is None:
-            return contentstr
+            if isYesterday:
+                return resultTuple
+            else:
+                return contentstr
         global conn
         global c
 
@@ -606,6 +725,9 @@ def getnowHandiProbability(game):
         lose_count = 0
         unit_handi_lose_count= 0
         unit_lose_count = 0
+
+        maxIndex = 0
+        resultSet = []
         for oneCompany in game.handiCompanies:
             if isinstance(oneCompany ,BetCompany):
                 c.execute("SELECT * FROM Games WHERE soccerID IN "
@@ -639,42 +761,33 @@ def getnowHandiProbability(game):
                         unit_handi_lose_count += 1
 
                 if unit_totalcount > 0:
-                    unit_str_handi = ''.join(
-                        [oneCompany.companyTitle, ': ', str(oneCompany.now_Handicap), ' 总数: ',
-                         str(unit_totalcount), '赢盘: ',
-                         str(float(unit_handi_win_count) / float(unit_totalcount) * 100)[:5], ' 走盘:',
-                         str(float(unit_handi_draw_count) / float(unit_totalcount) * 100)[:5], '输盘',
-                         str(float(unit_handi_lose_count) / float(unit_totalcount) * 100)[:5], ])
-                    unit_str = ''.join(
-                        ['胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
-                         str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
-                         str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
-                    contentstr += "<tr bgcolor=\"white\" ><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
-                                  "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
-                                                                                    oneCompany.orignal_Handicap,
-                                                                                    str(unit_totalcount),
-                                                                                    str(float(
-                                                                                        unit_handi_win_count) / float(
-                                                                                        unit_totalcount) * 100)[:5],
-                                                                                    str(float(
-                                                                                        unit_handi_draw_count) / float(
-                                                                                        unit_totalcount) * 100)[:5],
-                                                                                    str(float(
-                                                                                        unit_handi_lose_count) / float(
-                                                                                        unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_win_count) / float(
-                                                                                        unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_draw_count) / float(
-                                                                                        unit_totalcount) * 100)[:5],
-                                                                                    str(float(unit_lose_count) / float(
-                                                                                        unit_totalcount) * 100)[:5])
-                    # contentstr += '\n'
-                    # contentstr += unit_str
-                    # contentstr += unit_str_handi
-                    # contentstr += '\n'
-                    # print unit_str_handi
-                    # print unit_str
-                    # print '\n'
+                    # contentstr += "<tr bgcolor=\"white\" ><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                    #               "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
+                    #                                                                 oneCompany.now_Handicap,
+                    #                                                                 str(unit_totalcount),
+                    #                                                                 str(float(
+                    #                                                                     unit_handi_win_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(
+                    #                                                                     unit_handi_draw_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(
+                    #                                                                     unit_handi_lose_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_win_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_draw_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5],
+                    #                                                                 str(float(unit_lose_count) / float(
+                    #                                                                     unit_totalcount) * 100)[:5])
+                    unitTuple = (unit_totalcount, oneCompany.companyTitle, oneCompany.orignal_Handicap,
+                                 str(float(unit_handi_win_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_handi_draw_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_handi_lose_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],
+                                 str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5])
+                    resultSet.append(unitTuple)
 
                 unit_handi_win_count = 0
                 unit_win_count = 0
@@ -683,42 +796,62 @@ def getnowHandiProbability(game):
                 unit_handi_lose_count = 0
                 unit_lose_count = 0
 
+        maxCount = (resultSet[0])[0]
+        for oneTuple in resultSet:
+            if maxCount < oneTuple[0]:
+                maxCount = oneTuple[0]
+                maxIndex = resultSet.index(oneTuple)
+
+        for oneTuple in resultSet:
+            index = resultSet.index(oneTuple)
+            if maxIndex == index:
+                bgcolor = 'red'
+                textColor = 'white'
+            else:
+                bgcolor = 'white'
+                textColor = 'black'
+            tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                            "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor, oneTuple[1],
+                                                                              oneTuple[2],
+                                                                              str(oneTuple[0]),
+                                                                              oneTuple[3],
+                                                                              oneTuple[4],
+                                                                              oneTuple[5],
+                                                                              oneTuple[6],
+                                                                              oneTuple[7],
+                                                                              oneTuple[8])
+            contentstr += tempResultStr
+
         if totalcount == 0:
-            return contentstr
-        tempstr_one = ''.join(['终盘概率 ->', '总数: ', str(totalcount), '赢盘: ',
-                               str(float(handi_win_count) / float(totalcount) * 100)[:5], ' 走盘:',
-                               str(float(handi_draw_count) / float(totalcount) * 100)[:5], '输盘',
-                               str(float(handi_lose_count) / float(totalcount) * 100)[:5], ])
-        tempstr_two = ''.join(
-            ['胜: ', str(float(win_count) / float(totalcount) * 100)[:5], '/100', ' 平:',
-             str(float(draw_count) / float(totalcount) * 100)[:5], '/100', '负',
-             str(float(lose_count) / float(totalcount) * 100)[:5], '/100'])
-        contentstr += "<tr bgcolor=\"red\" style=\"color:white\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+            if isYesterday:
+                return resultTuple
+            else:
+                return contentstr
+
+        handi_winPercent = float(handi_win_count) / float(totalcount) * 100
+        handi_drawPercent = float(handi_draw_count) / float(totalcount) * 100
+        handi_losePercent = float(handi_lose_count) / float(totalcount) * 100
+        contentstr += "<tr bgcolor=\"white\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
                       "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % ('终盘概率',
                                                                         '总数',
                                                                         str(totalcount),
-                                                                        str(float(handi_win_count) / float(
-                                                                            totalcount) * 100)[:5],
-                                                                        str(float(handi_draw_count) / float(
-                                                                            totalcount) * 100)[:5],
-                                                                        str(float(handi_lose_count) / float(
-                                                                            totalcount) * 100)[:5],
+                                                                        str(handi_winPercent)[:5],
+                                                                        str(handi_drawPercent)[:5],
+                                                                        str(handi_losePercent)[:5],
                                                                         str(float(win_count) / float(totalcount) * 100)[
                                                                         :5],
                                                                         str(float(draw_count) / float(
                                                                             totalcount) * 100)[:5],
                                                                         str(float(lose_count) / float(
                                                                             totalcount) * 100)[:5])
-        # contentstr += '\n'
-        # contentstr += tempstr_two
-        # contentstr += tempstr_one
-        # contentstr += '\n'
-        print tempstr_one
-        print tempstr_two
-        print '\n'
+        resultTuple = (handi_winPercent, handi_drawPercent, handi_losePercent)
+
     else:
         pass
-    return contentstr
+    if isYesterday:
+        return resultTuple
+    else:
+        return contentstr
 
 '''
 分析一场比赛的数据

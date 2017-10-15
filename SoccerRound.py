@@ -276,16 +276,22 @@ def getOneGameODD(game):
             company.soccerGameId = game.soccerID
             unitArray = unit.split('^')
 
-            company.companyTitle = unitArray[0].encode('utf-8')
-            company.orignal_winOdd = float(unitArray[2])
-            company.orignal_drawOdd = float(unitArray[3])
+            try:
+                company.companyTitle = unitArray[0].encode('utf-8')
+                company.orignal_winOdd = float(unitArray[2])
+                company.orignal_drawOdd = float(unitArray[3])
 
-            company.orignal_loseOdd = float(unitArray[4])
+                company.orignal_loseOdd = float(unitArray[4])
 
-            company.winOdd = float(unitArray[5])
+                company.winOdd = float(unitArray[5])
 
-            company.drawOdd = float(unitArray[6])
-            company.loseOdd = float(unitArray[7])
+                company.drawOdd = float(unitArray[6])
+                company.loseOdd = float(unitArray[7])
+            except IndexError as e:
+                print e
+                print unitArray
+
+
             if company.companyTitle in ['竞彩官方', '10BET', 'bet 365', 'bwin', 'Interwetten', 'SB', '澳门', '立博', '威廉希尔', '香港马会', '伟德']:
                 companys.append(company)
                 if company.companyTitle == '澳门':

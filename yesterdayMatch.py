@@ -25,7 +25,6 @@ sys.setdefaultencoding('utf-8')
 AllGames = []
 AllBeginTimes = []
 
-
 '''
 主函数
 '''
@@ -70,7 +69,6 @@ def getYesterdaySoccer(timestr):
             # leaguelistfile.write('%s:%s\n'%(oneLeague[1],oneLeague[0]))
         leaguelist = leaguelistfile.readlines()
         # return
-        gameStr = ''
         if type == 1:
             gameStr = allArray[1]
         else:
@@ -143,13 +141,22 @@ def getYesterdaySoccer(timestr):
                 AllGames.append(onegame)
                 onegame.oddCompanies = SoccerRound.getOneGameODD(onegame)
                 onegame.handiCompanies = SoccerRound.getOneGameHandi(onegame)
-                getHandiProbability(onegame)
-                flag = getHandiOrignalTime.gethandiTime(onegame.soccerID)
-                if flag:
-                    print '澳门早开'.join(
-                        [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+                Ori_Handi_result = getHandiProbability(onegame,True)
+                Now_Handi_result = getnowHandiProbability(onegame,True)
+                Ori_Odd_result = getOrignalODDProbability(onegame,True)
+                Now_Odd_result = getnowHandiProbability(onegame,True)
 
-            # print onegame.leauge +' ' + onegame.homeTeam +' '+ onegame.friendTeam +' '+ str(onegame.soccer)
+                result_locationstr = os.path.join('/Users/dalong/Desktop', '%s-result.txt' % (timestr,))
+                result_leaguelistfile = open(result_locationstr, 'a')
+                if Ori_Handi_result[0] > 60 or Ori_Handi_result[1] > 60 or Ori_Handi_result[2] > 60 or Now_Handi_result[0] > 60  or Now_Handi_result[1] > 60 or Now_Handi_result[2] > 60 or Ori_Odd_result[0] > 60  or Ori_Odd_result[1] > 60 or Ori_Odd_result[2] > 60  or Now_Odd_result[0] > 60  or Now_Odd_result[1] > 60 or Now_Odd_result[2] > 60:
+                    result_leaguelistfile.write('%s:%s vs %s %d:%d\n初盘:  胜:%s 平:%s 负:%s\n终盘:  胜:%s 平:%s 负:%s\n初赔:  胜:%s 平:%s 负:%s\n终赔:  胜:%s 平:%s 负:%s\n\n'%(onegame.beginTime, onegame.homeTeam, onegame.friendTeam,onegame.allHome,onegame.allFriend,
+                                                                                                                     str(Ori_Handi_result[0])[:5],str(Ori_Handi_result[1])[:5],str(Ori_Handi_result[2])[:5],
+                                                                                                                     str(Now_Handi_result[0])[:5],str(Now_Handi_result[1])[:5],str(Now_Handi_result[2])[:5],
+                                                                                                                     str(Ori_Odd_result[0])[:5],str(Ori_Odd_result[1])[:5],str(Ori_Odd_result[2])[:5],
+                                                                                                                     str(Now_Odd_result[0])[:5],str(Now_Odd_result[1])[:5],str(Now_Odd_result[2])[:5],
+                                                                                                                     )
+                                         )
+
 
             time.sleep(1.5)
 
@@ -161,7 +168,9 @@ def main():
     aDay = timedelta(days=-1)
     now = now + aDay
     yesterdaystr = now.strftime('%Y-%m-%d')
-    getYesterdaySoccer(yesterdaystr)
+
+    getYesterdaySoccer('2017-10-12')
+
 
 if __name__ == '__main__':
     main()
