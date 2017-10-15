@@ -324,42 +324,44 @@ def getOrignalODDProbability(game, isYesterday = False):
                 unit_draw_count = 0
                 unit_lose_count = 0
 
-        maxCount = (resultSet[0])[0]
-        for oneTuple in resultSet:
-            if maxCount < oneTuple[0]:
-                maxCount = oneTuple[0]
-                maxIndex = resultSet.index(oneTuple)
+        if len(resultSet) > 0:
+            maxCount = (resultSet[0])[0]
+            for oneTuple in resultSet:
+                if maxCount < oneTuple[0]:
+                    maxCount = oneTuple[0]
+                    maxIndex = resultSet.index(oneTuple)
 
-        for oneTuple in resultSet:
-            index = resultSet.index(oneTuple)
-            if maxIndex == index:
-                bgcolor = 'red'
-                textColor = 'white'
-            else:
-                bgcolor = 'white'
-                textColor = 'black'
+            for oneTuple in resultSet:
+                index = resultSet.index(oneTuple)
+                if maxIndex == index:
+                    bgcolor = 'red'
+                    textColor = 'white'
+                else:
+                    bgcolor = 'white'
+                    textColor = 'black'
 
-            tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
-                            "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor, oneTuple[1],
-                                                                              str(oneTuple[0]),
-                                                                              oneTuple[2],
-                                                                              oneTuple[3],
-                                                                              oneTuple[4],
-                                                                              oneTuple[5],
-                                                                              oneTuple[6],
-                                                                              oneTuple[7])
+                tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                                "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor, oneTuple[1],
+                                                                                  str(oneTuple[0]),
+                                                                                  oneTuple[2],
+                                                                                  oneTuple[3],
+                                                                                  oneTuple[4],
+                                                                                  oneTuple[5],
+                                                                                  oneTuple[6],
+                                                                                  oneTuple[7])
 
-            contentstr += tempResultStr
+                contentstr += tempResultStr
 
         if totalcount == 0:
             if isYesterday:
                 return resultTuple
             else:
                 return contentstr
+
         odd_winPercent = float(win_count) / float(totalcount) * 100
         odd_drawPercent = float(draw_count) / float(totalcount) * 100
         odd_losePercent = float(lose_count) / float(totalcount) * 100
-        contentstr += "<tr bgcolor=\"red\" style=\"color:white\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+        contentstr += "<tr bgcolor=\"white\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
                       "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % ('总数',
                                                                         str(totalcount),
                                                                         '',
@@ -466,43 +468,44 @@ def getnowODDProbability(game, isYesterday = False):
                 unit_win_count = 0
                 unit_draw_count = 0
                 unit_lose_count = 0
+        if len(resultSet) > 0:
+            maxCount = (resultSet[0])[0]
+            for oneTuple in resultSet:
+                if maxCount < oneTuple[0]:
+                    maxCount = oneTuple[0]
+                    maxIndex = resultSet.index(oneTuple)
 
-        maxCount = (resultSet[0])[0]
-        for oneTuple in resultSet:
-            if maxCount < oneTuple[0]:
-                maxCount = oneTuple[0]
-                maxIndex = resultSet.index(oneTuple)
+            for oneTuple in resultSet:
+                index = resultSet.index(oneTuple)
+                if maxIndex == index:
+                    bgcolor = 'red'
+                    textColor = 'white'
+                else:
+                    bgcolor = 'white'
+                    textColor = 'black'
 
-        for oneTuple in resultSet:
-            index = resultSet.index(oneTuple)
-            if maxIndex == index:
-                bgcolor = 'red'
-                textColor = 'white'
-            else:
-                bgcolor = 'white'
-                textColor = 'black'
+                tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                                "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor, oneTuple[1],
+                                                                                  str(oneTuple[0]),
+                                                                                  oneTuple[2],
+                                                                                  oneTuple[3],
+                                                                                  oneTuple[4],
+                                                                                  oneTuple[5],
+                                                                                  oneTuple[6],
+                                                                                  oneTuple[7])
 
-            tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
-                              "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor,oneTuple[1],
-                                                                                str(oneTuple[0]),
-                                                                                oneTuple[2],
-                                                                                oneTuple[3],
-                                                                                oneTuple[4],
-                                                                                oneTuple[5],
-                                                                                oneTuple[6],
-                                                                                oneTuple[7])
-
-            contentstr += tempResultStr
+                contentstr += tempResultStr
 
         if totalcount == 0:
             if isYesterday:
                 return resultTuple
             else:
                 return contentstr
+
         odd_winPercent = float(win_count) / float(totalcount) * 100
         odd_drawPercent = float(draw_count) / float(totalcount) * 100
         odd_losePercent = float(lose_count) / float(totalcount) * 100
-        contentstr += "<tr bgcolor=\"white\" style=\"color:white\"><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+        contentstr += "<tr bgcolor=\"white\" ><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
                       "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % ('总数',
                                                                         str(totalcount),
                                                                         '',
@@ -629,31 +632,32 @@ def getHandiProbability(game, isYesterday = False):
                 unit_handi_lose_count = 0
                 unit_lose_count = 0
 
-        maxCount = (resultSet[0])[0]
-        for oneTuple in resultSet:
-            if maxCount < oneTuple[0]:
-                maxCount = oneTuple[0]
-                maxIndex = resultSet.index(oneTuple)
+        if len(resultSet) > 0:
+            maxCount = (resultSet[0])[0]
+            for oneTuple in resultSet:
+                if maxCount < oneTuple[0]:
+                    maxCount = oneTuple[0]
+                    maxIndex = resultSet.index(oneTuple)
 
-        for oneTuple in resultSet:
-            index = resultSet.index(oneTuple)
-            if maxIndex == index:
-                bgcolor = 'red'
-                textColor = 'white'
-            else:
-                bgcolor = 'white'
-                textColor = 'black'
-            tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
-                            "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor, oneTuple[1],
-                                                                              oneTuple[2],
-                                                                            str(oneTuple[0]),
-                                                                              oneTuple[3],
-                                                                              oneTuple[4],
-                                                                              oneTuple[5],
-                                                                              oneTuple[6],
-                                                                              oneTuple[7],
-                                                                              oneTuple[8])
-            contentstr += tempResultStr
+            for oneTuple in resultSet:
+                index = resultSet.index(oneTuple)
+                if maxIndex == index:
+                    bgcolor = 'red'
+                    textColor = 'white'
+                else:
+                    bgcolor = 'white'
+                    textColor = 'black'
+                tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                                "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor, oneTuple[1],
+                                                                                  oneTuple[2],
+                                                                                  str(oneTuple[0]),
+                                                                                  oneTuple[3],
+                                                                                  oneTuple[4],
+                                                                                  oneTuple[5],
+                                                                                  oneTuple[6],
+                                                                                  oneTuple[7],
+                                                                                  oneTuple[8])
+                contentstr += tempResultStr
 
         if totalcount == 0:
             if isYesterday:
@@ -668,7 +672,7 @@ def getHandiProbability(game, isYesterday = False):
         odd_winPercent = float(win_count) / float(totalcount) * 100
         odd_drawPercent = float(draw_count) / float(totalcount) * 100
         odd_losePercent = float(lose_count) / float(totalcount) * 100
-        contentstr += "<tr><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+        contentstr += "<tr bgcolor = \"white\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
                       "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % ('总数',
                                                                         '',
                                                                         str(totalcount),
@@ -796,37 +800,39 @@ def getnowHandiProbability(game, isYesterday = False):
                 unit_handi_lose_count = 0
                 unit_lose_count = 0
 
-        maxCount = (resultSet[0])[0]
-        for oneTuple in resultSet:
-            if maxCount < oneTuple[0]:
-                maxCount = oneTuple[0]
-                maxIndex = resultSet.index(oneTuple)
+        if len(resultSet) > 0:
+            maxCount = (resultSet[0])[0]
+            for oneTuple in resultSet:
+                if maxCount < oneTuple[0]:
+                    maxCount = oneTuple[0]
+                    maxIndex = resultSet.index(oneTuple)
 
-        for oneTuple in resultSet:
-            index = resultSet.index(oneTuple)
-            if maxIndex == index:
-                bgcolor = 'red'
-                textColor = 'white'
-            else:
-                bgcolor = 'white'
-                textColor = 'black'
-            tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
-                            "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor, oneTuple[1],
-                                                                              oneTuple[2],
-                                                                              str(oneTuple[0]),
-                                                                              oneTuple[3],
-                                                                              oneTuple[4],
-                                                                              oneTuple[5],
-                                                                              oneTuple[6],
-                                                                              oneTuple[7],
-                                                                              oneTuple[8])
-            contentstr += tempResultStr
+            for oneTuple in resultSet:
+                index = resultSet.index(oneTuple)
+                if maxIndex == index:
+                    bgcolor = 'red'
+                    textColor = 'white'
+                else:
+                    bgcolor = 'white'
+                    textColor = 'black'
+                tempResultStr = "<tr bgcolor=\"%s\" style=\"color:%s\"><td>%s</td><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
+                                "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (bgcolor, textColor, oneTuple[1],
+                                                                                  oneTuple[2],
+                                                                                  str(oneTuple[0]),
+                                                                                  oneTuple[3],
+                                                                                  oneTuple[4],
+                                                                                  oneTuple[5],
+                                                                                  oneTuple[6],
+                                                                                  oneTuple[7],
+                                                                                  oneTuple[8])
+                contentstr += tempResultStr
 
         if totalcount == 0:
             if isYesterday:
                 return resultTuple
             else:
                 return contentstr
+
 
         handi_winPercent = float(handi_win_count) / float(totalcount) * 100
         handi_drawPercent = float(handi_draw_count) / float(totalcount) * 100
