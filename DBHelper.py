@@ -229,7 +229,7 @@ def insert_ODD(company):
 '''
 def getOrignalODDProbability(game, isYesterday = False):
     contentstr = ''
-    resultTuple = (0,0,0)
+    resultTuple = None
     if isinstance(game, FootballGame):
 
         if game.oddCompanies is None:
@@ -291,34 +291,15 @@ def getOrignalODDProbability(game, isYesterday = False):
 
                 if unit_totalcount > 0:
 
-                    unit_str = ''.join(
-                        [oneCompany.companyTitle, ' 总数:',str(unit_totalcount) , ' 胜: ', str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],' 平:',
-                         str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],  '负',
-                         str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5]])
-                    # contentstr += "<tr bgcolor=\"white\" ><td>%s</td> <td>%s</td><td>%s</td><td>%s</td>" \
-                    #               "<td>%s</td><td>%s</td><td>%s</td><td>%s</td>" % (oneCompany.companyTitle,
-                    #                                                                 str(unit_totalcount),
-                    #                                                                 str(oneCompany.orignal_winOdd),
-                    #                                                                 str(oneCompany.orignal_drawOdd),
-                    #                                                                 str(oneCompany.orignal_loseOdd),
-                    #
-                    #                                                                 str(float(unit_win_count) / float(
-                    #                                                                     unit_totalcount) * 100)[:5],
-                    #                                                                 str(float(unit_draw_count) / float(
-                    #                                                                     unit_totalcount) * 100)[:5],
-                    #                                                                 str(float(unit_lose_count) / float(
-                    #                                                                     unit_totalcount) * 100)[:5])
                     unitTuple = (
                     unit_totalcount, oneCompany.companyTitle, str(oneCompany.winOdd), str(oneCompany.drawOdd),
                     str(oneCompany.loseOdd),
                     str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],
                     str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],
                     str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5])
+
                     resultSet.append(unitTuple)
-                    # contentstr += '\n'
-                    # contentstr += unit_str
-                    print unit_str
-                    print '\n'
+
 
                 unit_win_count = 0
                 unit_draw_count = 0
@@ -330,7 +311,7 @@ def getOrignalODDProbability(game, isYesterday = False):
                 if maxCount < oneTuple[0]:
                     maxCount = oneTuple[0]
                     maxIndex = resultSet.index(oneTuple)
-
+            resultTuple = resultSet[maxIndex]
             for oneTuple in resultSet:
                 index = resultSet.index(oneTuple)
                 if maxIndex == index:
@@ -371,7 +352,6 @@ def getOrignalODDProbability(game, isYesterday = False):
                                                                         str(odd_winPercent)[:5],
                                                                         str(odd_drawPercent)[:5],
                                                                         str(odd_losePercent)[:5])
-        resultTuple = (odd_winPercent, odd_drawPercent, odd_losePercent)
 
     else:
         pass
@@ -474,7 +454,7 @@ def getnowODDProbability(game, isYesterday = False):
                 if maxCount < oneTuple[0]:
                     maxCount = oneTuple[0]
                     maxIndex = resultSet.index(oneTuple)
-
+            resultTuple = resultSet[maxIndex]
             for oneTuple in resultSet:
                 index = resultSet.index(oneTuple)
                 if maxIndex == index:
@@ -515,7 +495,6 @@ def getnowODDProbability(game, isYesterday = False):
                                                                         str(odd_winPercent)[:5],
                                                                         str(odd_drawPercent)[:5],
                                                                         str(odd_losePercent)[:5])
-        resultTuple = (odd_winPercent, odd_drawPercent, odd_losePercent)
 
     else:
         pass
@@ -638,7 +617,7 @@ def getHandiProbability(game, isYesterday = False):
                 if maxCount < oneTuple[0]:
                     maxCount = oneTuple[0]
                     maxIndex = resultSet.index(oneTuple)
-
+            resultTuple = resultSet[maxIndex]
             for oneTuple in resultSet:
                 index = resultSet.index(oneTuple)
                 if maxIndex == index:
@@ -682,7 +661,6 @@ def getHandiProbability(game, isYesterday = False):
                                                                         str(odd_winPercent)[:5],
                                                                         str(odd_drawPercent)[:5],
                                                                         str(odd_losePercent)[:5])
-        resultTuple = (handi_winPercent,handi_drawPercent,handi_losePercent)
 
     else:
         pass
@@ -806,7 +784,7 @@ def getnowHandiProbability(game, isYesterday = False):
                 if maxCount < oneTuple[0]:
                     maxCount = oneTuple[0]
                     maxIndex = resultSet.index(oneTuple)
-
+            resultTuple = resultSet[maxIndex]
             for oneTuple in resultSet:
                 index = resultSet.index(oneTuple)
                 if maxIndex == index:
@@ -850,7 +828,6 @@ def getnowHandiProbability(game, isYesterday = False):
                                                                             totalcount) * 100)[:5],
                                                                         str(float(lose_count) / float(
                                                                             totalcount) * 100)[:5])
-        resultTuple = (handi_winPercent, handi_drawPercent, handi_losePercent)
 
     else:
         pass
