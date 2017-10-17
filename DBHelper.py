@@ -292,8 +292,8 @@ def getOrignalODDProbability(game, isYesterday = False):
                 if unit_totalcount > 0:
 
                     unitTuple = (
-                    unit_totalcount, oneCompany.companyTitle, str(oneCompany.winOdd), str(oneCompany.drawOdd),
-                    str(oneCompany.loseOdd),
+                    unit_totalcount, oneCompany.companyTitle, str(oneCompany.orignal_winOdd), str(oneCompany.orignal_drawOdd),
+                    str(oneCompany.orignal_drawOdd),
                     str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],
                     str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],
                     str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5])
@@ -762,7 +762,7 @@ def getnowHandiProbability(game, isYesterday = False):
                     #                                                                     unit_totalcount) * 100)[:5],
                     #                                                                 str(float(unit_lose_count) / float(
                     #                                                                     unit_totalcount) * 100)[:5])
-                    unitTuple = (unit_totalcount, oneCompany.companyTitle, oneCompany.orignal_Handicap,
+                    unitTuple = (unit_totalcount, oneCompany.companyTitle, oneCompany.now_Handicap,
                                  str(float(unit_handi_win_count) / float(unit_totalcount) * 100)[:5],
                                  str(float(unit_handi_draw_count) / float(unit_totalcount) * 100)[:5],
                                  str(float(unit_handi_lose_count) / float(unit_totalcount) * 100)[:5],

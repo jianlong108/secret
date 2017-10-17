@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/League.py" afterPath="$PROJECT_DIR$/League.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TimingSoccer.py" afterPath="$PROJECT_DIR$/TimingSoccer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/league.txt" afterPath="$PROJECT_DIR$/league.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DBHelper.py" afterPath="$PROJECT_DIR$/DBHelper.py" />
     </list>
     <ignored path="Soccer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -56,37 +54,37 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DBHelper.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="DBHelper.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DBHelper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18952">
-              <caret line="829" column="99" selection-start-line="829" selection-start-column="99" selection-end-line="829" selection-end-column="99" />
+            <state relative-caret-position="-3363">
+              <caret line="295" column="50" selection-start-line="295" selection-start-column="50" selection-end-line="295" selection-end-column="50" />
               <folding>
-                <element signature="e#37084#37803#0" expanded="false" />
-                <element signature="e#37833#41438#0" expanded="false" />
-                <element signature="e#41465#43784#0" expanded="false" />
-                <element signature="e#43813#44609#0" expanded="false" />
-                <element signature="e#44640#44814#0" expanded="false" />
-                <marker date="1508092382000" expanded="true" signature="2428:2469" ph="INSERT INTO League... " />
-                <marker date="1508092382000" expanded="true" signature="2886:2938" ph="INSERT INTO Games... " />
-                <marker date="1508092382000" expanded="true" signature="3458:3510" ph="INSERT INTO Games... " />
-                <marker date="1508092382000" expanded="true" signature="4109:4176" ph="INSERT INTO CompanyHandicap... " />
-                <marker date="1508092382000" expanded="true" signature="4700:4761" ph="INSERT INTO CompanyODD... " />
-                <marker date="1508092382000" expanded="true" signature="5348:5412" ph="INSERT INTO CompanyHandicap... " />
-                <marker date="1508092382000" expanded="true" signature="5910:5969" ph="INSERT INTO CompanyODD... " />
-                <marker date="1508092382000" expanded="true" signature="6511:6575" ph="INSERT INTO CompanyHandicap... " />
-                <marker date="1508092382000" expanded="true" signature="7073:7132" ph="INSERT INTO CompanyODD... " />
-                <marker date="1508092382000" expanded="true" signature="8292:8519" ph="SELECT * FRO... Games" />
-                <marker date="1508092382000" expanded="true" signature="8360:8501" ph="select socce... CompanyODD" />
-                <marker date="1508092382000" expanded="true" signature="13760:13975" ph="SELECT * FRO... Games" />
-                <marker date="1508092382000" expanded="true" signature="13828:13957" ph="select socce... CompanyODD" />
-                <marker date="1508092382000" expanded="true" signature="20842:21064" ph="SELECT * FRO... Games" />
-                <marker date="1508092382000" expanded="true" signature="20910:21046" ph="select socce... CompanyHandicap" />
-                <marker date="1508092382000" expanded="true" signature="29024:29242" ph="SELECT * FRO... Games" />
-                <marker date="1508092382000" expanded="true" signature="29092:29224" ph="select socce... CompanyHandicap" />
-                <marker date="1508092382000" expanded="true" signature="38288:38634" ph="SELECT * FRO... Games" />
-                <marker date="1508092382000" expanded="true" signature="41724:42114" ph="SELECT * FRO... Games" />
-                <marker date="1508092382000" expanded="true" signature="44983:45023" ph="SELECT * FRO... League" />
+                <element signature="e#37104#37823#0" expanded="false" />
+                <element signature="e#37853#41458#0" expanded="false" />
+                <element signature="e#41485#43804#0" expanded="false" />
+                <element signature="e#43833#44629#0" expanded="false" />
+                <element signature="e#44660#44834#0" expanded="false" />
+                <marker date="1508255986000" expanded="true" signature="2428:2469" ph="INSERT INTO League... " />
+                <marker date="1508255986000" expanded="true" signature="2886:2938" ph="INSERT INTO Games... " />
+                <marker date="1508255986000" expanded="true" signature="3458:3510" ph="INSERT INTO Games... " />
+                <marker date="1508255986000" expanded="true" signature="4109:4176" ph="INSERT INTO CompanyHandicap... " />
+                <marker date="1508255986000" expanded="true" signature="4700:4761" ph="INSERT INTO CompanyODD... " />
+                <marker date="1508255986000" expanded="true" signature="5348:5412" ph="INSERT INTO CompanyHandicap... " />
+                <marker date="1508255986000" expanded="true" signature="5910:5969" ph="INSERT INTO CompanyODD... " />
+                <marker date="1508255986000" expanded="true" signature="6511:6575" ph="INSERT INTO CompanyHandicap... " />
+                <marker date="1508255986000" expanded="true" signature="7073:7132" ph="INSERT INTO CompanyODD... " />
+                <marker date="1508255986000" expanded="true" signature="8292:8519" ph="SELECT * FRO... Games" />
+                <marker date="1508255986000" expanded="true" signature="8360:8501" ph="select socce... CompanyODD" />
+                <marker date="1508255986000" expanded="true" signature="13784:13999" ph="SELECT * FRO... Games" />
+                <marker date="1508255986000" expanded="true" signature="13852:13981" ph="select socce... CompanyODD" />
+                <marker date="1508255986000" expanded="true" signature="20866:21088" ph="SELECT * FRO... Games" />
+                <marker date="1508255986000" expanded="true" signature="20934:21070" ph="select socce... CompanyHandicap" />
+                <marker date="1508255986000" expanded="true" signature="29048:29266" ph="SELECT * FRO... Games" />
+                <marker date="1508255986000" expanded="true" signature="29116:29248" ph="select socce... CompanyHandicap" />
+                <marker date="1508255986000" expanded="true" signature="38308:38654" ph="SELECT * FRO... Games" />
+                <marker date="1508255986000" expanded="true" signature="41744:42134" ph="SELECT * FRO... Games" />
+                <marker date="1508255986000" expanded="true" signature="45003:45043" ph="SELECT * FRO... League" />
               </folding>
             </state>
           </provider>
@@ -151,11 +149,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="yesterdayMatch.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="yesterdayMatch.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/yesterdayMatch.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="661">
-              <caret line="175" column="34" selection-start-line="175" selection-start-column="34" selection-end-line="175" selection-end-column="34" />
+            <state relative-caret-position="477">
+              <caret line="167" column="0" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
               <folding>
                 <element signature="e#48#70#0" expanded="true" />
               </folding>
@@ -211,11 +209,11 @@
         <option value="$PROJECT_DIR$/TodaySoccer.py" />
         <option value="$PROJECT_DIR$/SoccerRound.py" />
         <option value="$PROJECT_DIR$/MODULE_STUDY.py" />
-        <option value="$PROJECT_DIR$/DBHelper.py" />
         <option value="$PROJECT_DIR$/yesterdayMatch.py" />
         <option value="$PROJECT_DIR$/League.py" />
         <option value="$PROJECT_DIR$/league.txt" />
         <option value="$PROJECT_DIR$/TimingSoccer.py" />
+        <option value="$PROJECT_DIR$/DBHelper.py" />
       </list>
     </option>
   </component>
@@ -729,13 +727,6 @@
       <option name="presentableId" value="Default" />
       <updated>1490794748348</updated>
     </task>
-    <task id="LOCAL-00003" summary="增加联赛数据--盘口和赔率">
-      <created>1490804148441</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1490804148441</updated>
-    </task>
     <task id="LOCAL-00004" summary="增加联赛数据--盘口和赔率">
       <created>1490895062466</created>
       <option name="number" value="00004" />
@@ -1072,7 +1063,14 @@
       <option name="project" value="LOCAL" />
       <updated>1508116092331</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="联赛数据获取优化">
+      <created>1508255619203</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1508255619203</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1495,40 +1493,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DBHelper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18952">
-          <caret line="829" column="99" selection-start-line="829" selection-start-column="99" selection-end-line="829" selection-end-column="99" />
-          <folding>
-            <element signature="e#37084#37803#0" expanded="false" />
-            <element signature="e#37833#41438#0" expanded="false" />
-            <element signature="e#41465#43784#0" expanded="false" />
-            <element signature="e#43813#44609#0" expanded="false" />
-            <element signature="e#44640#44814#0" expanded="false" />
-            <marker date="1508092382000" expanded="true" signature="2428:2469" ph="INSERT INTO League... " />
-            <marker date="1508092382000" expanded="true" signature="2886:2938" ph="INSERT INTO Games... " />
-            <marker date="1508092382000" expanded="true" signature="3458:3510" ph="INSERT INTO Games... " />
-            <marker date="1508092382000" expanded="true" signature="4109:4176" ph="INSERT INTO CompanyHandicap... " />
-            <marker date="1508092382000" expanded="true" signature="4700:4761" ph="INSERT INTO CompanyODD... " />
-            <marker date="1508092382000" expanded="true" signature="5348:5412" ph="INSERT INTO CompanyHandicap... " />
-            <marker date="1508092382000" expanded="true" signature="5910:5969" ph="INSERT INTO CompanyODD... " />
-            <marker date="1508092382000" expanded="true" signature="6511:6575" ph="INSERT INTO CompanyHandicap... " />
-            <marker date="1508092382000" expanded="true" signature="7073:7132" ph="INSERT INTO CompanyODD... " />
-            <marker date="1508092382000" expanded="true" signature="8292:8519" ph="SELECT * FRO... Games" />
-            <marker date="1508092382000" expanded="true" signature="8360:8501" ph="select socce... CompanyODD" />
-            <marker date="1508092382000" expanded="true" signature="13760:13975" ph="SELECT * FRO... Games" />
-            <marker date="1508092382000" expanded="true" signature="13828:13957" ph="select socce... CompanyODD" />
-            <marker date="1508092382000" expanded="true" signature="20842:21064" ph="SELECT * FRO... Games" />
-            <marker date="1508092382000" expanded="true" signature="20910:21046" ph="select socce... CompanyHandicap" />
-            <marker date="1508092382000" expanded="true" signature="29024:29242" ph="SELECT * FRO... Games" />
-            <marker date="1508092382000" expanded="true" signature="29092:29224" ph="select socce... CompanyHandicap" />
-            <marker date="1508092382000" expanded="true" signature="38288:38634" ph="SELECT * FRO... Games" />
-            <marker date="1508092382000" expanded="true" signature="41724:42114" ph="SELECT * FRO... Games" />
-            <marker date="1508092382000" expanded="true" signature="44983:45023" ph="SELECT * FRO... League" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SoccerRound.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="697">
@@ -1577,10 +1541,44 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/yesterdayMatch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="661">
-          <caret line="175" column="34" selection-start-line="175" selection-start-column="34" selection-end-line="175" selection-end-column="34" />
+        <state relative-caret-position="477">
+          <caret line="167" column="0" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
           <folding>
             <element signature="e#48#70#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DBHelper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3363">
+          <caret line="295" column="50" selection-start-line="295" selection-start-column="50" selection-end-line="295" selection-end-column="50" />
+          <folding>
+            <element signature="e#37104#37823#0" expanded="false" />
+            <element signature="e#37853#41458#0" expanded="false" />
+            <element signature="e#41485#43804#0" expanded="false" />
+            <element signature="e#43833#44629#0" expanded="false" />
+            <element signature="e#44660#44834#0" expanded="false" />
+            <marker date="1508255986000" expanded="true" signature="2428:2469" ph="INSERT INTO League... " />
+            <marker date="1508255986000" expanded="true" signature="2886:2938" ph="INSERT INTO Games... " />
+            <marker date="1508255986000" expanded="true" signature="3458:3510" ph="INSERT INTO Games... " />
+            <marker date="1508255986000" expanded="true" signature="4109:4176" ph="INSERT INTO CompanyHandicap... " />
+            <marker date="1508255986000" expanded="true" signature="4700:4761" ph="INSERT INTO CompanyODD... " />
+            <marker date="1508255986000" expanded="true" signature="5348:5412" ph="INSERT INTO CompanyHandicap... " />
+            <marker date="1508255986000" expanded="true" signature="5910:5969" ph="INSERT INTO CompanyODD... " />
+            <marker date="1508255986000" expanded="true" signature="6511:6575" ph="INSERT INTO CompanyHandicap... " />
+            <marker date="1508255986000" expanded="true" signature="7073:7132" ph="INSERT INTO CompanyODD... " />
+            <marker date="1508255986000" expanded="true" signature="8292:8519" ph="SELECT * FRO... Games" />
+            <marker date="1508255986000" expanded="true" signature="8360:8501" ph="select socce... CompanyODD" />
+            <marker date="1508255986000" expanded="true" signature="13784:13999" ph="SELECT * FRO... Games" />
+            <marker date="1508255986000" expanded="true" signature="13852:13981" ph="select socce... CompanyODD" />
+            <marker date="1508255986000" expanded="true" signature="20866:21088" ph="SELECT * FRO... Games" />
+            <marker date="1508255986000" expanded="true" signature="20934:21070" ph="select socce... CompanyHandicap" />
+            <marker date="1508255986000" expanded="true" signature="29048:29266" ph="SELECT * FRO... Games" />
+            <marker date="1508255986000" expanded="true" signature="29116:29248" ph="select socce... CompanyHandicap" />
+            <marker date="1508255986000" expanded="true" signature="38308:38654" ph="SELECT * FRO... Games" />
+            <marker date="1508255986000" expanded="true" signature="41744:42134" ph="SELECT * FRO... Games" />
+            <marker date="1508255986000" expanded="true" signature="45003:45043" ph="SELECT * FRO... League" />
           </folding>
         </state>
       </provider>
