@@ -325,8 +325,8 @@ if sys.argv.__len__()==1:
 
 if __name__ == '__main__':
     leagueid = sys.argv[1]
-    isCup = sys.argv[2]
-    getLeagueData(leagueid, isCup)
+    # isCup = sys.argv[2]
+    getLeagueData(leagueid)
 
 
 

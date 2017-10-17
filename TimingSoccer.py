@@ -151,8 +151,8 @@ def timerAnalys(threadName, delay, counter):
         nowstr = now.strftime('%Y-%m-%d %H:%M')
         nowstr_offset_fiveMinute = now_offset_fiveMinute.strftime('%Y-%m-%d %H:%M')
         nowstr_offset_oneHour = now_offset_oneHour.strftime('%Y-%m-%d %H:%M')
-        if nowstr_offset_fiveMinute == '2017-10-16 01:13':
-            nowstr_offset_fiveMinute = '2017-10-16 01:05'
+        if nowstr_offset_fiveMinute == '2017-10-16 22:45':
+            nowstr_offset_fiveMinute = '2017-10-16 22:30'
         print nowstr_offset_fiveMinute
 
         # if nowstr_offset_oneHour in AllBeginTimes:
@@ -245,7 +245,7 @@ def timerAnalys(threadName, delay, counter):
                         # resultstr += '\n'
                         # resultstr += '\n'
             if resultstr != '' or resultstr is not None:
-                send_mail("%s %s" % ('距离开赛5分钟', nowstr), resultstr, 'html')
+                send_mail("<<临场五分钟>> 开赛时间:%s " % (now_offset_fiveMinute, ), resultstr, 'html')
 
         # if nowstr in AllBeginTimes:
         #     # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
