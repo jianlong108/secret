@@ -146,9 +146,9 @@ def getYesterdaySoccer(timestr):
                 Ori_Odd_result = getOrignalODDProbability(onegame,True)
                 Now_Odd_result = getnowODDProbability(onegame,True)
 
-                result_locationstr = os.path.join('/Users/dalong/Desktop', '%s-result.txt' % (timestr,))
+                result_locationstr = os.path.join('/Users/mi/Desktop', '%s-result.txt' % (timestr,))
                 result_leaguelistfile = open(result_locationstr, 'a')
-                if Ori_Handi_result[3] > 60 or Ori_Handi_result[4] > 60 or Ori_Handi_result[5] > 60 or Now_Handi_result[5] > 60  or Now_Handi_result[3] > 60 or Now_Handi_result[4] > 60 or Ori_Odd_result[5] > 60  or Ori_Odd_result[6] > 60 or Ori_Odd_result[7] > 60  or Now_Odd_result[5] > 60  or Now_Odd_result[6] > 60 or Now_Odd_result[7] > 60:
+                if (float(Now_Handi_result[5]) > 55  or float(Now_Handi_result[3]) > 55 or float(Now_Handi_result[4]) > 55) and (float(Now_Odd_result[5]) > 55  or float(Now_Odd_result[6]) > 55 or float(Now_Odd_result[7]) > 55):
                     result_leaguelistfile.write('%s: %s %s vs %s %d:%d\n'
                                                 '%s 初盘:%s 数量:%s 赢盘:%s 走盘:%s 输盘:%s 胜:%s 平:%s 负:%s\n'
                                                 '%s 终盘:%s 数量:%s 赢盘:%s 走盘:%s 输盘:%s 胜:%s 平:%s 负:%s\n'

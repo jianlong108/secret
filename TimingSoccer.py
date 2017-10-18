@@ -145,61 +145,61 @@ def timerAnalys(threadName, delay, counter):
 
         now = datetime.now()
         offset_five_minute = timedelta(minutes=-5)
-        offset_one_hour = timedelta(hours=-1)
+        offset_half_hour = timedelta(minutes=-30)
         now_offset_fiveMinute = now - offset_five_minute
-        now_offset_oneHour = now - offset_one_hour
+        now_offset_halfHour = now - offset_half_hour
         nowstr = now.strftime('%Y-%m-%d %H:%M')
         nowstr_offset_fiveMinute = now_offset_fiveMinute.strftime('%Y-%m-%d %H:%M')
-        nowstr_offset_oneHour = now_offset_oneHour.strftime('%Y-%m-%d %H:%M')
+        nowstr_offset_halfHour = now_offset_halfHour.strftime('%Y-%m-%d %H:%M')
         if nowstr_offset_fiveMinute == '2017-10-16 22:45':
             nowstr_offset_fiveMinute = '2017-10-16 22:30'
         print nowstr_offset_fiveMinute
 
-        # if nowstr_offset_oneHour in AllBeginTimes:
-        #     # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
-        #     # exitflag = 1
-        #     # pass
-        #     print nowstr_offset_oneHour
-        #     resultstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>临场预测</title></head><body>"
-        #     for onegame in AllGames:
-        #         if isinstance(onegame, FootballGame):
-        #
-        #             if onegame.beginTime == nowstr_offset_oneHour:
-        #                 # gameThread(2, '比赛线程', game)
-        #                 onegame.oddCompanies = getOneGameODD(onegame)
-        #                 onegame.handiCompanies = getOneGameHandi(onegame)
-        #                 titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs',
-        #                                     onegame.friendTeam, ' id: ',
-        #                                     str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ',
-        #                                     str(onegame.now_aomenHandi)])
-        #                 resultstr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
-        #
-        #                 nowOddStr = getnowODDProbability(onegame)
-        #
-        #                 nowHandistr = getnowHandiProbability(onegame)
-        #                 if nowHandistr is not None:
-        #                     resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-        #                                  "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
-        #
-        #                     resultstr += nowHandistr
-        #                     resultstr += '</table>'
-        #
-        #                 # resultstr += '\n'
-        #
-        #                 if nowOddStr is not None:
-        #                     resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧赔</h5></caption>" \
-        #                                  "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
-        #                     resultstr += nowOddStr
-        #                     resultstr += '</table>'
-        #
-        #                 resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧亚转换</h5></caption>" \
-        #                              "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>转换后</td><td>主</td><td>盘口</td><td>客</td><td>实际</td><td>主</td><td>盘口</td><td>客</td>"
-        #                 resultstr += exchangeODD.getexchange(onegame.soccerID)
-        #                 resultstr += '</table>'
-        #                 # resultstr += '\n'
-        #                 # resultstr += '\n'
-        #     if resultstr != '' or resultstr is not None:
-        #         send_mail("%s %s" % ('距离开赛1小时', nowstr), resultstr, 'html')
+        if nowstr_offset_halfHour in AllBeginTimes:
+            # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
+            # exitflag = 1
+            # pass
+            print nowstr_offset_halfHour
+            resultstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>临场预测</title></head><body>"
+            for onegame in AllGames:
+                if isinstance(onegame, FootballGame):
+
+                    if onegame.beginTime == nowstr_offset_halfHour:
+                        # gameThread(2, '比赛线程', game)
+                        onegame.oddCompanies = getOneGameODD(onegame)
+                        onegame.handiCompanies = getOneGameHandi(onegame)
+                        titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs',
+                                            onegame.friendTeam, ' id: ',
+                                            str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ',
+                                            str(onegame.now_aomenHandi)])
+                        resultstr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
+
+                        nowOddStr = getnowODDProbability(onegame)
+
+                        nowHandistr = getnowHandiProbability(onegame)
+                        if nowHandistr is not None:
+                            resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
+                                         "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
+
+                            resultstr += nowHandistr
+                            resultstr += '</table>'
+
+                        # resultstr += '\n'
+
+                        if nowOddStr is not None:
+                            resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧赔</h5></caption>" \
+                                         "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
+                            resultstr += nowOddStr
+                            resultstr += '</table>'
+
+                        resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧亚转换</h5></caption>" \
+                                     "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>转换后</td><td>主</td><td>盘口</td><td>客</td><td>实际</td><td>主</td><td>盘口</td><td>客</td>"
+                        resultstr += exchangeODD.getexchange(onegame.soccerID)
+                        resultstr += '</table>'
+                        # resultstr += '\n'
+                        # resultstr += '\n'
+            if resultstr != '' or resultstr is not None:
+                send_mail("%s %s" % ('距离开赛半小时', nowstr), resultstr, 'html')
 
         if nowstr_offset_fiveMinute in AllBeginTimes:
             # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
