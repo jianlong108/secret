@@ -6,7 +6,6 @@
 from DBHelper import *
 
 import datetime
-import time
 
 from SendMail import *
 from SoccerRound import *
