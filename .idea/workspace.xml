@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/大数据分析结果.numbers" afterPath="$PROJECT_DIR$/大数据分析结果.numbers" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TodaySoccer.py" afterPath="$PROJECT_DIR$/TodaySoccer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/getHandiOrignalTime.py" afterPath="$PROJECT_DIR$/getHandiOrignalTime.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yesterdayMatch.py" afterPath="$PROJECT_DIR$/yesterdayMatch.py" />
     </list>
     <ignored path="Soccer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -20,9 +20,9 @@
     <SUITE FILE_PATH="coverage/Soccer$ModuleStudy.coverage" NAME="ModuleStudy Coverage Results" MODIFIED="1508064096324" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$sendMail.coverage" NAME="sendMail Coverage Results" MODIFIED="1506526149886" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$match.coverage" NAME="match Coverage Results" MODIFIED="1503671938588" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Soccer$yesterday.coverage" NAME="yesterday Coverage Results" MODIFIED="1508095347542" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Soccer$yesterday.coverage" NAME="yesterday Coverage Results" MODIFIED="1508420938591" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$exchange.coverage" NAME="exchange Coverage Results" MODIFIED="1495340824727" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Soccer$.coverage" NAME="澳盘开盘早 Coverage Results" MODIFIED="1508415887355" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Soccer$.coverage" NAME="今日比赛 Coverage Results" MODIFIED="1508416599897" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$League.coverage" NAME="League Coverage Results" MODIFIED="1507104427411" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$todyay.coverage" NAME="实时分析 Coverage Results" MODIFIED="1505052312327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -43,11 +43,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="TodaySoccer.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TodaySoccer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TodaySoccer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="66">
-              <caret line="82" column="25" lean-forward="true" selection-start-line="82" selection-start-column="25" selection-end-line="82" selection-end-column="25" />
+            <state relative-caret-position="-1134">
+              <caret line="132" column="17" lean-forward="false" selection-start-line="132" selection-start-column="0" selection-end-line="133" selection-end-column="0" />
               <folding>
                 <element signature="e#49#71#0" expanded="true" />
               </folding>
@@ -113,10 +113,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="getHandiOrignalTime.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="getHandiOrignalTime.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/getHandiOrignalTime.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1385">
+            <state relative-caret-position="-1427">
               <caret line="35" column="21" lean-forward="true" selection-start-line="35" selection-start-column="21" selection-end-line="35" selection-end-column="21" />
               <folding>
                 <element signature="e#46#68#0" expanded="true" />
@@ -152,8 +152,8 @@
       <file leaf-file-name="yesterdayMatch.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/yesterdayMatch.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3507">
-              <caret line="167" column="0" lean-forward="false" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
+            <state relative-caret-position="-1929">
+              <caret line="79" column="26" lean-forward="true" selection-start-line="79" selection-start-column="26" selection-end-line="79" selection-end-column="26" />
               <folding>
                 <element signature="e#48#70#0" expanded="true" />
               </folding>
@@ -213,13 +213,13 @@
         <option value="$PROJECT_DIR$/exchangeODD.py" />
         <option value="$PROJECT_DIR$/SoccerRound.py" />
         <option value="$PROJECT_DIR$/MODULE_STUDY.py" />
-        <option value="$PROJECT_DIR$/yesterdayMatch.py" />
         <option value="$PROJECT_DIR$/League.py" />
         <option value="$PROJECT_DIR$/league.txt" />
         <option value="$PROJECT_DIR$/TimingSoccer.py" />
         <option value="$PROJECT_DIR$/DBHelper.py" />
         <option value="$PROJECT_DIR$/TodaySoccer.py" />
         <option value="$PROJECT_DIR$/getHandiOrignalTime.py" />
+        <option value="$PROJECT_DIR$/yesterdayMatch.py" />
       </list>
     </option>
   </component>
@@ -300,7 +300,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.澳盘开盘早">
+  <component name="RunManager" selected="Python.yesterday">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -736,20 +736,6 @@
       <option name="presentableId" value="Default" />
       <updated>1490794748348</updated>
     </task>
-    <task id="LOCAL-00006" summary="增加联赛数据--盘口和赔率">
-      <created>1491802317292</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1491802317292</updated>
-    </task>
-    <task id="LOCAL-00007" summary="增加联赛数据--盘口和赔率">
-      <created>1491927851233</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1491927851233</updated>
-    </task>
     <task id="LOCAL-00008" summary="增加联赛数据--盘口和赔率">
       <created>1492365515386</created>
       <option name="number" value="00008" />
@@ -1079,7 +1065,21 @@
       <option name="project" value="LOCAL" />
       <updated>1508403706932</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="联赛数据获取优化">
+      <created>1508416587731</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1508416587731</updated>
+    </task>
+    <task id="LOCAL-00056" summary="联赛数据获取优化">
+      <created>1508418170168</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1508418170168</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1101,11 +1101,11 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32991204" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3194925" sideWeight="0.49202552" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32871974" sideWeight="0.4984051" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.06593407" sideWeight="0.4868421" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3846154" sideWeight="0.4868421" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24974516" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298731" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3846154" sideWeight="0.49434572" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3846154" sideWeight="0.49434572" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1200,7 +1200,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/yesterdayMatch.py</url>
-          <line>109</line>
+          <line>111</line>
           <option name="timeStamp" value="291" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -1548,16 +1548,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yesterdayMatch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3507">
-          <caret line="167" column="0" lean-forward="false" selection-start-line="167" selection-start-column="0" selection-end-line="167" selection-end-column="0" />
-          <folding>
-            <element signature="e#48#70#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.3/python_stubs/-2125986627/time.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
@@ -1600,22 +1590,32 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TodaySoccer.py">
+    <entry file="file://$PROJECT_DIR$/getHandiOrignalTime.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="82" column="25" lean-forward="true" selection-start-line="82" selection-start-column="25" selection-end-line="82" selection-end-column="25" />
+        <state relative-caret-position="-1427">
+          <caret line="35" column="21" lean-forward="true" selection-start-line="35" selection-start-column="21" selection-end-line="35" selection-end-column="21" />
           <folding>
-            <element signature="e#49#71#0" expanded="true" />
+            <element signature="e#46#68#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/getHandiOrignalTime.py">
+    <entry file="file://$PROJECT_DIR$/yesterdayMatch.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1385">
-          <caret line="35" column="21" lean-forward="true" selection-start-line="35" selection-start-column="21" selection-end-line="35" selection-end-column="21" />
+        <state relative-caret-position="-1929">
+          <caret line="79" column="26" lean-forward="true" selection-start-line="79" selection-start-column="26" selection-end-line="79" selection-end-column="26" />
           <folding>
-            <element signature="e#46#68#0" expanded="true" />
+            <element signature="e#48#70#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TodaySoccer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1134">
+          <caret line="132" column="17" lean-forward="false" selection-start-line="132" selection-start-column="0" selection-end-line="133" selection-end-column="0" />
+          <folding>
+            <element signature="e#49#71#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -75,6 +75,8 @@ def getYesterdaySoccer(timestr):
             gameStr = allArray[2]
 
         games = gameStr.split('!')
+        contentStr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>初盘预测</title></head><body>"
+
         for game in games:
             tempstr_utf_8 =  game.encode('utf-8')
             onegame = FootballGame()
@@ -141,30 +143,81 @@ def getYesterdaySoccer(timestr):
                 AllGames.append(onegame)
                 onegame.oddCompanies = SoccerRound.getOneGameODD(onegame)
                 onegame.handiCompanies = SoccerRound.getOneGameHandi(onegame)
-                Ori_Handi_result = getHandiProbability(onegame,True)
-                Now_Handi_result = getnowHandiProbability(onegame,True)
-                Ori_Odd_result = getOrignalODDProbability(onegame,True)
-                Now_Odd_result = getnowODDProbability(onegame,True)
 
-                result_locationstr = os.path.join('/Users/mi/Desktop', '%s-result.txt' % (timestr,))
-                result_leaguelistfile = open(result_locationstr, 'a')
-                if (float(Now_Handi_result[5]) > 55  or float(Now_Handi_result[3]) > 55 or float(Now_Handi_result[4]) > 55) and (float(Now_Odd_result[5]) > 55  or float(Now_Odd_result[6]) > 55 or float(Now_Odd_result[7]) > 55):
-                    result_leaguelistfile.write('%s: %s %s vs %s %d:%d\n'
-                                                '%s 初盘:%s 数量:%s 赢盘:%s 走盘:%s 输盘:%s 胜:%s 平:%s 负:%s\n'
-                                                '%s 终盘:%s 数量:%s 赢盘:%s 走盘:%s 输盘:%s 胜:%s 平:%s 负:%s\n'
-                                                '%s 数量:%s 胜:%s 平:%s 负:%s 胜率:%s 平率:%s 负率:%s\n'
-                                                '%s 数量:%s 胜:%s 平:%s 负:%s 胜率:%s 平率:%s 负率:%s\n\n'%(onegame.beginTime, onegame.leauge ,onegame.homeTeam, onegame.friendTeam,onegame.allHome,onegame.allFriend,
-                                                                                                            Ori_Handi_result[1],Ori_Handi_result[2],str(Ori_Handi_result[0]),Ori_Handi_result[3],Ori_Handi_result[4],Ori_Handi_result[5],Ori_Handi_result[6],Ori_Handi_result[7],Ori_Handi_result[8],
-                                                                                                            Now_Handi_result[1],Now_Handi_result[2],str(Now_Handi_result[0]),Now_Handi_result[3],Now_Handi_result[4],Now_Handi_result[5],Now_Handi_result[6],Now_Handi_result[7],Now_Handi_result[8],
-                                                                                                            Ori_Odd_result[1],str(Ori_Odd_result[0]),Ori_Odd_result[2],Ori_Odd_result[3],Ori_Odd_result[4],Ori_Odd_result[5],Ori_Odd_result[6],Ori_Odd_result[7],
-                                                                                                            Now_Odd_result[1],str(Now_Odd_result[0]),Now_Odd_result[2],Now_Odd_result[3],Now_Odd_result[4],Now_Odd_result[5],Now_Odd_result[6],Now_Odd_result[7],
-                                                                                                                     )
-                                         )
+                titlestr = ''.join(
+                    [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam,
+                     ' id: ',
+                     str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ',
+                     str(onegame.now_aomenHandi)])
+                contentStr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
+
+                # 获取开盘时间
+                flag = getHandiOrignalTime.gethandiTime(onegame.soccerID)
+                if flag:
+                    # contentStr += '澳盘开盘早\n'.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+                    contentStr += "<h4 style=\"color:red;\" align=\"center\">澳盘开盘早</h4>"
+                # 获取初始盘口数量
+                if len(onegame.orignalHandiList) > 2:
+                    contentStr += "<h4 style=\"color:red;\" align=\"center\">初盘混乱</h4>"
+                    # contentStr += '初盘混乱\n'
+                    # contentStr += ''.join(
+                    #     [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+
+                contentStr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
+                              "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
+                tempHandistr = getHandiProbability(onegame)
+                if tempHandistr is not None:
+                    contentStr += tempHandistr
+                    # contentStr += '\n'
+
+                tempNowHandistr = getnowHandiProbability(onegame)
+                if tempNowHandistr is not None:
+                    contentStr += tempNowHandistr
+
+                contentStr += '</table>'
+                contentStr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧赔</h5></caption>" \
+                              "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
+                tempOddstr = getOrignalODDProbability(onegame)
+                if tempOddstr is not None:
+                    contentStr += tempOddstr
+                    # contentStr += '\n'
+
+                tempNowOddstr = getnowODDProbability(onegame)
+                if tempNowOddstr is not None:
+                    contentStr += tempNowOddstr
+                contentStr += '</table>'
+
+                time.sleep(3)
+
+
+
+                # Ori_Handi_result = getHandiProbability(onegame,True)
+                # Now_Handi_result = getnowHandiProbability(onegame,True)
+                # Ori_Odd_result = getOrignalODDProbability(onegame,True)
+                # Now_Odd_result = getnowODDProbability(onegame,True)
+                #
+                # result_locationstr = os.path.join('/Users/mi/Desktop', '%s-result.txt' % (timestr,))
+                # result_leaguelistfile = open(result_locationstr, 'a')
+                # if (float(Now_Handi_result[5]) > 55  or float(Now_Handi_result[3]) > 55 or float(Now_Handi_result[4]) > 55) and (float(Now_Odd_result[5]) > 55  or float(Now_Odd_result[6]) > 55 or float(Now_Odd_result[7]) > 55):
+                #     result_leaguelistfile.write('%s: %s %s vs %s %d:%d\n'
+                #                                 '%s 初盘:%s 数量:%s 赢盘:%s 走盘:%s 输盘:%s 胜:%s 平:%s 负:%s\n'
+                #                                 '%s 终盘:%s 数量:%s 赢盘:%s 走盘:%s 输盘:%s 胜:%s 平:%s 负:%s\n'
+                #                                 '%s 数量:%s 胜:%s 平:%s 负:%s 胜率:%s 平率:%s 负率:%s\n'
+                #                                 '%s 数量:%s 胜:%s 平:%s 负:%s 胜率:%s 平率:%s 负率:%s\n\n'%(onegame.beginTime, onegame.leauge ,onegame.homeTeam, onegame.friendTeam,onegame.allHome,onegame.allFriend,
+                #                                                                                             Ori_Handi_result[1],Ori_Handi_result[2],str(Ori_Handi_result[0]),Ori_Handi_result[3],Ori_Handi_result[4],Ori_Handi_result[5],Ori_Handi_result[6],Ori_Handi_result[7],Ori_Handi_result[8],
+                #                                                                                             Now_Handi_result[1],Now_Handi_result[2],str(Now_Handi_result[0]),Now_Handi_result[3],Now_Handi_result[4],Now_Handi_result[5],Now_Handi_result[6],Now_Handi_result[7],Now_Handi_result[8],
+                #                                                                                             Ori_Odd_result[1],str(Ori_Odd_result[0]),Ori_Odd_result[2],Ori_Odd_result[3],Ori_Odd_result[4],Ori_Odd_result[5],Ori_Odd_result[6],Ori_Odd_result[7],
+                #                                                                                             Now_Odd_result[1],str(Now_Odd_result[0]),Now_Odd_result[2],Now_Odd_result[3],Now_Odd_result[4],Now_Odd_result[5],Now_Odd_result[6],Now_Odd_result[7],
+                #                                                                                                      )
+                #                          )
 
 
             time.sleep(1.5)
 
         # insertGameList(AllGames)
+
+        i = datetime.now()
+        send_mail("%s %s/%s/%s" % ('往日比赛分析', i.year, i.month, i.day), contentStr, 'html')
 
 
 def main():
@@ -173,7 +226,7 @@ def main():
     now = now + aDay
     yesterdaystr = now.strftime('%Y-%m-%d')
 
-    getYesterdaySoccer('2017-10-13')
+    getYesterdaySoccer('2017-10-18')
 
 
 if __name__ == '__main__':
