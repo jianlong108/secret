@@ -153,7 +153,6 @@ def getTodaySoccer(type):
             else:
                 onegame.homeTeam = oneGameArray[4].encode('utf-8')
                 onegame.friendTeam = oneGameArray[5].encode('utf-8')
-
             AllGames.append(onegame)
             # 获取欧赔,亚盘数据
             onegame.oddCompanies = getOneGameODD(onegame)

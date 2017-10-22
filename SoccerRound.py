@@ -215,17 +215,20 @@ def getOneGameHandi(game):
                 company.friendSoccer = game.allFriend
                 company.soccerGameId = game.soccerID
                 unitArray = unit.split('^')
+                try:
+                    company.companyTitle = unitArray[0]
+                    company.companyID = int(unitArray[1])
+                    company.orignal_top = float(unitArray[2])
+                    company.orignal_Handicap = float(unitArray[3])
+                    if company.orignal_Handicap not in game.orignalHandiList:
+                        game.orignalHandiList.append(company.orignal_Handicap)
+                    company.orignal_bottom = float(unitArray[4])
+                    company.now_top = float(unitArray[5])
+                    company.now_Handicap = float(unitArray[6])
+                    company.now_bottom = float(unitArray[7])
+                except IndexError as e:
+                    print unitArray
 
-                company.companyTitle = unitArray[0]
-                company.companyID = int(unitArray[1])
-                company.orignal_top = float(unitArray[2])
-                company.orignal_Handicap = float(unitArray[3])
-                if company.orignal_Handicap not in game.orignalHandiList:
-                    game.orignalHandiList.append(company.orignal_Handicap)
-                company.orignal_bottom = float(unitArray[4])
-                company.now_top = float(unitArray[5])
-                company.now_Handicap = float(unitArray[6])
-                company.now_bottom = float(unitArray[7])
                 if company.companyTitle == '澳门':
                     game.orignal_aomenHandi = company.orignal_Handicap
                     game.now_aomenHandi = company.now_Handicap

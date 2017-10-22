@@ -23,6 +23,7 @@ sys.setdefaultencoding('utf-8')
 """
 
 AllGames = []
+AllResultAnalyseGames = []
 AllBeginTimes = []
 
 '''
@@ -49,6 +50,7 @@ def getYesterdaySoccer(timestr):
 
     global AllGames
     global AllBeginTimes
+    global AllResultAnalyseGames
 
     if resultStr != '':
         # print resultStr
@@ -79,8 +81,10 @@ def getYesterdaySoccer(timestr):
 
         for game in games:
             tempstr_utf_8 =  game.encode('utf-8')
+            resultGame = ResultAnalyseGame()
             onegame = FootballGame()
             oneGameArray = tempstr_utf_8.split('^')
+            '''
             # 0.soccerid
             # 1.联赛id
             # 2. - 1
@@ -101,9 +105,15 @@ def getYesterdaySoccer(timestr):
             # 16 胜
             # 17 平
             # 18 负
+            '''
+
             try:
                 onegame.soccerID = int(oneGameArray[0])
                 onegame.leauge = dic.get(oneGameArray[1].encode('utf-8'))
+                # 比赛结果模型 赋值soccerID.联赛
+                resultGame.soccerID = onegame.soccerID
+                resultGame.league = onegame.leauge
+                # 赋值结束
                 flag = False
                 for leaguestr in leaguelist:
                     if onegame.leauge in leaguestr:
@@ -113,13 +123,12 @@ def getYesterdaySoccer(timestr):
                     continue
 
                 beginTime = oneGameArray[3].encode('utf-8')
-                onegame.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[
-                                                                                                         8:10] + ':' + beginTime[
-                                                                                                                       10:12]
+                onegame.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[8:10] + ':' + beginTime[10:12]
+                # 比赛结果模型 赋值开赛时间
+                resultGame.beginTime = onegame.beginTime
+                # 赋值结束
 
-                briefTimeStr = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[
-                                                                                                    8:10] + ':' + beginTime[
-                                                                                                                  10:12]
+                briefTimeStr = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[8:10] + ':' + beginTime[10:12]
                 if briefTimeStr not in AllBeginTimes:
                     AllBeginTimes.append(briefTimeStr)
 
@@ -127,6 +136,12 @@ def getYesterdaySoccer(timestr):
                 onegame.friendTeam = oneGameArray[6]
                 onegame.allHome = int(oneGameArray[7])
                 onegame.allFriend = int(oneGameArray[8])
+                # 比赛结果模型 赋值主客队,比分
+                resultGame.homeTeam = onegame.homeTeam
+                resultGame.friendTeam = onegame.friendTeam
+                resultGame.homeSoccer = onegame.allHome
+                resultGame.friendSoccer = onegame.allFriend
+                # 赋值结束
                 onegame.halfHome = int(oneGameArray[9])
                 onegame.halfFriend = int(oneGameArray[10])
 
@@ -141,8 +156,29 @@ def getYesterdaySoccer(timestr):
                 print e
             else:
                 AllGames.append(onegame)
+                # 比赛结果模型 添加到数组
+                AllResultAnalyseGames.append(resultGame)
+                # 赋值结束
+
                 onegame.oddCompanies = SoccerRound.getOneGameODD(onegame)
                 onegame.handiCompanies = SoccerRound.getOneGameHandi(onegame)
+
+                # 比赛结果模型 比赛结果赋值
+                offset = onegame.allHome - onegame.allFriend - onegame.now_aomenHandi
+                if offset == 0:
+                    resultGame.resultHandi = 1
+                elif offset > 0:
+                    resultGame.resultHandi = 3
+                else:
+                    resultGame.resultHandi = 0
+
+                if onegame.allHome == onegame.allFriend:
+                    resultGame.resultOdd = 1
+                elif onegame.allHome > onegame.allFriend:
+                    resultGame.resultOdd = 3
+                else:
+                    resultGame.resultOdd = 0
+                # 赋值结束
 
                 titlestr = ''.join(
                     [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam,
@@ -165,24 +201,24 @@ def getYesterdaySoccer(timestr):
 
                 contentStr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
                               "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
-                tempHandistr = getHandiProbability(onegame)
+                tempHandistr = getHandiProbability(onegame,False,resultGame)
                 if tempHandistr is not None:
                     contentStr += tempHandistr
                     # contentStr += '\n'
 
-                tempNowHandistr = getnowHandiProbability(onegame)
+                tempNowHandistr = getnowHandiProbability(onegame,False,resultGame)
                 if tempNowHandistr is not None:
                     contentStr += tempNowHandistr
 
                 contentStr += '</table>'
                 contentStr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧赔</h5></caption>" \
                               "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
-                tempOddstr = getOrignalODDProbability(onegame)
+                tempOddstr = getOrignalODDProbability(onegame,False,resultGame)
                 if tempOddstr is not None:
                     contentStr += tempOddstr
                     # contentStr += '\n'
 
-                tempNowOddstr = getnowODDProbability(onegame)
+                tempNowOddstr = getnowODDProbability(onegame,False,resultGame)
                 if tempNowOddstr is not None:
                     contentStr += tempNowOddstr
                 contentStr += '</table>'
@@ -215,9 +251,10 @@ def getYesterdaySoccer(timestr):
             time.sleep(1.5)
 
         # insertGameList(AllGames)
+        insert_Result_Analyse_list(AllResultAnalyseGames)
 
-        i = datetime.now()
-        send_mail("%s %s/%s/%s" % ('往日比赛分析', i.year, i.month, i.day), contentStr, 'html')
+        # i = datetime.now()
+        # send_mail("%s %s/%s/%s" % ('往日比赛分析', i.year, i.month, i.day), contentStr, 'html')
 
 
 def main():
@@ -226,7 +263,8 @@ def main():
     now = now + aDay
     yesterdaystr = now.strftime('%Y-%m-%d')
 
-    getYesterdaySoccer('2017-10-18')
+    # 14.15.16.17.18.19.20.21
+    getYesterdaySoccer('2017-10-14')
 
 
 if __name__ == '__main__':

@@ -151,8 +151,8 @@ def timerAnalys(threadName, delay, counter):
         nowstr = now.strftime('%Y-%m-%d %H:%M')
         nowstr_offset_fiveMinute = now_offset_fiveMinute.strftime('%Y-%m-%d %H:%M')
         nowstr_offset_halfHour = now_offset_halfHour.strftime('%Y-%m-%d %H:%M')
-        if nowstr_offset_fiveMinute == '2017-10-16 22:45':
-            nowstr_offset_fiveMinute = '2017-10-16 22:30'
+        if nowstr_offset_fiveMinute == '2017-10-22 22:30':
+            nowstr_offset_fiveMinute = '2017-10-22 22:15'
         print nowstr_offset_fiveMinute
 
         if nowstr_offset_halfHour in AllBeginTimes:

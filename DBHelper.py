@@ -17,6 +17,99 @@ location = os.path.expanduser('~/Desktop/Soccer.db')
 conn = sqlite3.connect(location)
 c = conn.cursor()
 
+def resultWithHandiAndPercent(handi,win,draw,lose):
+    if handi == 0:
+        if win + draw > 70:
+            return 3
+        else:
+            return 0
+    elif handi < 0:
+        if win > 55:
+            return 0
+        else :
+            return 3
+    else:
+        if win > 55:
+            return 3
+        else:
+            return 0
+
+
+class ResultAnalyseGame(object):
+    def __init__(self):
+        self.soccerID = 0
+        self.league = ''
+        self.beginTime = ''
+        self.resultOdd = -1
+        self.resultHandi = -1
+        self.homeTeam  = ''
+        self.friendTeam = ''
+        self.homeSoccer = -1
+        self.friendSoccer = -1
+
+        self.orignalHandiCompany = ''
+        self.orignalHandi = 0.0
+        self.orignalHandiQueryCount = 0
+        self.percent_orignal_win_handi = ''
+        self.percent_orignal_draw_handi = ''
+        self.percent_orignal_lose_handi = ''
+        self.percent_orignal_win_handi_odd = ''
+        self.percent_orignal_draw_handi_odd = ''
+        self.percent_orignal_lose_handi_odd = ''
+        self.prediction_result_orignalHandi = -1
+
+        self.orignalOddCompany = ''
+        self.orignalOddQueryCount = 0
+        self.percent_orignal_win_odd = ''
+        self.percent_orignal_draw_odd = ''
+        self.percent_orignal_lose_odd = ''
+        self.prediction_result_orignalOdd = -1
+
+        self.nowHandiCompany = ''
+        self.nowHandi = 0.0
+        self.nowHandiQueryCount = 0
+        self.percent_now_win_handi = ''
+        self.percent_now_draw_handi = ''
+        self.percent_now_lose_handi = ''
+        self.percent_now_win_handi_odd = ''
+        self.percent_now_draw_handi_odd = ''
+        self.percent_now_lose_handi_odd = ''
+        self.prediction_result_nowHandi = -1
+
+        self.nowOddCompany = ''
+        self.nowOddQueryCount = 0
+        self.percent_now_win_odd = ''
+        self.percent_now_draw_odd = ''
+        self.percent_now_lose_odd = ''
+        self.prediction_result_nowOdd = -1
+
+def create_result_database():
+    global conn
+    global c
+    # 连接到SQLite数据库
+    # 数据库文件是test.db
+    # 如果文件不存在，会自动在当前目录创建:
+    conn = sqlite3.connect(location)
+    c = conn.cursor()
+
+    sql0 = 'create table if not exists ' + 'ResultAnalyse' + \
+          '(soccerID INTEGER PRIMARY KEY, league varchar(20), time VARCHAR(15), resultOdd INTEGER, resultHandi INTEGER,' \
+          'homeTeam VARCHAR(20), homeSoccer INTEGER, friend VARCHAR(20), friendSoccer INTEGER,' \
+          'ori_cpy_handi VARCHAR(20),ori_handi VARCHAR(10), ori_handi_count INTEGER, p_ori_win_handi VARCHAR(10),' \
+          'p_ori_draw_handi VARCHAR(10), p_ori_lose_handi VARCHAR(10),' \
+          'p_ori_win VARCHAR(10), p_ori_draw VARCHAR(10), p_ori_lose VARCHAR(10), reult_ori_handi INTEGER,' \
+          'ori_cpy_odd VARCHAR(20), ori_odd_count INTEGER, p_ori_win_odd VARCHAR(10), p_ori_draw_odd VARCHAR(10), p_ori_lose_odd VARCHAR(10), reult_ori_odd INTEGER,' \
+          'now_cpy_handi VARCHAR(20),now_handi VARCHAR(10), now_handi_count INTEGER, p_now_win_handi VARCHAR(10),' \
+          'p_now_draw_handi VARCHAR(10), p_now_lose_handi VARCHAR(10),' \
+          'p_now_win VARCHAR(10), p_now_draw VARCHAR(10), p_now_lose VARCHAR(10), reult_now_handi INTEGER,' \
+          'now_cpy_odd VARCHAR(20), now_odd_count INTEGER, p_now_win_odd VARCHAR(10), p_now_draw_odd VARCHAR(10), p_now_lose_odd VARCHAR(10), reult_now_odd INTEGER)'
+
+    c.execute(sql0)
+    conn.commit()
+    c.close()
+    conn.close()
+
+
 def create_database():
     global conn
     global c
@@ -59,6 +152,38 @@ def create_database():
     conn.close()
 
 '''
+插入一个比赛分析 数据
+'''
+def insert_Result_Analyse_list(resultList):
+    global conn
+    global c
+    # conn = sqlite3.connect(location)
+    c = conn.cursor()
+    for reslut in resultList:
+        if isinstance(reslut, ResultAnalyseGame) is True:
+
+            params = (reslut.soccerID, reslut.league.decode('utf-8'), reslut.beginTime.decode('utf-8'),reslut.resultOdd,reslut.resultHandi,
+                      reslut.homeTeam.decode('utf-8'), reslut.homeSoccer, reslut.friendTeam.decode('utf-8'), reslut.friendSoccer,
+                      reslut.orignalHandiCompany.decode('utf-8'),reslut.orignalHandi,reslut.orignalHandiQueryCount,reslut.percent_orignal_win_handi.decode('utf-8'),reslut.percent_orignal_draw_handi.decode('utf-8'),reslut.percent_orignal_lose_handi.decode('utf-8'),
+                      reslut.percent_orignal_win_handi_odd.decode('utf-8'),reslut.percent_orignal_draw_handi_odd.decode('utf-8'),reslut.percent_orignal_lose_handi_odd.decode('utf-8'),reslut.prediction_result_orignalHandi,
+                      reslut.orignalOddCompany.decode('utf-8'), reslut.orignalOddQueryCount, reslut.percent_orignal_win_odd.decode('utf-8'), reslut.percent_orignal_draw_odd.decode('utf-8'),reslut.percent_orignal_lose_odd.decode('utf-8'), reslut.prediction_result_orignalOdd,
+                      reslut.nowHandiCompany.decode('utf-8'), reslut.nowHandi, reslut.nowHandiQueryCount,reslut.percent_now_win_handi.decode('utf-8'), reslut.percent_now_draw_handi.decode('utf-8'),reslut.percent_now_lose_handi.decode('utf-8'),
+                      reslut.percent_now_win_handi_odd.decode('utf-8'), reslut.percent_now_draw_handi_odd.decode('utf-8'),reslut.percent_now_lose_handi_odd.decode('utf-8'), reslut.prediction_result_nowHandi,
+                      reslut.nowOddCompany.decode('utf-8'), reslut.nowOddQueryCount, reslut.percent_now_win_odd.decode('utf-8'),reslut.percent_now_draw_odd.decode('utf-8'), reslut.percent_now_lose_odd.decode('utf-8'),reslut.prediction_result_nowOdd,
+                      )
+            try:
+                c.execute("INSERT INTO ResultAnalyse VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params)
+            except sqlite3.IntegrityError as e:
+                print e
+                print reslut.soccerID
+        else:
+            pass
+
+    conn.commit()
+    c.close()
+    conn.close()
+
+'''
 插入一个联赛 数据
 '''
 def insert_League(league):
@@ -86,7 +211,6 @@ def insert_Game(game):
     params = (game.soccerID, game.leauge, game.beginTime, game.soccer, game.homeTeamLevel, game.homeTeam,
               game.allHome, game.friendTeamLevel, game.friendTeam, game.allFriend)
     c.execute("INSERT INTO Games VALUES (NULL ,?,?,?,?,?,?,?,?,?,?)", params)
-    # c.execute(sql)
     conn.commit()
     c.close()
     conn.close()
@@ -227,7 +351,7 @@ def insert_ODD(company):
 '''
 获取初始欧赔的概率
 '''
-def getOrignalODDProbability(game, isYesterday = False):
+def getOrignalODDProbability(game, isYesterday = False, resultGame = None):
     contentstr = ''
     resultTuple = None
     if isinstance(game, FootballGame):
@@ -312,6 +436,18 @@ def getOrignalODDProbability(game, isYesterday = False):
                     maxCount = oneTuple[0]
                     maxIndex = resultSet.index(oneTuple)
             resultTuple = resultSet[maxIndex]
+            # 对比赛模型数据进行赋值
+            if resultGame is not None and isinstance(resultGame, ResultAnalyseGame):
+                resultGame.orignalOddQueryCount = maxCount
+                resultGame.orignalOddCompany = resultTuple[1]
+                resultGame.percent_orignal_win_odd = resultTuple[5]
+                resultGame.percent_orignal_draw_odd = resultTuple[6]
+                resultGame.percent_orignal_lose_odd = resultTuple[7]
+                resultGame.prediction_result_orignalOdd = resultWithHandiAndPercent(resultGame.orignalHandi, float(
+                    resultGame.percent_orignal_win_odd), float(resultGame.percent_orignal_draw_odd), float(
+                    resultGame.percent_orignal_lose_odd))
+
+                # 赋值结束
             for oneTuple in resultSet:
                 index = resultSet.index(oneTuple)
                 if maxIndex == index:
@@ -363,7 +499,7 @@ def getOrignalODDProbability(game, isYesterday = False):
 '''
 获取即时欧赔的概率
 '''
-def getnowODDProbability(game, isYesterday = False):
+def getnowODDProbability(game, isYesterday = False, resultGame = None):
     if isinstance(game, FootballGame):
         contentstr = ''
         resultTuple = (0, 0, 0)
@@ -455,6 +591,18 @@ def getnowODDProbability(game, isYesterday = False):
                     maxCount = oneTuple[0]
                     maxIndex = resultSet.index(oneTuple)
             resultTuple = resultSet[maxIndex]
+            # 对比赛模型数据进行赋值
+            if resultGame is not None and isinstance(resultGame, ResultAnalyseGame):
+                resultGame.nowOddQueryCount = maxCount
+                resultGame.nowOddCompany = resultTuple[1]
+                resultGame.percent_now_win_odd = resultTuple[5]
+                resultGame.percent_now_draw_odd = resultTuple[6]
+                resultGame.percent_now_lose_odd = resultTuple[7]
+                resultGame.prediction_result_nowOdd = resultWithHandiAndPercent(resultGame.nowHandi, float(
+                    resultGame.percent_now_win_odd), float(resultGame.percent_now_draw_odd), float(
+                    resultGame.percent_now_lose_odd))
+
+            # 赋值结束
             for oneTuple in resultSet:
                 index = resultSet.index(oneTuple)
                 if maxIndex == index:
@@ -506,7 +654,7 @@ def getnowODDProbability(game, isYesterday = False):
 '''
 获取初盘的概率
 '''
-def getHandiProbability(game, isYesterday = False):
+def getHandiProbability(game, isYesterday = False, resultGame = None):
     if isinstance(game, FootballGame):
         contentstr = ''
         resultTuple = (0,0,0)
@@ -618,6 +766,20 @@ def getHandiProbability(game, isYesterday = False):
                     maxCount = oneTuple[0]
                     maxIndex = resultSet.index(oneTuple)
             resultTuple = resultSet[maxIndex]
+            # 对比赛模型数据进行赋值
+            if resultGame is not None and isinstance(resultGame, ResultAnalyseGame):
+                resultGame.orignalHandiQueryCount = maxCount
+                resultGame.orignalHandiCompany = resultTuple[1]
+                resultGame.orignalHandi = resultTuple[2]
+                resultGame.percent_orignal_win_handi = resultTuple[3]
+                resultGame.percent_orignal_draw_handi = resultTuple[4]
+                resultGame.percent_orignal_lose_handi = resultTuple[5]
+                resultGame.percent_orignal_win_handi_odd = resultTuple[6]
+                resultGame.percent_orignal_draw_handi_odd = resultTuple[7]
+                resultGame.percent_orignal_lose_handi_odd = resultTuple[8]
+                resultGame.prediction_result_orignalHandi = resultWithHandiAndPercent(resultGame.orignalHandi, float(resultGame.percent_orignal_win_handi_odd), float(resultGame.percent_orignal_draw_handi_odd), float(resultGame.percent_orignal_lose_handi_odd))
+
+            # 赋值结束
             for oneTuple in resultSet:
                 index = resultSet.index(oneTuple)
                 if maxIndex == index:
@@ -673,7 +835,7 @@ def getHandiProbability(game, isYesterday = False):
 '''
 获取即时盘口的概率
 '''
-def getnowHandiProbability(game, isYesterday = False):
+def getnowHandiProbability(game, isYesterday = False, resultGame = None):
     contentstr = ''
     resultTuple = (0, 0, 0)
     if isinstance(game, FootballGame):
@@ -785,6 +947,22 @@ def getnowHandiProbability(game, isYesterday = False):
                     maxCount = oneTuple[0]
                     maxIndex = resultSet.index(oneTuple)
             resultTuple = resultSet[maxIndex]
+            # 对比赛模型数据进行赋值
+            if resultGame is not None and isinstance(resultGame, ResultAnalyseGame):
+                resultGame.nowHandiQueryCount = maxCount
+                resultGame.nowHandiCompany = resultTuple[1]
+                resultGame.nowHandi = resultTuple[2]
+                resultGame.percent_now_win_handi = resultTuple[3]
+                resultGame.percent_now_draw_handi = resultTuple[4]
+                resultGame.percent_now_lose_handi = resultTuple[5]
+                resultGame.percent_now_win_handi_odd = resultTuple[6]
+                resultGame.percent_now_draw_handi_odd = resultTuple[7]
+                resultGame.percent_now_lose_handi_odd = resultTuple[8]
+                resultGame.prediction_result_nowHandi = resultWithHandiAndPercent(resultGame.nowHandi, float(
+                    resultGame.percent_now_win_handi_odd), float(resultGame.percent_now_draw_handi_odd), float(
+                    resultGame.percent_now_lose_handi_odd))
+
+                # 赋值结束
             for oneTuple in resultSet:
                 index = resultSet.index(oneTuple)
                 if maxIndex == index:
@@ -1077,3 +1255,9 @@ def getLeagueDetail(tempLeagueID):
     conn.commit()
     c.close()
     conn.close()
+
+
+
+
+
+create_result_database()
