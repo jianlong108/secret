@@ -5,13 +5,20 @@ from datetime import datetime,timedelta
 
 import os
 
-result_locationstr = os.path.join('/Users/dalong/Desktop', '%s-result.txt' % ('d222',))
-result_leaguelistfile = open(result_locationstr, 'a')
-i = 10
-while( i > 0 ):
-    result_leaguelistfile.write('hello%d\n' % (i,))
-    i-= 1
+'''
+txt写入
+'''
+# result_locationstr = os.path.join('/Users/dalong/Desktop', '%s-result.txt' % ('d222',))
+# result_leaguelistfile = open(result_locationstr, 'a')
+# i = 10
+# while( i > 0 ):
+#     result_leaguelistfile.write('hello%d\n' % (i,))
+#     i-= 1
 
+a = datetime.strptime('2017-10-24 00:30', '%Y-%m-%d %H:%M')
+b = datetime.now()
+c = a - b
+print  str(round(c.seconds/3600.0, 1))
 
 
 """

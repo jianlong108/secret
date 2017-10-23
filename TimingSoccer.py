@@ -14,7 +14,6 @@ from datetime import datetime,timedelta
 
 import pycurl
 import StringIO
-import SendMail
 
 AllGames = []
 AllBeginTimes = []
@@ -146,25 +145,35 @@ def timerAnalys(threadName, delay, counter):
         now = datetime.now()
         offset_half_hour = timedelta(minutes=-30)
         offset_three_hour = timedelta(hours=-3)
+
+        offset_one_hour = timedelta(hours=-1)
         now_offset_halfHour = now - offset_half_hour
         now_offset_threehour = now - offset_three_hour
+        now_offset_onehour = now - offset_one_hour
         nowstr = now.strftime('%Y-%m-%d %H:%M')
         nowstr_offset_threeHour = now_offset_threehour.strftime('%Y-%m-%d %H:%M')
         nowstr_offset_halfHour = now_offset_halfHour.strftime('%Y-%m-%d %H:%M')
-        if nowstr_offset_fiveMinute == '2017-10-22 22:30':
-            nowstr_offset_fiveMinute = '2017-10-22 22:15'
-        print nowstr_offset_fiveMinute
+        nowstr_offset_oneHour = now_offset_onehour.strftime('%Y-%m-%d %H:%M')
+        if nowstr_offset_threeHour == '2017-10-24 02:11':
+            nowstr_offset_threeHour = '2017-10-24 00:30'
+        print nowstr_offset_threeHour
 
-        if nowstr_offset_halfHour in AllBeginTimes:
-            # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
-            # exitflag = 1
-            # pass
+        allCacluateTimeList = [nowstr_offset_threeHour,nowstr_offset_oneHour,nowstr_offset_halfHour]
+
+        canCaclute = False
+        timeStr = ''
+        for timestr in allCacluateTimeList:
+            if timestr in AllBeginTimes:
+                canCaclute = True
+                timeStr = timestr
+
+        if canCaclute:
             print nowstr_offset_halfHour
             resultstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>临场预测</title></head><body>"
             for onegame in AllGames:
                 if isinstance(onegame, FootballGame):
 
-                    if onegame.beginTime == nowstr_offset_halfHour:
+                    if onegame.beginTime == timeStr:
                         # gameThread(2, '比赛线程', game)
                         onegame.oddCompanies = getOneGameODD(onegame)
                         onegame.handiCompanies = getOneGameHandi(onegame)
@@ -173,6 +182,9 @@ def timerAnalys(threadName, delay, counter):
                                             str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ',
                                             str(onegame.now_aomenHandi)])
                         resultstr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
+                        # 获取初始盘口数量
+                        if len(onegame.orignalHandiList) > 2:
+                            resultstr += "<h4 style=\"color:red;\" align=\"center\">初盘混乱</h4>"
 
                         orignalHandiStr = getHandiProbability(onegame)
                         orignalOddStr = getOrignalODDProbability(onegame)
@@ -181,29 +193,29 @@ def timerAnalys(threadName, delay, counter):
                         nowHandistr = getnowHandiProbability(onegame)
                         if orignalHandiStr is not None:
                             resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                         "<caption style=\"color:red;\"><h5>初识亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
+                                         "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
 
                             resultstr += orignalHandiStr
-                            resultstr += '</table>'
 
                         if nowHandistr is not None:
-                            resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                         "<caption style=\"color:red;\"><h5>即时亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
+                            resultstr += "<tr bgcolor=#888888><th>即时盘口</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr> "
 
                             resultstr += nowHandistr
+                            resultstr += '</table>'
+                        else:
                             resultstr += '</table>'
 
                         if orignalOddStr is not None:
                             resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                         "<caption style=\"color:red;\"><h5>初识欧赔</h5></caption><tr bgcolor=#663399 ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
+                                         "<caption style=\"color:red;\"><h5>欧赔</h5></caption><tr bgcolor=#663399 ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
 
                             resultstr += orignalOddStr
-                            resultstr += '</table>'
 
                         if nowOddStr is not None:
-                            resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                         "<caption style=\"color:red;\"><h5>即时欧赔</h5></caption><tr bgcolor=#663399 ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
+                            resultstr += "<tr bgcolor=#888888 ><td>即时欧赔</td> <td></td><td></td><td></td><td></td><td></td><td></td><td></td>"
                             resultstr += nowOddStr
+                            resultstr += '</table>'
+                        else:
                             resultstr += '</table>'
 
                         resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
@@ -211,118 +223,12 @@ def timerAnalys(threadName, delay, counter):
                         resultstr += exchangeODD.getexchange(onegame.soccerID)
                         resultstr += '</table>'
             if resultstr != '' or resultstr is not None:
-                send_mail("<<临场半小时>> 开赛时间:%s " % (nowstr_offset_halfHour, ), resultstr, 'html')
+                a = datetime.strptime(timeStr, '%Y-%m-%d %H:%M')
+                b = datetime.now()
+                c = a - b
+                offsetTimeNum = c.seconds / 3600.0
 
-        if nowstr_offset_threeHour in AllBeginTimes:
-            # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
-            # exitflag = 1
-            # pass
-            print nowstr_offset_threeHour
-            resultstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>临场预测</title></head><body>"
-            for onegame in AllGames:
-                if isinstance(onegame, FootballGame):
-
-                    if onegame.beginTime == nowstr_offset_threeHour:
-                        # gameThread(2, '比赛线程', game)
-                        onegame.oddCompanies = getOneGameODD(onegame)
-                        onegame.handiCompanies = getOneGameHandi(onegame)
-                        titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs',
-                                            onegame.friendTeam, ' id: ',
-                                            str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ',
-                                            str(onegame.now_aomenHandi)])
-                        resultstr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
-
-                        orignalHandiStr = getHandiProbability(onegame)
-                        orignalOddStr = getOrignalODDProbability(onegame)
-                        nowOddStr = getnowODDProbability(onegame)
-
-                        nowHandistr = getnowHandiProbability(onegame)
-                        if orignalHandiStr is not None:
-                            resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                         "<caption style=\"color:red;\"><h5>初识亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
-
-                            resultstr += orignalHandiStr
-                            resultstr += '</table>'
-
-                        if nowHandistr is not None:
-                            resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                         "<caption style=\"color:red;\"><h5>即时亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
-
-                            resultstr += nowHandistr
-                            resultstr += '</table>'
-
-
-
-                        if orignalOddStr is not None:
-                            resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                         "<caption style=\"color:red;\"><h5>初识欧赔</h5></caption><tr bgcolor=#663399 ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
-
-                            resultstr += orignalOddStr
-                            resultstr += '</table>'
-
-                        if nowOddStr is not None:
-                            resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                         "<caption style=\"color:red;\"><h5>即时欧赔</h5></caption><tr bgcolor=#663399 ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
-                            resultstr += nowOddStr
-                            resultstr += '</table>'
-
-                        resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                     "<caption style=\"color:red;\"><h5>欧亚转换</h5></caption><tr bgcolor=#663399 ><td>博彩公司</td> <td>转换后</td><td>主</td><td>盘口</td><td>客</td><td>实际</td><td>主</td><td>盘口</td><td>客</td>"
-                        resultstr += exchangeODD.getexchange(onegame.soccerID)
-                        resultstr += '</table>'
-
-            if resultstr != '' or resultstr is not None:
-                send_mail("<<临场三小时>> 开赛时间:%s " % (nowstr_offset_threeHour, ), resultstr, 'html')
-
-        # if nowstr in AllBeginTimes:
-        #     # if AllBeginTimes.index(nowstr) == len(AllBeginTimes) - 1:
-        #         # exitflag = 1
-        #         # pass
-        #     print nowstr
-        #     counter -= 1
-        #     resultstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>临场预测</title></head><body>"
-        #     for onegame in AllGames:
-        #         if isinstance(onegame, FootballGame):
-        #
-        #             if onegame.beginTime == nowstr:
-        #                 # gameThread(2, '比赛线程', game)
-        #                 onegame.oddCompanies = getOneGameODD(onegame)
-        #                 onegame.handiCompanies = getOneGameHandi(onegame)
-        #                 titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs',
-        #                                     onegame.friendTeam, ' id: ',
-        #                                     str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ',
-        #                                     str(onegame.now_aomenHandi)])
-        #                 resultstr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
-        #
-        #
-        #                 nowOddStr = getnowODDProbability(onegame)
-        #
-        #
-        #
-        #                 nowHandistr = getnowHandiProbability(onegame)
-        #                 if nowHandistr is not None:
-        #                     resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-        #                                  "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
-        #
-        #                     resultstr += nowHandistr
-        #                     resultstr += '</table>'
-        #
-        #                 # resultstr += '\n'
-        #
-        #                 if nowOddStr is not None:
-        #                     resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧赔</h5></caption>" \
-        #                                  "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
-        #                     resultstr += nowOddStr
-        #                     resultstr += '</table>'
-        #
-        #                 resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧亚转换</h5></caption>" \
-        #                              "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>转换后</td><td>主</td><td>盘口</td><td>客</td><td>实际</td><td>主</td><td>盘口</td><td>客</td>"
-        #                 resultstr +=  exchangeODD.getexchange(onegame.soccerID)
-        #                 resultstr += '</table>'
-        #                 # resultstr += '\n'
-        #                 # resultstr += '\n'
-        #     if resultstr != '' or resultstr is not None:
-        #         send_mail("%s %s" % ('临场分析',nowstr), resultstr,'html')
+                send_mail("<<临场%s小时>> 开赛时间:%s " % (str(round(offsetTimeNum,1)), timeStr,), resultstr, 'html')
 
 
 
@@ -333,8 +239,8 @@ def timerAnalys(threadName, delay, counter):
 
 
 
-if sys.argv.__len__()==1:
-    sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
+# if sys.argv.__len__()==1:
+#     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
 
 if __name__ == '__main__':
     getTodaySoccer(sys.argv[1])
