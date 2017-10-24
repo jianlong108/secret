@@ -161,74 +161,76 @@ def timerAnalys(threadName, delay, counter):
         allCacluateTimeList = [nowstr_offset_threeHour,nowstr_offset_oneHour,nowstr_offset_halfHour]
 
         canCaclute = False
-        timeStr = ''
+        timeStrList = []
         for timestr in allCacluateTimeList:
             if timestr in AllBeginTimes:
                 canCaclute = True
-                timeStr = timestr
+                timeStrList.append(timestr)
 
         if canCaclute:
-            print nowstr_offset_halfHour
-            resultstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>临场预测</title></head><body>"
-            for onegame in AllGames:
-                if isinstance(onegame, FootballGame):
+            for timeStr in timeStrList:
+                resultstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>临场预测</title></head><body>"
+                for onegame in AllGames:
+                    if isinstance(onegame, FootballGame):
 
-                    if onegame.beginTime == timeStr:
-                        # gameThread(2, '比赛线程', game)
-                        onegame.oddCompanies = getOneGameODD(onegame)
-                        onegame.handiCompanies = getOneGameHandi(onegame)
-                        titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs',
-                                            onegame.friendTeam, ' id: ',
-                                            str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ',
-                                            str(onegame.now_aomenHandi)])
-                        resultstr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
-                        # 获取初始盘口数量
-                        if len(onegame.orignalHandiList) > 2:
-                            resultstr += "<h4 style=\"color:red;\" align=\"center\">初盘混乱</h4>"
+                        if onegame.beginTime == timeStr:
+                            # gameThread(2, '比赛线程', game)
+                            onegame.oddCompanies = getOneGameODD(onegame)
+                            onegame.handiCompanies = getOneGameHandi(onegame)
+                            titlestr = ''.join(
+                                [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs',
+                                 onegame.friendTeam, ' id: ',
+                                 str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ',
+                                 str(onegame.now_aomenHandi)])
+                            resultstr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
+                            # 获取初始盘口数量
+                            if len(onegame.orignalHandiList) > 2:
+                                resultstr += "<h4 style=\"color:red;\" align=\"center\">初盘混乱</h4>"
 
-                        orignalHandiStr = getHandiProbability(onegame)
-                        orignalOddStr = getOrignalODDProbability(onegame)
-                        nowOddStr = getnowODDProbability(onegame)
+                            orignalHandiStr = getHandiProbability(onegame)
+                            orignalOddStr = getOrignalODDProbability(onegame)
+                            nowOddStr = getnowODDProbability(onegame)
 
-                        nowHandistr = getnowHandiProbability(onegame)
-                        if orignalHandiStr is not None:
+                            nowHandistr = getnowHandiProbability(onegame)
+                            if orignalHandiStr is not None:
+                                resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
+                                             "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
+
+                                resultstr += orignalHandiStr
+
+                            if nowHandistr is not None:
+                                resultstr += "<tr bgcolor=#888888><th>即时盘口</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr> "
+
+                                resultstr += nowHandistr
+                                resultstr += '</table>'
+                            else:
+                                resultstr += '</table>'
+
+                            if orignalOddStr is not None:
+                                resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
+                                             "<caption style=\"color:red;\"><h5>欧赔</h5></caption><tr bgcolor=#663399 ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
+
+                                resultstr += orignalOddStr
+
+                            if nowOddStr is not None:
+                                resultstr += "<tr bgcolor=#888888 ><td>即时欧赔</td> <td></td><td></td><td></td><td></td><td></td><td></td><td></td>"
+                                resultstr += nowOddStr
+                                resultstr += '</table>'
+                            else:
+                                resultstr += '</table>'
+
                             resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                         "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
-
-                            resultstr += orignalHandiStr
-
-                        if nowHandistr is not None:
-                            resultstr += "<tr bgcolor=#888888><th>即时盘口</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr> "
-
-                            resultstr += nowHandistr
+                                         "<caption style=\"color:red;\"><h5>欧亚转换</h5></caption><tr bgcolor=#663399 ><td>博彩公司</td> <td>转换后</td><td>主</td><td>盘口</td><td>客</td><td>实际</td><td>主</td><td>盘口</td><td>客</td>"
+                            resultstr += exchangeODD.getexchange(onegame.soccerID)
                             resultstr += '</table>'
-                        else:
-                            resultstr += '</table>'
+                if resultstr != '' or resultstr is not None:
+                    a = datetime.strptime(timeStr, '%Y-%m-%d %H:%M')
+                    b = now
+                    c = a - b
+                    offsetTimeNum = c.seconds / 3600.0
 
-                        if orignalOddStr is not None:
-                            resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                         "<caption style=\"color:red;\"><h5>欧赔</h5></caption><tr bgcolor=#663399 ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
+                    send_mail("<<临场%s小时>> 开赛时间:%s " % (str(round(offsetTimeNum, 1)), timeStr,), resultstr, 'html')
 
-                            resultstr += orignalOddStr
-
-                        if nowOddStr is not None:
-                            resultstr += "<tr bgcolor=#888888 ><td>即时欧赔</td> <td></td><td></td><td></td><td></td><td></td><td></td><td></td>"
-                            resultstr += nowOddStr
-                            resultstr += '</table>'
-                        else:
-                            resultstr += '</table>'
-
-                        resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-                                     "<caption style=\"color:red;\"><h5>欧亚转换</h5></caption><tr bgcolor=#663399 ><td>博彩公司</td> <td>转换后</td><td>主</td><td>盘口</td><td>客</td><td>实际</td><td>主</td><td>盘口</td><td>客</td>"
-                        resultstr += exchangeODD.getexchange(onegame.soccerID)
-                        resultstr += '</table>'
-            if resultstr != '' or resultstr is not None:
-                a = datetime.strptime(timeStr, '%Y-%m-%d %H:%M')
-                b = datetime.now()
-                c = a - b
-                offsetTimeNum = c.seconds / 3600.0
-
-                send_mail("<<临场%s小时>> 开赛时间:%s " % (str(round(offsetTimeNum,1)), timeStr,), resultstr, 'html')
 
 
 
