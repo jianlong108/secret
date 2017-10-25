@@ -417,7 +417,7 @@ def getOrignalODDProbability(game, isYesterday = False, resultGame = None):
 
                     unitTuple = (
                     unit_totalcount, oneCompany.companyTitle, str(oneCompany.orignal_winOdd), str(oneCompany.orignal_drawOdd),
-                    str(oneCompany.orignal_drawOdd),
+                    str(oneCompany.orignal_loseOdd),
                     str(float(unit_win_count) / float(unit_totalcount) * 100)[:5],
                     str(float(unit_draw_count) / float(unit_totalcount) * 100)[:5],
                     str(float(unit_lose_count) / float(unit_totalcount) * 100)[:5])
