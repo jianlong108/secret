@@ -162,6 +162,12 @@ def getYesterdaySoccer(timestr):
 
                 onegame.oddCompanies = SoccerRound.getOneGameODD(onegame)
                 onegame.handiCompanies = SoccerRound.getOneGameHandi(onegame)
+                handiOffset = onegame.now_aomenHandi - onegame.orignal_aomenHandi
+                if handiOffset == 0:
+                    resultGame.handiDeeper = 0
+                else:
+                    resultGame.handiDeeper = 1
+
 
                 # 比赛结果模型 比赛结果赋值
                 offset = onegame.allHome - onegame.allFriend - onegame.now_aomenHandi
@@ -192,9 +198,11 @@ def getYesterdaySoccer(timestr):
                 if flag:
                     # contentStr += '澳盘开盘早\n'.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
                     contentStr += "<h4 style=\"color:red;\" align=\"center\">澳盘开盘早</h4>"
+                    resultGame.AomenFirst = 1
                 # 获取初始盘口数量
                 if len(onegame.orignalHandiList) > 2:
                     contentStr += "<h4 style=\"color:red;\" align=\"center\">初盘混乱</h4>"
+                    resultGame.orignalHandiconfusion = 1
                     # contentStr += '初盘混乱\n'
                     # contentStr += ''.join(
                     #     [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
@@ -263,8 +271,8 @@ def main():
     now = now + aDay
     yesterdaystr = now.strftime('%Y-%m-%d')
 
-    # 14.15.16.17.18.19.20.21
-    getYesterdaySoccer('2017-10-14')
+    # 14.15.16.17.18.19.20.21.22.23
+    getYesterdaySoccer('2017-10-23')
 
 
 if __name__ == '__main__':

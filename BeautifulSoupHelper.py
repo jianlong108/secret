@@ -32,7 +32,7 @@ class SoupHelper(object):
 
     def gethtmllistwithlabel(self, label, options={}, fromencoding = 'gb18030'):
         if self.html is None:
-            return
+            return None
         soup = BeautifulSoup(self.html,"html.parser",from_encoding= fromencoding)
         elementlist = []
         templist = soup.find_all(label,attrs=options)

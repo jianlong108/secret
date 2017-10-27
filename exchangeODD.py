@@ -30,6 +30,8 @@ def getexchange(soccerid=0):
     companieslist = []
     colorResultStr = ''
     htmlstr = ''
+    if trlist is None:
+        return ''
     for tr in trlist:
         if isTagClass(tr):
             oneCompany = BetCompany()

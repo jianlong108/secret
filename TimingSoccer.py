@@ -154,9 +154,9 @@ def timerAnalys(threadName, delay, counter):
         nowstr_offset_threeHour = now_offset_threehour.strftime('%Y-%m-%d %H:%M')
         nowstr_offset_halfHour = now_offset_halfHour.strftime('%Y-%m-%d %H:%M')
         nowstr_offset_oneHour = now_offset_onehour.strftime('%Y-%m-%d %H:%M')
-        if nowstr_offset_threeHour == '2017-10-24 02:11':
-            nowstr_offset_threeHour = '2017-10-24 00:30'
-        print nowstr_offset_threeHour
+        if nowstr_offset_halfHour == '2017-10-27 09:50':
+            nowstr_offset_halfHour = '2017-10-27 09:30'
+        print nowstr_offset_halfHour
 
         allCacluateTimeList = [nowstr_offset_threeHour,nowstr_offset_oneHour,nowstr_offset_halfHour]
 

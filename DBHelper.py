@@ -18,18 +18,31 @@ conn = sqlite3.connect(location)
 c = conn.cursor()
 
 def resultWithHandiAndPercent(handi,win,draw,lose):
+
+    p_max = win
+    if p_max < draw:
+        p_max = draw
+
+    if p_max < lose:
+        p_max = lose
+
+
     if handi == 0:
-        if win + draw > 70:
+        if p_max == win:
             return 3
+        elif p_max == draw:
+            return 1
         else:
             return 0
     elif handi < 0:
-        if win > 55:
+        if p_max == win or p_max == draw:
             return 0
-        else :
+        elif p_max == lose and p_max >= 50:
             return 3
+        else:
+            return 0
     else:
-        if win > 55:
+        if p_max == win and p_max > 50:
             return 3
         else:
             return 0
@@ -46,6 +59,12 @@ class ResultAnalyseGame(object):
         self.friendTeam = ''
         self.homeSoccer = -1
         self.friendSoccer = -1
+        # 初盘混乱
+        self.orignalHandiconfusion = 0
+        # 澳门早开盘
+        self.AomenFirst = 0
+        # 盘口变化 0 不变 1 变盘
+        self.handiDeeper = 0
 
         self.orignalHandiCompany = ''
         self.orignalHandi = 0.0
@@ -94,6 +113,7 @@ def create_result_database():
 
     sql0 = 'create table if not exists ' + 'ResultAnalyse' + \
           '(soccerID INTEGER PRIMARY KEY, league varchar(20), time VARCHAR(15), resultOdd INTEGER, resultHandi INTEGER,' \
+          'confusion INTEGER, aomen INTEGER,deeper INTEGER,' \
           'homeTeam VARCHAR(20), homeSoccer INTEGER, friend VARCHAR(20), friendSoccer INTEGER,' \
           'ori_cpy_handi VARCHAR(20),ori_handi VARCHAR(10), ori_handi_count INTEGER, p_ori_win_handi VARCHAR(10),' \
           'p_ori_draw_handi VARCHAR(10), p_ori_lose_handi VARCHAR(10),' \
@@ -104,6 +124,7 @@ def create_result_database():
           'p_now_win VARCHAR(10), p_now_draw VARCHAR(10), p_now_lose VARCHAR(10), reult_now_handi INTEGER,' \
           'now_cpy_odd VARCHAR(20), now_odd_count INTEGER, p_now_win_odd VARCHAR(10), p_now_draw_odd VARCHAR(10), p_now_lose_odd VARCHAR(10), reult_now_odd INTEGER)'
 
+    # sql0 = 'drop table ResultAnalyse'
     c.execute(sql0)
     conn.commit()
     c.close()
@@ -163,6 +184,7 @@ def insert_Result_Analyse_list(resultList):
         if isinstance(reslut, ResultAnalyseGame) is True:
 
             params = (reslut.soccerID, reslut.league.decode('utf-8'), reslut.beginTime.decode('utf-8'),reslut.resultOdd,reslut.resultHandi,
+                      reslut.orignalHandiconfusion,reslut.AomenFirst,reslut.handiDeeper,
                       reslut.homeTeam.decode('utf-8'), reslut.homeSoccer, reslut.friendTeam.decode('utf-8'), reslut.friendSoccer,
                       reslut.orignalHandiCompany.decode('utf-8'),reslut.orignalHandi,reslut.orignalHandiQueryCount,reslut.percent_orignal_win_handi.decode('utf-8'),reslut.percent_orignal_draw_handi.decode('utf-8'),reslut.percent_orignal_lose_handi.decode('utf-8'),
                       reslut.percent_orignal_win_handi_odd.decode('utf-8'),reslut.percent_orignal_draw_handi_odd.decode('utf-8'),reslut.percent_orignal_lose_handi_odd.decode('utf-8'),reslut.prediction_result_orignalHandi,
@@ -172,7 +194,7 @@ def insert_Result_Analyse_list(resultList):
                       reslut.nowOddCompany.decode('utf-8'), reslut.nowOddQueryCount, reslut.percent_now_win_odd.decode('utf-8'),reslut.percent_now_draw_odd.decode('utf-8'), reslut.percent_now_lose_odd.decode('utf-8'),reslut.prediction_result_nowOdd,
                       )
             try:
-                c.execute("INSERT INTO ResultAnalyse VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params)
+                c.execute("INSERT INTO ResultAnalyse VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params)
             except sqlite3.IntegrityError as e:
                 print e
                 print reslut.soccerID

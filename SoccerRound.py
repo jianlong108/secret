@@ -226,8 +226,12 @@ def getOneGameHandi(game):
                     company.now_top = float(unitArray[5])
                     company.now_Handicap = float(unitArray[6])
                     company.now_bottom = float(unitArray[7])
-                except IndexError as e:
+                except (IndexError, ValueError) as e:
+                    print e
                     print unitArray
+                except Exception as e:
+                    print e
+
 
                 if company.companyTitle == '澳门':
                     game.orignal_aomenHandi = company.orignal_Handicap
