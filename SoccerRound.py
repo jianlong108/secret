@@ -240,6 +240,7 @@ def getOneGameHandi(game):
                     game.orignal_aomenHandi = company.orignal_Handicap
                     game.now_aomenHandi = company.now_Handicap
                 companys.append(company)
+
             return companys
         else:
             return []

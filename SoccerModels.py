@@ -4,6 +4,30 @@
 from BeautifulSoupHelper import *
 
 '''
+终盘不统一模型
+'''
+class NowHandiDisunion:
+    def __init__(self):
+        self.AomenOri_Handi = 0.0
+        self.AomenNow_Handi = 0.0
+        self.AomenChange = 0
+        self.maxHandi = 0.0
+        self.countOfHandi = 0
+        self.minHandi = 0.0
+        self.homeSoccer = 0
+        self.friengSoccer = 0
+        self.result = -1
+
+class CompanyChange:
+    def __init__(self):
+        self.name = ''
+        self.ori_handi = 0.0
+        self.now_handi = 0.0
+
+        # 0 不变 1 升 2 降
+        self.handi_change = -1
+
+'''
 博彩公司
 '''
 class BetCompany:
@@ -130,6 +154,8 @@ class FootballGame:
 
         # 终盘的数量
         self.nowHandiList = []
+
+        self.nowHandiDisUnionModel = None
 
 
     @property

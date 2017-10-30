@@ -240,12 +240,23 @@ def getYesterdaySoccer(timestr):
                 # Ori_Odd_result = getOrignalODDProbability(onegame,True)
                 # Now_Odd_result = getnowODDProbability(onegame,True)
                 #
-                result_locationstr = os.path.join('/Users/dalong/Desktop', '%s-result.txt' % (timestr,))
+                result_locationstr = os.path.join('/Users/mi/Desktop', '%s-result.txt' % (timestr,))
                 result_leaguelistfile = open(result_locationstr, 'a')
+
+                if onegame.allHome - onegame.allFriend - onegame.now_aomenHandi > 0:
+                    result = '赢'
+                elif onegame.allHome - onegame.allFriend - onegame.now_aomenHandi == 0:
+                    result = '输'
+                else:
+                    result = '走'
+
                 if (len(onegame.nowHandiList) > 1):
-                    result_leaguelistfile.write('%s: %s %s vs %s %d:%d 盘口:%s \n'%(onegame.beginTime, onegame.leauge ,onegame.homeTeam, onegame.friendTeam,onegame.allHome,onegame.allFriend,str(onegame.nowHandiList)
-                                                                                                                  )
-                                         )
+                    result_leaguelistfile.write('%s: %s %s vs %s %d:%d 盘口:%s 澳初:%s 即:%s %s\n'%
+                                                (onegame.beginTime, onegame.leauge ,onegame.homeTeam,
+                                                 onegame.friendTeam,onegame.allHome,onegame.allFriend,
+                                                 str(onegame.nowHandiList),str(onegame.orignal_aomenHandi),
+                                                 str(onegame.orignal_aomenHandi),result
+                                                                                                                  ))
 
 
             time.sleep(1.5)
