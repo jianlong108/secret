@@ -223,9 +223,12 @@ def getOneGameHandi(game):
                     if company.orignal_Handicap not in game.orignalHandiList:
                         game.orignalHandiList.append(company.orignal_Handicap)
                     company.orignal_bottom = float(unitArray[4])
+
                     company.now_top = float(unitArray[5])
                     company.now_Handicap = float(unitArray[6])
                     company.now_bottom = float(unitArray[7])
+                    if company.now_Handicap not in game.nowHandiList:
+                        game.nowHandiList.append(company.now_Handicap)
                 except (IndexError, ValueError) as e:
                     print e
                     print unitArray

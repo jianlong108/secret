@@ -128,6 +128,9 @@ class FootballGame:
         # 初盘的种类.
         self.orignalHandiList = []
 
+        # 终盘的数量
+        self.nowHandiList = []
+
 
     @property
     def soccer(self):

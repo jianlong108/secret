@@ -154,8 +154,8 @@ def timerAnalys(threadName, delay, counter):
         nowstr_offset_threeHour = now_offset_threehour.strftime('%Y-%m-%d %H:%M')
         nowstr_offset_halfHour = now_offset_halfHour.strftime('%Y-%m-%d %H:%M')
         nowstr_offset_oneHour = now_offset_onehour.strftime('%Y-%m-%d %H:%M')
-        if nowstr_offset_halfHour == '2017-10-27 09:50':
-            nowstr_offset_halfHour = '2017-10-27 09:30'
+        if nowstr_offset_halfHour == '2017-10-28 13:30':
+            nowstr_offset_halfHour = '2017-10-28 13:00'
         print nowstr_offset_halfHour
 
         allCacluateTimeList = [nowstr_offset_threeHour,nowstr_offset_oneHour,nowstr_offset_halfHour]
@@ -199,7 +199,7 @@ def timerAnalys(threadName, delay, counter):
                                 resultstr += orignalHandiStr
 
                             if nowHandistr is not None:
-                                resultstr += "<tr bgcolor=#888888><th>即时盘口</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr> "
+                                resultstr += "<tr bgcolor=#888888><th>即时盘口</th><th>%s</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr> " % (str(len(onegame.nowHandiList)))
 
                                 resultstr += nowHandistr
                                 resultstr += '</table>'

@@ -240,26 +240,18 @@ def getYesterdaySoccer(timestr):
                 # Ori_Odd_result = getOrignalODDProbability(onegame,True)
                 # Now_Odd_result = getnowODDProbability(onegame,True)
                 #
-                # result_locationstr = os.path.join('/Users/mi/Desktop', '%s-result.txt' % (timestr,))
-                # result_leaguelistfile = open(result_locationstr, 'a')
-                # if (float(Now_Handi_result[5]) > 55  or float(Now_Handi_result[3]) > 55 or float(Now_Handi_result[4]) > 55) and (float(Now_Odd_result[5]) > 55  or float(Now_Odd_result[6]) > 55 or float(Now_Odd_result[7]) > 55):
-                #     result_leaguelistfile.write('%s: %s %s vs %s %d:%d\n'
-                #                                 '%s 初盘:%s 数量:%s 赢盘:%s 走盘:%s 输盘:%s 胜:%s 平:%s 负:%s\n'
-                #                                 '%s 终盘:%s 数量:%s 赢盘:%s 走盘:%s 输盘:%s 胜:%s 平:%s 负:%s\n'
-                #                                 '%s 数量:%s 胜:%s 平:%s 负:%s 胜率:%s 平率:%s 负率:%s\n'
-                #                                 '%s 数量:%s 胜:%s 平:%s 负:%s 胜率:%s 平率:%s 负率:%s\n\n'%(onegame.beginTime, onegame.leauge ,onegame.homeTeam, onegame.friendTeam,onegame.allHome,onegame.allFriend,
-                #                                                                                             Ori_Handi_result[1],Ori_Handi_result[2],str(Ori_Handi_result[0]),Ori_Handi_result[3],Ori_Handi_result[4],Ori_Handi_result[5],Ori_Handi_result[6],Ori_Handi_result[7],Ori_Handi_result[8],
-                #                                                                                             Now_Handi_result[1],Now_Handi_result[2],str(Now_Handi_result[0]),Now_Handi_result[3],Now_Handi_result[4],Now_Handi_result[5],Now_Handi_result[6],Now_Handi_result[7],Now_Handi_result[8],
-                #                                                                                             Ori_Odd_result[1],str(Ori_Odd_result[0]),Ori_Odd_result[2],Ori_Odd_result[3],Ori_Odd_result[4],Ori_Odd_result[5],Ori_Odd_result[6],Ori_Odd_result[7],
-                #                                                                                             Now_Odd_result[1],str(Now_Odd_result[0]),Now_Odd_result[2],Now_Odd_result[3],Now_Odd_result[4],Now_Odd_result[5],Now_Odd_result[6],Now_Odd_result[7],
-                #                                                                                                      )
-                #                          )
+                result_locationstr = os.path.join('/Users/dalong/Desktop', '%s-result.txt' % (timestr,))
+                result_leaguelistfile = open(result_locationstr, 'a')
+                if (len(onegame.nowHandiList) > 1):
+                    result_leaguelistfile.write('%s: %s %s vs %s %d:%d 盘口:%s \n'%(onegame.beginTime, onegame.leauge ,onegame.homeTeam, onegame.friendTeam,onegame.allHome,onegame.allFriend,str(onegame.nowHandiList)
+                                                                                                                  )
+                                         )
 
 
             time.sleep(1.5)
 
         # insertGameList(AllGames)
-        insert_Result_Analyse_list(AllResultAnalyseGames)
+        # insert_Result_Analyse_list(AllResultAnalyseGames)
 
         # i = datetime.now()
         # send_mail("%s %s/%s/%s" % ('往日比赛分析', i.year, i.month, i.day), contentStr, 'html')
@@ -271,8 +263,8 @@ def main():
     now = now + aDay
     yesterdaystr = now.strftime('%Y-%m-%d')
 
-    # 14.15.16.17.18.19.20.21.22.23
-    getYesterdaySoccer('2017-10-23')
+    # 10.11.12.13.14.15.16.17.18.19.20.21.22.23.24.25.26.27
+    getYesterdaySoccer('2017-10-28')
 
 
 if __name__ == '__main__':
