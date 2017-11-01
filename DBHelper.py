@@ -102,6 +102,7 @@ class ResultAnalyseGame(object):
         self.percent_now_lose_odd = ''
         self.prediction_result_nowOdd = -1
 
+
 def create_result_database():
     global conn
     global c
@@ -130,6 +131,27 @@ def create_result_database():
     c.close()
     conn.close()
 
+
+def create_handiDisUnion_database():
+    global conn
+    global c
+    # 连接到SQLite数据库
+    # 数据库文件是test.db
+    # 如果文件不存在，会自动在当前目录创建:
+    conn = sqlite3.connect(location)
+    c = conn.cursor()
+
+    sql0 = 'create table if not exists ' + 'HandiDisUnion' + \
+          '(soccerID INTEGER PRIMARY KEY, league varchar(20), time VARCHAR(15), resultHandi INTEGER,' \
+          'homeTeam VARCHAR(20), homeSoccer INTEGER, friend VARCHAR(20), friendSoccer INTEGER,APan_change VARCHAR(10),' \
+          'AM_Home_wat_change VARCHAR(10),AM_Friend_wat_change VARCHAR(10),ori_maxHandi VARCHAR(10),ori_minHandi VARCHAR(10)' \
+          'now_maxHandi VARCHAR(10),now_minHandi VARCHAR(10))'
+
+    # sql0 = 'drop table ResultAnalyse'
+    c.execute(sql0)
+    conn.commit()
+    c.close()
+    conn.close()
 
 def create_database():
     global conn

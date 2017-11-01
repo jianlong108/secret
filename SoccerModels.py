@@ -82,10 +82,48 @@ class BetCompany:
         self.lowest = False
         self.highest = False
 
-        self.falldown = False
-        self.rise = False
-        self.lowest = False
-        self.highest = False
+        @property
+        def homeWaterChange(self):
+            if self.now_top - self.orignal_top > 0:
+                return '升水'
+            elif self.now_top - self.orignal_top == 0.00:
+                return '不变'
+            else:
+                return '降水'
+
+        @property
+        def friendWaterChange(self):
+            if self.now_bottom - self.orignal_bottom > 0:
+                return '升水'
+            elif self.now_bottom - self.orignal_bottom == 0.00:
+                return '不变'
+            else:
+                return '降水'
+
+        @property
+        def handiChange(self):
+
+            if self.orignal_Handicap * self.now_Handicap < 0.0:
+                return '翻转'
+
+            if self.orignal_Handicap >= 0:
+                # 主让球
+                if self.now_Handicap - self.orignal_Handicap > 0:
+                    return '升'
+                elif self.now_Handicap - self.orignal_Handicap == 0.0:
+                    return '不变'
+                else:
+                    return '降'
+            else:
+                # 客让球
+                if self.now_Handicap - self.orignal_Handicap < 0:
+                    return '升'
+                elif self.now_Handicap - self.orignal_Handicap == 0.0:
+                    return '不变'
+                else:
+                    return '降'
+
+
 
     def getwiningpercentage(self):
         if self.similerMatchURL is None:

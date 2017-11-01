@@ -255,7 +255,7 @@ def getYesterdaySoccer(timestr):
                                                 (onegame.beginTime, onegame.leauge ,onegame.homeTeam,
                                                  onegame.friendTeam,onegame.allHome,onegame.allFriend,
                                                  str(onegame.nowHandiList),str(onegame.orignal_aomenHandi),
-                                                 str(onegame.orignal_aomenHandi),result
+                                                 str(onegame.now_aomenHandi),result
                                                                                                                   ))
 
 
