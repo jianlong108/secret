@@ -273,7 +273,7 @@ class GetLeague:
                 print '获取正赛数据 ' + self.currentSeason + ' ' + str(currentRound) + ' ' + str(len(games))
                 currentRound -= 1
                 # if len(self.allGames) != 0:
-                #     insertGameList(self.allGames)
+                #     insertNewGameList(self.allGames)
                 # del self.allGames[:]
 
                 time.sleep(3)
@@ -293,7 +293,8 @@ class GetLeague:
             self.getAllData()
             self.allSubLeagues = []
             if len(self.allGames) != 0:
-                insertGameList(self.allGames)
+                # insertGameList(self.allGames)
+                insertNewGameList(self.allGames)
             self.allGames  = []
 
 
@@ -320,15 +321,15 @@ def getLeagueData(leagueid = -1,isCup = False):
             league.getOfficialLeague()
 
 
-if sys.argv.__len__()==1:
-    sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 144 True\033[0m')
+# if sys.argv.__len__()==1:
+#     sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 144 True\033[0m')
+#
+# if __name__ == '__main__':
+#     leagueid = sys.argv[1]
+#     isCup = sys.argv[2]
+#     getLeagueData(leagueid,isCup)
 
-if __name__ == '__main__':
-    leagueid = sys.argv[1]
-    isCup = sys.argv[2]
-    getLeagueData(leagueid,isCup)
-
-
+getLeagueData(36,False)
 
 
 

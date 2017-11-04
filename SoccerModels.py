@@ -24,35 +24,60 @@ class CompanyChange:
         self.ori_handi = 0.0
         self.now_handi = 0.0
 
-        # 0 不变 1 升 2 降
-        self.handi_change = -1
+        # 0 不变 1 升 2 降 3反转
+        # self.handi_change = -1
+        @property
+        def handi_change(self):
+            if self.ori_handi * self.now_handi == 0.0:
+                if self.now_handi - self.ori_handi == 0.0:
+                    return 1
+                else:
+                    return
+            elif self.ori_handi * self.now_handi < 0.0:
+                return 3
+            else:
+                return 0
 
 '''
 博彩公司
 '''
 class BetCompany:
     def __init__(self,title = '',src = ''):
+        # 公司id
         self.companyID = 0
+        # 比赛id
         self.soccerGameId = ''
+        # 比赛所属联赛
         self.league = ''
+        # 公司名称
         self.companyTitle = ''
+        # 初盘 主队水位
+        self.orignal_top = 0.00
+        # 初盘 客队水位
+        self.orignal_bottom = 0.00
+        # 初盘 盘口
+        self.orignal_Handicap = 0.00
+        # 终盘 主队水位
+        self.now_top = 0.00
+        # 终盘 客队水位
+        self.now_bottom = 0.00
+        # 终盘 盘口
+        self.now_Handicap = 0.00
 
-        self.orignal_top = 0.0
-        self.orignal_bottom = 0.0
-        self.orignal_Handicap = 0.0
-
-
-        self.now_top = 0.0
-        self.now_bottom = 0.0
-        self.now_Handicap = 0.0
-
-
-        self.exchange_top = 0.0
-        self.exchange_bottom = 0.0
-        self.exchange_Handicap = 0.0
-
+        # *********begin************
+        # ********暂时不用**********
+        # ************************
+        # 欧亚转换后的 主队水位
+        self.exchange_top = 0.00
+        # 欧亚转换后的 客队水位
+        self.exchange_bottom = 0.00
+        # 欧亚转换后的 盘口
+        self.exchange_Handicap = 0.00
+        #
         self.homeWinningPercentage = ''
         self.friendWiningPercentage = ''
+        # **********end***********
+        # ************************
 
         # 相似盘口的链接
         self.similerMatchURL = ''
@@ -72,56 +97,77 @@ class BetCompany:
         # 初负赔
         self.orignal_loseOdd = 0.00
 
+        # 结果 310
+        self.result = -1
 
-        self.result = 0
-        self.homeSoccer = 0
-        self.friendSoccer = 0
+        # 主队得分
+        self.homeSoccer = -1
+        # 客队得分
+        self.friendSoccer = -1
 
-        self.falldown = False
-        self.rise = False
+        # 是否是最高盘口
         self.lowest = False
+        # 是否是最低盘口
         self.highest = False
 
-        @property
-        def homeWaterChange(self):
-            if self.now_top - self.orignal_top > 0:
-                return '升水'
-            elif self.now_top - self.orignal_top == 0.00:
+    @property
+    def resultStr(self):
+        if self.now_Handicap >= 0:
+            if self.homeSoccer - self.friendSoccer - self.now_Handicap > 0:
+                return '赢'
+            elif self.homeSoccer - self.friendSoccer - self.now_Handicap == 0.0:
+                return '走'
+            else:
+                return '输'
+        else:
+            if self.friendSoccer - self.homeSoccer - self.now_Handicap > 0:
+                return '赢'
+            elif self.friendSoccer - self.homeSoccer - self.now_Handicap == 0.0:
+                return '走'
+            else:
+                return '输'
+
+    @property
+    def homeWaterChange(self):
+        if self.now_top - self.orignal_top > 0:
+            return '升水'
+        elif self.now_top - self.orignal_top == 0.00:
+            return '不变'
+        else:
+            return '降水'
+
+    @property
+    def friendWaterChange(self):
+        if self.now_bottom - self.orignal_bottom > 0:
+            return '升水'
+        elif self.now_bottom - self.orignal_bottom == 0.00:
+            return '不变'
+        else:
+            return '降水'
+
+    @property
+    def handiChange(self):
+
+        if self.orignal_Handicap * self.now_Handicap < 0.0:
+            return '翻转'
+
+        if self.orignal_Handicap >= 0:
+            # 主让球
+            if self.now_Handicap - self.orignal_Handicap > 0:
+                return '升'
+            elif self.now_Handicap - self.orignal_Handicap == 0.0:
                 return '不变'
             else:
-                return '降水'
-
-        @property
-        def friendWaterChange(self):
-            if self.now_bottom - self.orignal_bottom > 0:
-                return '升水'
-            elif self.now_bottom - self.orignal_bottom == 0.00:
+                return '降'
+        else:
+            # 客让球
+            if self.now_Handicap - self.orignal_Handicap < 0:
+                return '升'
+            elif self.now_Handicap - self.orignal_Handicap == 0.0:
                 return '不变'
             else:
-                return '降水'
+                return '降'
 
-        @property
-        def handiChange(self):
-
-            if self.orignal_Handicap * self.now_Handicap < 0.0:
-                return '翻转'
-
-            if self.orignal_Handicap >= 0:
-                # 主让球
-                if self.now_Handicap - self.orignal_Handicap > 0:
-                    return '升'
-                elif self.now_Handicap - self.orignal_Handicap == 0.0:
-                    return '不变'
-                else:
-                    return '降'
-            else:
-                # 客让球
-                if self.now_Handicap - self.orignal_Handicap < 0:
-                    return '升'
-                elif self.now_Handicap - self.orignal_Handicap == 0.0:
-                    return '不变'
-                else:
-                    return '降'
 
 
 
@@ -165,36 +211,74 @@ class FootballGame:
         self.leauge = ''
         # 开赛时间
         self.beginTime = ''
-        # 主队
-
+        # 主队排名
         self.homeTeamLevel = 0
+        # 客队排名
         self.friendTeamLevel = 0
-
+        # 主队名称
         self.homeTeam = ''
+        # 主队简称
         self.homeTeam2 = ''
         # 客队
         self.friendTeam = ''
+        # 客队简称
         self.friendTeam2 = ''
-        # 比分
+        # 半场主队得分
         self.halfHome = 0
+        # 半场客队得分
         self.halfFriend = 0
+        # 主队得分
         self.allHome = 0
+        # 客队得分
         self.allFriend = 0
-
+        # 澳门即时盘口
         self.now_aomenHandi = 0
+        # 澳门即时欧赔
         self.now_aomenOdd = (0.0, 0.0, 0.0)
-
+        # 澳门初始盘口
         self.orignal_aomenHandi = 0
+        # 澳门初始欧赔
         self.orignal_aomenOdd = (0.0, 0.0, 0.0)
 
-        # 初盘的种类.
+        # 初盘的种类
         self.orignalHandiList = []
 
-        # 终盘的数量
+        # 终盘的种类
         self.nowHandiList = []
 
-        self.nowHandiDisUnionModel = None
+        # 终盘不统一
+        self.ori_maxHandi = 10
+        self.ori_minHandi = 10
+        self.ori_maxHandiCompany = ''
+        self.ori_minHandiCompany = ''
+        self.ori_topMax = 0.00
+        self.ori_bottomMax = 0.00
+        self.ori_topMaxCompany = ''
+        self.ori_bottomMaxCompany = ''
+        self.ori_topMin = 0.00
+        self.ori_bottomMin = 0.00
+        self.ori_topMinCompany = ''
+        self.ori_bottomMinCompany = ''
 
+        self.maxHandi = 10
+        self.minHandi = 10
+        self.maxHandiCompany = ''
+        self.minHandiCompany = ''
+        self.topMax = 0.00
+        self.bottomMax = 0.00
+        self.topMaxCompany = ''
+        self.bottomMaxCompany = ''
+        self.topMin = 0.00
+        self.bottomMin = 0.00
+        self.topMinCompany = ''
+        self.bottomMinCompany = ''
+
+    @property
+    def nowHandiDisUnion(self):
+        if len(self.nowHandiList) > 1:
+            return 1
+        else:
+            return 0
 
     @property
     def soccer(self):
@@ -207,13 +291,21 @@ class FootballGame:
 
     @property
     def winhandi(self):
-        num = self.allHome - self.allFriend -self.now_aomenHandi
-        if num > 0:
-            return '赢盘'
-        elif num == 0:
-            return '走盘'
+        if self.now_aomenHandi >= 0:
+            if self.allHome - self.allFriend - self.now_aomenHandi > 0:
+                return '赢'
+            elif self.allHome - self.allFriend - self.now_aomenHandi == 0.0:
+                return '走'
+            else:
+                return '输'
         else:
-            return '输盘'
+            if self.allFriend - self.allHome - self.now_aomenHandi > 0:
+                return '赢'
+            elif self.allFriend - self.allHome - self.now_aomenHandi == 0.0:
+                return '走'
+            else:
+                return '输'
+
 
 
 '''

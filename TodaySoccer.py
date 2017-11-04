@@ -184,7 +184,7 @@ def getTodaySoccer(type):
 
             tempNowHandistr = getnowHandiProbability(onegame)
             if tempNowHandistr is not None:
-                contentStr += "<tr bgcolor=#888888><th>即时盘口</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr> "
+                contentStr += "<tr bgcolor=#888888><th>即时盘口</th><th>%s</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr> "%(str(len(onegame.nowHandiList)))
                 contentStr += tempNowHandistr
                 contentStr += '</table>'
             else:

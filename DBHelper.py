@@ -132,7 +132,7 @@ def create_result_database():
     conn.close()
 
 
-def create_handiDisUnion_database():
+def create_NEW_database():
     global conn
     global c
     # 连接到SQLite数据库
@@ -141,14 +141,134 @@ def create_handiDisUnion_database():
     conn = sqlite3.connect(location)
     c = conn.cursor()
 
-    sql0 = 'create table if not exists ' + 'HandiDisUnion' + \
-          '(soccerID INTEGER PRIMARY KEY, league varchar(20), time VARCHAR(15), resultHandi INTEGER,' \
-          'homeTeam VARCHAR(20), homeSoccer INTEGER, friend VARCHAR(20), friendSoccer INTEGER,APan_change VARCHAR(10),' \
-          'AM_Home_wat_change VARCHAR(10),AM_Friend_wat_change VARCHAR(10),ori_maxHandi VARCHAR(10),ori_minHandi VARCHAR(10)' \
-          'now_maxHandi VARCHAR(10),now_minHandi VARCHAR(10))'
+    sql0 = 'create table if not exists ' + 'NewGames' + \
+           '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,' \
+           'soccerID INTEGER,league varchar(20),time VARCHAR(15),result INTEGER,resulthandi VARCHAR(15),' \
+           'homeLevel INTEGER,home VARCHAR(20),homeSoccer INTEGER,' \
+           'friendLevel INTEGER,friend VARCHAR(20) ,friendSoccer INTEGER,' \
+           'oriHandiCount INTEGER,ori_max_Handi REAL,ori_max_Handi_com VARCHAR(15),ori_min_Handi REAL,ori_min_Handi_com VARCHAR(15),' \
+           'ori_top_max REAL,ori_top_max_com VARCHAR(15),ori_top_min REAL,ori_top_min_com VARCHAR(15),ori_bottom_max REAL,ori_bottom_max_com VARCHAR(15),ori_bottom_min REAL,ori_bottom_min_com VARCHAR(15),' \
+           'HandiCount INTEGER,max_Handi REAL,max_Handi_com VARCHAR(15),min_Handi REAL,min_Handi_com VARCHAR(15),' \
+           'top_max REAL,top_max_com VARCHAR(15),top_min REAL,top_min_com VARCHAR(15),bottom_max REAL,bottom_max_com VARCHAR(15),bottom_min REAL,bottom_min_com VARCHAR(15))'
 
-    # sql0 = 'drop table ResultAnalyse'
+
+    # sql0 = 'drop table NewGames'
     c.execute(sql0)
+
+    sql1 = 'create table if not exists ' + 'NewCompanyHandicap' + \
+           '(rowid INTEGER PRIMARY KEY AUTOINCREMENT, soccerID INTEGER, result VARCHAR(10),homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),otodds REAL ,' \
+           'orignalpan REAL,ododds REAL,ntodds REAL ,nowpan REAL,ndodds REAL,handichange VARCHAR(10), topChange VARCHAR(10),bottomChange VARCHAR(10))'
+    # sql1 = 'drop table NewCompanyHandicap'
+    c.execute(sql1)
+
+    sql2 = 'create table if not exists ' + 'NewCompanyODD' + \
+           '(rowid INTEGER PRIMARY KEY AUTOINCREMENT, soccerID INTEGER , gameid INTEGER, result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),' \
+           'ori_winODD REAL ,ori_drawODD REAL,ori_loseODD REAL,' \
+           'winODD REAL ,drawODD REAL,loseODD REAL)'
+    # sql2 = 'drop table NewCompanyODD'
+    c.execute(sql2)
+    conn.commit()
+    c.close()
+    conn.close()
+
+def insert_New_Game(game):
+    if isinstance(game , FootballGame):
+        global conn
+        global c
+        conn = sqlite3.connect(location)
+        c = conn.cursor()
+
+        params = (game.soccerID, game.leauge, game.beginTime, game.soccer,game.winhandi.decode('utf-8'), game.homeTeamLevel, game.homeTeam,
+                  game.allHome, game.friendTeamLevel, game.friendTeam, game.allFriend,
+                  len(game.orignalHandiList),game.ori_maxHandi,game.ori_maxHandiCompany,game.ori_minHandi,game.ori_minHandiCompany,
+                  game.ori_topMax,game.ori_topMaxCompany,game.ori_topMin,game.ori_topMinCompany,game.ori_bottomMax,game.ori_bottomMaxCompany,game.ori_bottomMin,game.ori_bottomMinCompany,
+                  len(game.nowHandiList),game.maxHandi,game.maxHandiCompany,game.minHandi,game.minHandiCompany,
+                  game.topMax,game.topMaxCompany,game.topMin,game.topMinCompany,game.bottomMax,game.bottomMaxCompany,game.bottomMin,game.bottomMinCompany)
+
+        c.execute("INSERT INTO NewGames VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params)
+
+        handi = game.handiCompanies
+        if handi is None:
+            pass
+        else:
+            for company in handi:
+                if isinstance(company, BetCompany):
+                    params1 = (
+                        game.soccerID, company.result, company.homeSoccer, company.friendSoccer,
+                        company.companyTitle.decode('utf-8'),
+                        company.orignal_top, company.orignal_Handicap, company.orignal_bottom, company.now_top,
+                        company.now_Handicap,
+                        company.now_bottom, company.handiChange, company.homeWaterChange, company.friendWaterChange)
+
+                    c.execute("INSERT INTO NewCompanyHandicap VALUES (NULL ,? ,?,?,?,?,?,?,?,?,?,?,?,?,?)", params1)
+
+        odd = game.oddCompanies
+        if odd is None:
+            pass
+        else:
+            for company in odd:
+                params = (game.soccerID, company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
+                          company.companyTitle.decode('utf-8'),
+                          company.orignal_winOdd, company.orignal_drawOdd,
+                          company.orignal_loseOdd, company.winOdd, company.drawOdd, company.loseOdd)
+                c.execute("INSERT INTO NewCompanyODD VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?,?)", params)
+
+        conn.commit()
+        c.close()
+        conn.close()
+
+
+def insertNewGameList(games):
+    global conn
+    global c
+
+    conn = sqlite3.connect(location)
+    c = conn.cursor()
+
+    for game in games:
+        params = (game.soccerID, game.leauge.decode('utf-8'), game.beginTime.decode('utf-8'), game.soccer,game.winhandi.decode('utf-8'), game.homeTeamLevel, game.homeTeam.decode('utf-8'),
+                  game.allHome, game.friendTeamLevel, game.friendTeam.decode('utf-8'), game.allFriend,
+                  len(game.orignalHandiList), game.ori_maxHandi, game.ori_maxHandiCompany.decode('utf-8'), game.ori_minHandi,
+                  game.ori_minHandiCompany.decode('utf-8'),
+                  game.ori_topMax, game.ori_topMaxCompany.decode('utf-8'), game.ori_topMin, game.ori_topMinCompany.decode('utf-8'), game.ori_bottomMax,
+                  game.ori_bottomMaxCompany.decode('utf-8'), game.ori_bottomMin, game.ori_bottomMinCompany.decode('utf-8'),
+                  len(game.nowHandiList), game.maxHandi, game.maxHandiCompany.decode('utf-8'), game.minHandi, game.minHandiCompany.decode('utf-8'),
+                  game.topMax, game.topMaxCompany.decode('utf-8'), game.topMin, game.topMinCompany.decode('utf-8'), game.bottomMax,
+                  game.bottomMaxCompany.decode('utf-8'), game.bottomMin, game.bottomMinCompany.decode('utf-8'))
+
+        c.execute(
+            "INSERT INTO NewGames VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            params)
+
+        handi = game.handiCompanies
+        if handi is None:
+            pass
+        else:
+            for company  in handi:
+                if isinstance(company, BetCompany):
+                    params1 = (
+                    game.soccerID, company.resultStr.decode('utf-8'), company.homeSoccer, company.friendSoccer,
+                    company.companyTitle.decode('utf-8'),
+                    company.orignal_top, company.orignal_Handicap, company.orignal_bottom, company.now_top, company.now_Handicap,
+                    company.now_bottom,company.handiChange.decode('utf-8'),company.homeWaterChange.decode('utf-8'),company.friendWaterChange.decode('utf-8'))
+
+                    c.execute("INSERT INTO NewCompanyHandicap VALUES (NULL ,? ,?,?,?,?,?,?,?,?,?,?,?,?,?)", params1)
+
+
+
+
+        odd  = game.oddCompanies
+        if odd is None:
+            pass
+        else:
+            for company in odd:
+                params = (game.soccerID, company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
+                          company.companyTitle.decode('utf-8'),
+                          company.orignal_winOdd, company.orignal_drawOdd,
+                          company.orignal_loseOdd, company.winOdd, company.drawOdd, company.loseOdd)
+                c.execute("INSERT INTO NewCompanyODD VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?,?)", params)
+
+
     conn.commit()
     c.close()
     conn.close()
@@ -292,7 +412,7 @@ def insertGameList(games):
 
 
         odd  = game.oddCompanies
-        if odd == None:
+        if odd is None:
             pass
         else:
             for company in odd:
@@ -1304,4 +1424,4 @@ def getLeagueDetail(tempLeagueID):
 
 
 
-create_result_database()
+create_NEW_database()

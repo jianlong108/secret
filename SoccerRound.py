@@ -112,12 +112,12 @@ def creatGameModelWithComplexStr(complexStr,leagueStr):
         if '$$' in unit:
             onegame = unit.split('$$')[1]
             model = creatGameModel(onegame, leagueStr)
-            if model != None:
+            if model is not None:
                 games.append(model)
 
         else:
             model = creatGameModel(unit, leagueStr)
-            if model != None:
+            if model is not None:
                 games.append(model)
     return games
 
@@ -207,6 +207,31 @@ def getOneGameHandi(game):
 
         if isinstance(game, FootballGame):
             companys = []
+            temp_maxHandi = -10
+            temp_minHandi = -10
+            temp_maxHandiCompany = ''
+            temp_minHandiCompany = ''
+            temp_topMax = 0.00
+            temp_bottomMax = 0.00
+            temp_topMaxCompany = ''
+            temp_bottomMaxCompany = ''
+            temp_topMin = 10.00
+            temp_bottomMin = 10.00
+            temp_topMinCompany = ''
+            temp_bottomMinCompany = ''
+
+            temp_ori_maxHandi = -10
+            temp_ori_minHandi = -10
+            temp_ori_maxHandiCompany = ''
+            temp_ori_minHandiCompany = ''
+            temp_ori_topMax = 0.00
+            temp_ori_bottomMax = 0.00
+            temp_ori_topMaxCompany = ''
+            temp_ori_bottomMaxCompany = ''
+            temp_ori_topMin = 10.00
+            temp_ori_bottomMin = 10.00
+            temp_ori_topMinCompany = ''
+            temp_ori_bottomMinCompany = ''
             for unit in array:
                 company = BetCompany()
                 company.result = game.soccer
@@ -215,11 +240,13 @@ def getOneGameHandi(game):
                 company.friendSoccer = game.allFriend
                 company.soccerGameId = game.soccerID
                 unitArray = unit.split('^')
+
                 try:
                     company.companyTitle = unitArray[0]
                     company.companyID = int(unitArray[1])
                     company.orignal_top = float(unitArray[2])
                     company.orignal_Handicap = float(unitArray[3])
+                    # 获取初盘种类
                     if company.orignal_Handicap not in game.orignalHandiList:
                         game.orignalHandiList.append(company.orignal_Handicap)
                     company.orignal_bottom = float(unitArray[4])
@@ -227,8 +254,11 @@ def getOneGameHandi(game):
                     company.now_top = float(unitArray[5])
                     company.now_Handicap = float(unitArray[6])
                     company.now_bottom = float(unitArray[7])
+                    # 获取终盘种类
                     if company.now_Handicap not in game.nowHandiList:
                         game.nowHandiList.append(company.now_Handicap)
+
+
                 except (IndexError, ValueError) as e:
                     print e
                     print unitArray
@@ -240,6 +270,80 @@ def getOneGameHandi(game):
                     game.orignal_aomenHandi = company.orignal_Handicap
                     game.now_aomenHandi = company.now_Handicap
                 companys.append(company)
+
+                if temp_maxHandi == -10 or abs(temp_maxHandi) < abs(company.now_Handicap):
+                    temp_maxHandi = company.now_Handicap
+                    temp_maxHandiCompany = company.companyTitle
+
+                if temp_minHandi == -10 or abs(temp_minHandi) > abs(company.now_Handicap):
+                    temp_minHandi = company.now_Handicap
+                    temp_minHandiCompany = company.companyTitle
+
+                if temp_topMax < company.now_top:
+                    temp_topMax = company.now_top
+                    temp_topMaxCompany = company.companyTitle
+
+                if temp_bottomMax < company.now_bottom:
+                    temp_bottomMax = company.now_bottom
+                    temp_bottomMaxCompany = company.companyTitle
+
+                if temp_topMin > company.now_top and company.now_top > 0.00:
+                    temp_topMin = company.now_top
+                    temp_topMinCompany = company.companyTitle
+
+                if temp_bottomMin > company.now_bottom:
+                    temp_bottomMin = company.now_bottom
+                    temp_bottomMinCompany = company.companyTitle
+
+                if temp_ori_maxHandi == -10 or abs(temp_ori_maxHandi) < abs(company.orignal_Handicap):
+                    temp_ori_maxHandi = company.orignal_Handicap
+                    temp_ori_maxHandiCompany = company.companyTitle
+
+                if temp_ori_minHandi == -10 or abs(temp_ori_minHandi) > abs(company.orignal_Handicap):
+                    temp_ori_minHandi = company.orignal_Handicap
+                    temp_ori_minHandiCompany = company.companyTitle
+
+                if temp_ori_topMax < company.orignal_top:
+                    temp_ori_topMax = company.orignal_top
+                    temp_ori_topMaxCompany = company.companyTitle
+
+                if temp_ori_bottomMax < company.orignal_bottom:
+                    temp_ori_bottomMax = company.orignal_bottom
+                    temp_ori_bottomMaxCompany = company.companyTitle
+
+                if temp_ori_topMin > company.orignal_top:
+                    temp_ori_topMin = company.orignal_top
+                    temp_ori_topMinCompany = company.companyTitle
+
+                if temp_ori_bottomMin > company.orignal_bottom:
+                    temp_ori_bottomMin = company.orignal_bottom
+                    temp_ori_bottomMinCompany = company.companyTitle
+
+            game.maxHandi = temp_maxHandi
+            game.maxHandiCompany = temp_maxHandiCompany
+            game.minHandi = temp_minHandi
+            game.minHandiCompany = temp_minHandiCompany
+            game.topMax = temp_topMax
+            game.bottomMax = temp_bottomMax
+            game.topMaxCompany = temp_topMaxCompany
+            game.bottomMaxCompany = temp_bottomMaxCompany
+            game.topMin = temp_topMin
+            game.topMinCompany = temp_topMinCompany
+            game.bottomMin = temp_bottomMin
+            game.bottomMinCompany = temp_bottomMinCompany
+
+            game.ori_maxHandi = temp_ori_maxHandi
+            game.ori_maxHandiCompany = temp_ori_maxHandiCompany
+            game.ori_minHandi = temp_ori_minHandi
+            game.ori_minHandiCompany = temp_ori_minHandiCompany
+            game.ori_topMax = temp_ori_topMax
+            game.ori_bottomMax = temp_ori_bottomMax
+            game.ori_topMaxCompany = temp_ori_topMaxCompany
+            game.ori_bottomMaxCompany = temp_ori_bottomMaxCompany
+            game.ori_topMin = temp_ori_topMin
+            game.ori_topMinCompany = temp_ori_topMinCompany
+            game.ori_bottomMin = temp_ori_bottomMin
+            game.ori_bottomMinCompany = temp_ori_bottomMinCompany
 
             return companys
         else:
@@ -303,7 +407,7 @@ def getOneGameODD(game):
                 print unitArray
 
 
-            if company.companyTitle in ['竞彩官方', '10BET', 'bet 365', 'bwin', 'Interwetten', 'SB', '澳门', '立博', '威廉希尔', '香港马会', '伟德']:
+            if company.companyTitle in ['竞彩官方', '10BET', 'bet 365', 'bwin', 'Interwetten', 'SB', '澳门', '立博', '威廉希尔', '香港马会', '伟德','Oddset','SNAI','ManbetX']:
                 companys.append(company)
                 if company.companyTitle == '澳门':
                     game.orignal_aomenOdd = (company.orignal_winOdd, company.orignal_drawOdd, company.orignal_loseOdd)
