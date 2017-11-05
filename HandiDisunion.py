@@ -59,7 +59,7 @@ def getTodaySoccer(gameType):
             oneLeague = league.split('^')
             dic[oneLeague[1]] = oneLeague[0].encode('utf-8')
 
-        gameStr = ''
+        # gameStr = ''
         if gameType == 1:
             gameStr = allArray[1]
         else:

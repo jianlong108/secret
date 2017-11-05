@@ -311,25 +311,28 @@ def getLeagueData(leagueid = -1,isCup = False):
         leagueModel.creatSeasonList()
 
         # 杯赛去请求杯赛接口,逻辑
-        if isCup:
+        print isCup
+        if isCup == 0:
+            print '请求杯赛接口'
             cup = GetCup(leagueModel)
             cup.cupName = leagueModel.breifLeagueName
             cup.getOfficialLeague()
         #     否则全部视为联赛
         else:
+            print '请求联赛接口'
             league = GetLeague(leagueModel)
             league.getOfficialLeague()
 
 
-# if sys.argv.__len__()==1:
-#     sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 144 True\033[0m')
-#
-# if __name__ == '__main__':
-#     leagueid = sys.argv[1]
-#     isCup = sys.argv[2]
-#     getLeagueData(leagueid,isCup)
+if sys.argv.__len__()==1:
+    sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 144 True\033[0m')
 
-getLeagueData(36,False)
+if __name__ == '__main__':
+    leagueid = sys.argv[1]
+    isCup = sys.argv[2]
+    getLeagueData(leagueid,isCup)
+
+# getLeagueData(36,0)
 
 
 
