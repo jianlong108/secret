@@ -1421,7 +1421,88 @@ def getLeagueDetail(tempLeagueID):
     conn.close()
 
 
+def getHandiDisunion(onegame):
+    if isinstance(onegame, FootballGame):
+
+        aomen = None
+        bet365 = None
+        handiCompanies = onegame.handiCompanies
+        for com in handiCompanies:
+            if isinstance(com, BetCompany):
+                if com.companyTitle == '澳门':
+                    aomen = com
+                elif com.companyTitle == 'Bet365':
+                    bet365 = com
+                else:
+                    pass
+
+        global conn
+        global c
+
+        conn = sqlite3.connect(location)
+        c = conn.cursor()
+        aomenlist = []
+        if aomen is not None:
+            c.execute('SELECT soccerID FROM NewCompanyHandicap WHERE handiChange == ? AND topChange == ? AND bottomChange == ?' , (aomen.handiChange.decode('utf-8'),aomen.homeWaterChange.decode('utf-8'),aomen.friendWaterChange.decode('utf-8')))
+            aomenlist = c.fetchall()
+        else:
+            pass
+
+        bet365list = []
+        if bet365 is not None:
+            c.execute(
+                'SELECT soccerID FROM NewCompanyHandicap WHERE handiChange == ? AND topChange == ? AND bottomChange == ?' , (
+                    bet365.handiChange.decode('utf-8'), bet365.homeWaterChange.decode('utf-8'), bet365.friendWaterChange.decode('utf-8')))
+            bet365list = c.fetchall()
+        else:
+            pass
+
+        commenlist = []
+        for soccerid in aomenlist:
+            if soccerid in bet365list:
+                commenlist.append(soccerid)
+
+        gamelist  = 0
+        wincount = 0
+        for soccerid in commenlist:
+            soccerlist = (soccerid[0],'澳门'.decode('utf-8'),)
+            c.execute('SELECT * FROM NewGames WHERE soccerid == ? and ori_max_Handi_com == ?' , soccerlist)
+            result = c.fetchone()
+            gamelist += 1
+            if result[5] == '赢':
+                wincount += 1
+        titlestr = ''.join(
+            [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
+             str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ', str(onegame.now_aomenHandi)])
+        print titlestr
+        print '总数: %d  赢:%d 赢盘率: %4.2f' % (gamelist, wincount,float(wincount)/gamelist)
+
+    else:
+        pass
+
+def updateDatabase():
+    global conn
+    global c
+
+    conn = sqlite3.connect(location)
+    c = conn.cursor()
+    c.execute("select  soccerID,max_Handi from NewGames where max_Handi_com != '澳门'")
+    resultlist = c.fetchall()
+    targetList = []
+    for result in resultlist:
+        soccerid = result[0]
+        ori_maxHandi = result[1]
+        c.execute('SELECT * FROM NewCompanyHandicap where soccerID == ? AND nowpan == ? AND company == ?',(soccerid,ori_maxHandi,'澳门'.decode('utf-8')))
+        gameTuple = c.fetchall()
+        if len(gameTuple) > 0:
+            targetList.append(soccerid)
+
+    for sid in targetList:
+        c.execute("UPDATE NewGames SET max_Handi_com = '澳门' WHERE soccerID == ?",(sid,))
 
 
+    conn.commit()
+    c.close()
+    conn.close()
 
-create_NEW_database()
+updateDatabase()
