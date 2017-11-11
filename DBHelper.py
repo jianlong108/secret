@@ -1423,7 +1423,8 @@ def getLeagueDetail(tempLeagueID):
 
 def getHandiDisunion(onegame):
     if isinstance(onegame, FootballGame):
-
+        if len(onegame.orignalHandiList) <= 2:
+            return
         aomen = None
         bet365 = None
         handiCompanies = onegame.handiCompanies
@@ -1465,9 +1466,11 @@ def getHandiDisunion(onegame):
         gamelist  = 0
         wincount = 0
         for soccerid in commenlist:
-            soccerlist = (soccerid[0],'澳门'.decode('utf-8'),)
-            c.execute('SELECT * FROM NewGames WHERE soccerid == ? and ori_max_Handi_com == ?' , soccerlist)
+            soccerlist = (soccerid[0],onegame.ori_maxHandiCompany.decode('utf-8'),onegame.maxHandiCompany.decode('utf-8'),len(onegame.orignalHandiList))
+            c.execute('SELECT * FROM NewGames WHERE soccerid == ? and ori_max_Handi_com == ? and max_Handi_com == ? and oriHandiCount == ?' , soccerlist)
             result = c.fetchone()
+            if result is None:
+                continue
             gamelist += 1
             if result[5] == '赢':
                 wincount += 1
@@ -1475,7 +1478,11 @@ def getHandiDisunion(onegame):
             [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
              str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ', str(onegame.now_aomenHandi)])
         print titlestr
-        print '总数: %d  赢:%d 赢盘率: %4.2f' % (gamelist, wincount,float(wincount)/gamelist)
+        try:
+            print '总数: %d  赢:%d 赢盘率: %4.2f' % (gamelist, wincount,float(wincount)/gamelist)
+        except Exception as e:
+            print '总数: %d  赢:%d' % (gamelist, wincount,)
+            print e
 
     else:
         pass
@@ -1505,4 +1512,4 @@ def updateDatabase():
     c.close()
     conn.close()
 
-updateDatabase()
+# updateDatabase()

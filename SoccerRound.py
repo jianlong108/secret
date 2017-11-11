@@ -322,8 +322,8 @@ def getOneGameHandi(game):
             if temp_maxHandiCompany != '澳门' and temp_maxHandi == game.now_aomenOdd:
                 temp_maxHandiCompany = '澳门'
 
-            if temp_ori_maxHandi != '澳门' and temp_ori_maxHandi == game.orignal_aomenHandi:
-                temp_ori_maxHandi = '澳门'
+            if temp_ori_maxHandiCompany != '澳门' and temp_ori_maxHandi == game.orignal_aomenHandi:
+                temp_ori_maxHandiCompany = '澳门'
 
             game.maxHandi = temp_maxHandi
             game.maxHandiCompany = temp_maxHandiCompany

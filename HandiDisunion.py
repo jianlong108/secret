@@ -248,10 +248,10 @@ def getYesterdaySoccer(timestr):
                 # 赋值结束
                 flag = False
                 for leaguestr in leaguelist:
-                    # if onegame.leauge in leaguestr:
-                    #     flag = True
-                    if onegame.leauge == '英超':
+                    if onegame.leauge in leaguestr:
                         flag = True
+                    # if onegame.leauge == '英超':
+                    #     flag = True
 
                 if flag is False:
                     continue
@@ -418,4 +418,4 @@ def main():
 # if __name__ == '__main__':
 #     getTodaySoccer(sys.argv[1])
 # getTodaySoccer(3)
-getYesterdaySoccer('2017-11-04')
+getYesterdaySoccer('2017-11-10')

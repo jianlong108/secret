@@ -175,6 +175,8 @@ class GetLeague:
 
             self.allGames = []
             self.allSubLeagues = []
+            self.abortSeasonList = ['2016-2017','2015-2016','2014-2015','2013-2014','2012-2013','2011-2012']
+            self.middleSeasonTuple = ('2010-2011',1,)
         else:
             return None
 
@@ -265,25 +267,46 @@ class GetLeague:
             return
         else:
             while (currentRound > 0):
+                if self.currentSeason == self.middleSeasonTuple[0]:
+                    if currentRound > self.middleSeasonTuple[1]:
+                        currentRound -= 1
+                    else:
+                        games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, leagueSubID,
+                                         currentRound,
+                                         self.currentSeason)
+                        # if len(games) == 0:
+                        #     games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, leagueSubID,
+                        #                      currentRound,
+                        #                      self.currentSeason)
+                        self.allGames.extend(games)
+                        print '获取正赛数据 ' + self.currentSeason + ' ' + str(currentRound) + ' ' + str(len(games))
+                        currentRound -= 1
+                        # if len(self.allGames) != 0:
+                        #     insertNewGameList(self.allGames)
+                        # del self.allGames[:]
 
-                games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, leagueSubID,
-                                 currentRound,
-                                 self.currentSeason)
-                self.allGames.extend(games)
-                print '获取正赛数据 ' + self.currentSeason + ' ' + str(currentRound) + ' ' + str(len(games))
-                currentRound -= 1
-                # if len(self.allGames) != 0:
-                #     insertNewGameList(self.allGames)
-                # del self.allGames[:]
+                        time.sleep(3)
+                else:
+                    games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, leagueSubID,
+                                     currentRound,
+                                     self.currentSeason)
+                    self.allGames.extend(games)
+                    print '获取正赛数据 ' + self.currentSeason + ' ' + str(currentRound) + ' ' + str(len(games))
+                    currentRound -= 1
+                    # if len(self.allGames) != 0:
+                    #     insertNewGameList(self.allGames)
+                    # del self.allGames[:]
 
-                time.sleep(3)
+                    time.sleep(3)
+
 
 
     def getOfficialLeague(self):
 
         for season in self.leagueModel.aviableSeasonList:
 
-
+            if season in self.abortSeasonList:
+                continue
             if season != self.currentSeason:
                 self.currentGound = self.countOfGounds
 
@@ -293,7 +316,6 @@ class GetLeague:
             self.getAllData()
             self.allSubLeagues = []
             if len(self.allGames) != 0:
-                # insertGameList(self.allGames)
                 insertNewGameList(self.allGames)
             self.allGames  = []
 
@@ -324,15 +346,15 @@ def getLeagueData(leagueid = -1,isCup = False):
             league.getOfficialLeague()
 
 
-if sys.argv.__len__()==1:
-    sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 144 True\033[0m')
+# if sys.argv.__len__()==1:
+#     sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 144 True\033[0m')
+#
+# if __name__ == '__main__':
+#     leagueid = sys.argv[1]
+#     isCup = sys.argv[2]
+#     getLeagueData(leagueid,isCup)
 
-if __name__ == '__main__':
-    leagueid = sys.argv[1]
-    isCup = sys.argv[2]
-    getLeagueData(leagueid,isCup)
-
-# getLeagueData(36,0)
+getLeagueData(40,1)
 
 
 
