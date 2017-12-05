@@ -22,8 +22,8 @@ def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
                     leagueSubID).encode('utf-8') + "&round=" + str(gameRound).encode('utf-8') + "&apiversion=1&from=2"
 
         print url
-    except:
-        pass
+    except Exception as e:
+        print e
 
     response = requests.get(url)
 
@@ -56,7 +56,7 @@ def creatCupGameModelWithComplexStr(complexStr,leagueStr,isCup = False):
                 games.append(model)
     return games
 
-def creatCupGameModel(gameStr,leagueStr,isCup=False):
+def creatCupGameModel(gameStr,leagueStr,isCup = False):
     print gameStr
     if isinstance(gameStr, str):
 
