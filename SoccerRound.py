@@ -4,33 +4,15 @@
 import requests
 from SoccerModels import *
 import time
-import pycurl
+
+# import pycurl
+from NetWorkTools import  *
+
 import StringIO
 
 def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
-    resultStr = ''
 
-    try:
-        if gameRound == 0:
-            url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
-                leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
-                leagueSubID).encode('utf-8') + "&apiversion=1&from=2"
-        else:
-
-            url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
-                    leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
-                    leagueSubID).encode('utf-8') + "&round=" + str(gameRound).encode('utf-8') + "&apiversion=1&from=2"
-
-        print url
-    except Exception as e:
-        print e
-
-    response = requests.get(url)
-
-    if response.ok:
-        resultStr = response.content;
-    else:
-        pass
+    resultStr = GetSeasonRoundstr(leagueID, leagueSubID, gameRound, reason)
 
     games = []
 
@@ -102,7 +84,6 @@ def creatCupGameModel(gameStr,leagueStr,isCup = False):
 
     else:
         return None
-
 
 def creatGameModelWithComplexStr(complexStr,leagueStr):
     array = complexStr.split('!')
@@ -184,23 +165,8 @@ def creatGameModel(gameStr,leagueStr,isCup=False):
 def getOneGameHandi(game):
 
     resultStr = ''
-
-    try:
-        handiURL = 'http://27.45.161.37:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
-        # print handiURL
-    except:
-        pass
-
-    c = pycurl.Curl()
-
-    c.setopt(pycurl.URL, handiURL)
-
-    b = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 5)
-    c.perform()
-    resultStr = b.getvalue().encode('utf-8')
+    if isinstance(game, FootballGame):
+        resultStr = GetOneGameHandiStr(str(game.soccerID))
 
     if resultStr != '':
         array = resultStr.split('!')
@@ -354,9 +320,6 @@ def getOneGameHandi(game):
             return companys
         else:
             return []
-
-
-
     else:
         return []
 
@@ -365,23 +328,8 @@ def getOneGameHandi(game):
 获取一场比赛的欧赔数据
 '''
 def getOneGameODD(game):
-    resultStr = ''
-    try:
-        oddURL = 'http://27.45.161.37:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
-        # print oddURL
-    except:
-        pass
 
-    c = pycurl.Curl()
-
-    c.setopt(pycurl.URL, oddURL)
-
-    b = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 5)
-    c.perform()
-    resultStr = b.getvalue().decode('utf8')
+    resultStr = GetOneGameOddStr(str(game.soccerID))
 
     if resultStr != '':
         array = resultStr.split('!')

@@ -10,8 +10,6 @@ import datetime
 from SendMail import *
 from SoccerRound import *
 
-import pycurl
-import StringIO
 import getHandiOrignalTime
 
 AllGames = []
@@ -22,25 +20,9 @@ def getTodaySoccer(gameType):
     # type == 3 竞彩
     # type == 1 精简
     # type == 2 十四场
-    gameType = int(gameType)
-    try:
-        url = "http://27.45.161.37:8071/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=6.2&from=2&r="+str(int(time.time()))
-        print url
-    except Exception as e:
-        print '请求接口出错' + url
-        print e
 
-    curlInstance = pycurl.Curl()
 
-    curlInstance.setopt(pycurl.URL, url)
-
-    b = StringIO.StringIO()
-    curlInstance.setopt(pycurl.WRITEFUNCTION, b.write)
-    curlInstance.setopt(pycurl.FOLLOWLOCATION, 1)
-    curlInstance.setopt(pycurl.MAXREDIRS, 5)
-    curlInstance.perform()
-    resultStr = b.getvalue().decode('utf8')
-
+    resultStr = GetTodaySoccerStr(gameType)
     global AllGames
     global AllBeginTimes
 
@@ -157,6 +139,8 @@ def getTodaySoccer(gameType):
             subjectstr = '初盘分析'
 
         send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr,'html')
+    else:
+        print 'getTodaySoccer 没有获取到数据,请检查网络'
 
 
 # if sys.argv.__len__()==1:
@@ -164,4 +148,4 @@ def getTodaySoccer(gameType):
 #
 # if __name__ == '__main__':
 #     getTodaySoccer(sys.argv[1])
-getTodaySoccer(1)
+getTodaySoccer('1')

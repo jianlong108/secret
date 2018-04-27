@@ -4,7 +4,7 @@
 
 from SendMail import *
 from DBHelper import *
-
+from NetWorkTools import *
 import pycurl
 import StringIO
 import getHandiOrignalTime
@@ -30,23 +30,8 @@ AllBeginTimes = []
 主函数
 '''
 def getYesterdaySoccer(timestr):
-    try:
-        url = "http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=" + timestr + '&from=1&kind=3&r=1503367511&subversion=3'
-# 'http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=2017-08-21&from=1&kind=3&r=1503367511&subversion=3'
 
-        print url
-    except:
-        pass
-    c = pycurl.Curl()
-
-    c.setopt(pycurl.URL, url)
-
-    b = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 5)
-    c.perform()
-    resultStr = b.getvalue().decode('utf8')
+    resultStr = GetYesterdaySoccerStr(timestr)
 
     global AllGames
     global AllBeginTimes

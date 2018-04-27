@@ -5,12 +5,12 @@
 
 from DBHelper import *
 
-import datetime
-
+from NetWorkTools import *
 from SendMail import *
 from SoccerRound import *
 
-import pycurl
+
+
 import StringIO
 import getHandiOrignalTime
 
@@ -22,25 +22,7 @@ def getTodaySoccer(gameType):
     # type == 3 竞彩
     # type == 1 精简
     # type == 2 十四场
-    gameType = int(gameType)
-    try:
-        url = "http://27.45.161.37:8071/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=6.2&from=2&r="+str(int(time.time()))
-        print url
-    except Exception as e:
-        print '请求接口出错' + url
-        print e
-
-    curlInstance = pycurl.Curl()
-
-    curlInstance.setopt(pycurl.URL, url)
-
-    b = StringIO.StringIO()
-    curlInstance.setopt(pycurl.WRITEFUNCTION, b.write)
-    curlInstance.setopt(pycurl.FOLLOWLOCATION, 1)
-    curlInstance.setopt(pycurl.MAXREDIRS, 5)
-    curlInstance.perform()
-
-    resultStr = b.getvalue().decode('utf8')
+    resultStr = GetTodaySoccerStr(gameType)
 
     global AllGames
     global AllBeginTimes
@@ -162,23 +144,8 @@ def getTodaySoccer(gameType):
         send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr,'html')
 
 def getYesterdaySoccer(timestr):
-    try:
-        url = "http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=" + timestr + '&from=1&kind=3&r=1503367511&subversion=3'
-        # 'http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=2017-08-21&from=1&kind=3&r=1503367511&subversion=3'
 
-        print url
-    except:
-        pass
-    c = pycurl.Curl()
-
-    c.setopt(pycurl.URL, url)
-
-    b = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 5)
-    c.perform()
-    resultStr = b.getvalue().decode('utf8')
+    resultStr = GetYesterdaySoccerStr(timestr)
 
     global AllGames
     global AllBeginTimes

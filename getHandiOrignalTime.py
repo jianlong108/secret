@@ -4,8 +4,8 @@ from DBHelper import *
 
 
 from BeautifulSoupHelper import *
-import pycurl
-import StringIO
+
+
 from SendMail import *
 import sys
 
@@ -49,23 +49,7 @@ def getTodaySoccer(type):
     # type == 3 竞彩
     # type == 1 精简
     # type == 2 十四场
-    type = int(type)
-    url = "http://27.45.161.37:8071/phone/schedule_0_" + str(
-        type) + ".txt?an=iosQiuTan&av=6.2&from=2&r=" + str(int(time.time()))
-    # url = "http://112.91.160.49:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=5.9&from=2&r=1494229747"
 
-
-    print url
-    c = pycurl.Curl()
-
-    c.setopt(pycurl.URL, url)
-
-    b = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 5)
-    c.perform()
-    resultStr = b.getvalue().decode('utf8')
 
     AllGames = []
     AllBeginTimes = []
