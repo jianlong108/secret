@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import requests
-from SoccerRound import *
-from DBHelper import *
+from GetData.DBHelper import *
 
 class MainSoccer:
     def __init__(self):

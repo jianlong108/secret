@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import requests
 import os
-import BeautifulSoupHelper
-from SoccerModels import BetCompany
 import time
-from soccerTool import *
+
+import requests
+
+import BeautifulSoupHelper
+from GetData.SoccerModels import BetCompany
+from GetData.soccerTool import *
 
 
 class SoccerGame:

@@ -161,6 +161,7 @@ class GetLeague:
             self.leagueModel = model
             self.orignalLeagueURL = ''
             self.orignalCupURL = ''
+            self.jifenURL = ''
             self.leagueID = '37'
             self.currentSeason = '2016-2017'
 
@@ -172,19 +173,58 @@ class GetLeague:
             self.finalSubID = 0
 
             self.superLeague = True
-
+            self.teamPointsArr = []
             self.allGames = []
             self.allSubLeagues = []
-            self.abortSeasonList = ['2016-2017','2015-2016','2014-2015','2013-2014','2012-2013','2011-2012']
+            self.abortSeasonList = []
             self.middleSeasonTuple = ('2010-2011',1,)
         else:
             return None
 
+    # pointskind = 0总积分 1.半场积分2.主场积分3.客场积分
+    def GetLeagueJiFen(self,pointskind):
+        resultStr = ''
+        self.jifenURL = 'http://27.45.161.46:8072/phone/Jifen2.aspx?an=iosQiuTan&av=6.5&from=2&pointsKind=%s&r=1532144326&sclassid=%s&season=%s&subVersion=2&subid=0' % ('0',str(self.leagueModel.leagueID).encode('utf-8'), self.currentSeason)
+        print '获取联赛: %s 赛季: %s 积分数据 url %s' % (str(self.leagueModel.leagueID).encode('utf-8'), self.currentSeason, self.jifenURL)
 
+        response = requests.get(self.jifenURL)
 
+        if response.ok:
+            resultStr = response.content
+        else:
+            pass
 
+        if resultStr != '':
+            print resultStr
 
+            array = resultStr.split('$$')
+            if len(array) > 2:
+                jifenDataStr = array[2]
+                teamDataArr = jifenDataStr.split('!')
+                for teamDataStr in teamDataArr:
+                    if len(teamDataStr) > 0:
+                        temp_TeamPoints = TeamPoints()
+                        self.teamPointsArr.append(temp_TeamPoints)
+                        teamPointArr = teamDataStr.split('^')
+                        try:
+                            # 1^24^切尔西^車路士^38^30^3^5^85^33^93^0^0^^^0
+                            temp_TeamPoints.ranking = int(teamPointArr[0])
+                            temp_TeamPoints.teamID = int(teamPointArr[1])
+                            temp_TeamPoints.teamName = teamPointArr[2].encode('utf-8')
+                            temp_TeamPoints.seasonRound = int(teamPointArr[4])
+                            temp_TeamPoints.winCount = int(teamPointArr[5])
+                            temp_TeamPoints.drawCount = int(teamPointArr[6])
+                            temp_TeamPoints.loseCount = int(teamPointArr[7])
+                            temp_TeamPoints.getScore = int(teamPointArr[8])
+                            temp_TeamPoints.loseScore = int(teamPointArr[9])
+                            temp_TeamPoints.points = int(teamPointArr[10])
+                            temp_TeamPoints.league = self.leagueModel.breifLeagueName.encode('utf-8')
+                            temp_TeamPoints.season = self.currentSeason.encode('utf-8')
+                        except BaseException, e:
+                            print '解析比赛积分出错'
+                            print e
 
+    # 获取此联赛是否包含附加赛,晋级赛之类的赛事
     def GetLeagueDetails(self):
         resultStr = ''
 
@@ -240,7 +280,6 @@ class GetLeague:
                 if len(newDic) > 0:
                     self.allSubLeagues.append(newDic)
 
-
     def getAllData(self):
         for leagueDic in self.allSubLeagues:
             leagueId = 0
@@ -258,6 +297,7 @@ class GetLeague:
 
             self.getLeagueGame(leagueId, int(countOfRound), int(currentRound))
 
+    # 获取某个联赛,某一轮的比赛数据
     def getLeagueGame(self, leagueSubID = 0, countRound = 0, currentRound = 0):
         if countRound == 0 and currentRound == 0:
             games = GetRound(self.leagueModel.breifLeagueName, self.leagueModel.leagueID, leagueSubID,
@@ -299,8 +339,6 @@ class GetLeague:
 
                     time.sleep(3)
 
-
-
     def getOfficialLeague(self):
 
         for season in self.leagueModel.aviableSeasonList:
@@ -311,19 +349,22 @@ class GetLeague:
                 self.currentGound = self.countOfGounds
 
             self.currentSeason = season
+            self.GetLeagueJiFen(0)
+            InsertLeagueJiFenALL(self.teamPointsArr)
+            time.sleep(3)
+            # self.GetLeagueDetails()
+            # self.getAllData()
+            # self.allSubLeagues = []
+            # if len(self.allGames) != 0:
+            #     insertNewGameList(self.allGames)
+            # self.allGames  = []
 
-            self.GetLeagueDetails()
-            self.getAllData()
-            self.allSubLeagues = []
-            if len(self.allGames) != 0:
-                insertNewGameList(self.allGames)
-            self.allGames  = []
 
-
-def getLeagueData(leagueid = -1,isCup = False):
+def GetLeagueDetailFromDB(leagueid = -1,isCup = False):
     if leagueid < 0:
         print '联赛id 非法'
-    leagueArray = getLeagueDetail(leagueid)
+        return
+    leagueArray = GET_LEAGUE_DETAIL_FROM_DB(leagueid)
     leagueModel = League()
     if leagueArray is not None:
         leagueModel.leagueID = leagueArray[1]
@@ -331,6 +372,7 @@ def getLeagueData(leagueid = -1,isCup = False):
         leagueModel.breifLeagueName = leagueArray[3].encode('utf-8')
         leagueModel.aviableSeasonStr = leagueArray[4].encode('utf-8')
         leagueModel.creatSeasonList()
+        leagueModel.aviableSeasonList.append('2017-2018')
 
         # 杯赛去请求杯赛接口,逻辑
         print isCup
@@ -354,9 +396,8 @@ def getLeagueData(leagueid = -1,isCup = False):
 #     isCup = sys.argv[2]
 #     getLeagueData(leagueid,isCup)
 
-getLeagueData(40,1)
 
-
+GetLeagueDetailFromDB(36,1)
 
 
 

@@ -5,15 +5,12 @@
 实时性的分析每个时段的比赛.做到临场分析
 '''
 
-from DBHelper import *
-import exchangeODD
 import threading
-from SendMail import *
-from SoccerRound import *
-from datetime import datetime,timedelta
 
-import pycurl
-import StringIO
+import exchangeODD
+from GetData.DBHelper import *
+from GetData.SoccerRound import *
+from SendMail import *
 
 AllGames = []
 AllBeginTimes = []

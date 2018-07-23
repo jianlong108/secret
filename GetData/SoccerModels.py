@@ -306,8 +306,6 @@ class FootballGame:
             else:
                 return '输'
 
-
-
 '''
 联赛
 '''
@@ -381,3 +379,55 @@ class ContinentSoccer:
         self.continentID = 0
         # 包含的国家
         self.countryList = []
+
+
+# 球队积分模型
+class TeamPoints:
+    def __init__(self):
+        # 所属联赛
+        self.league = ''
+        # 当前赛季
+        self.season = ''
+        # 赛季总轮数
+        self.seasonRound = 0
+        # 球队名称
+        self.teamName = ''
+        self.teamID = 0
+        # 排名
+        self.ranking = 0
+        self.halfRanking = 0
+        self.homeRanking = 0
+        self.friendRanking = 0
+        # 获胜的场次数量
+        self.winCount = 0
+        self.halfWinCount = 0
+        self.homeWinCount = 0
+        self.friendWinCount = 0
+        # 平掉的场次数量
+        self.drawCount = 0
+        self.halfDrawCount = 0
+        self.homeDrawCount = 0
+        self.friendDrawCount = 0
+        # 输掉的场次数量
+        self.loseCount = 0
+        self.halfLoseCount = 0
+        self.homeLoseCount = 0
+        self.friendLoseCount = 0
+        # 进球数
+        self.getScore = 0
+        self.homeGetScore = 0
+        self.friendGetScore = 0
+        self.halfGetScore = 0
+        # 失球数
+        self.loseScore = 0
+        self.halfLoseScore = 0
+        self.homeLoseScore = 0
+        self.friendLoseScore = 0
+        # 赛季积分
+        self.points = 0
+        # 赛季半场积分
+        self.halfPoints = 0
+        # 主场积分
+        self.homePoints = 0
+        # 客场积分
+        self.friendPoints = 0

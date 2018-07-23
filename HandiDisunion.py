@@ -3,16 +3,11 @@
 
 
 
-from DBHelper import *
-
 import datetime
 
+from GetData.DBHelper import *
+from GetData.SoccerRound import *
 from SendMail import *
-from SoccerRound import *
-
-import pycurl
-import StringIO
-import getHandiOrignalTime
 
 AllGames = []
 AllBeginTimes = []

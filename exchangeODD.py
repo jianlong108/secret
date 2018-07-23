@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from SoccerModels import *
 import sys
+
+from GetData.SoccerModels import *
 
 reload(sys)
 sys.setdefaultencoding('utf8')

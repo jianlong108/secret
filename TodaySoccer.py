@@ -3,16 +3,12 @@
 
 
 
-from DBHelper import *
-
 import datetime
 
-from SendMail import *
-from SoccerRound import *
-
-import pycurl
-import StringIO
 import getHandiOrignalTime
+from GetData.DBHelper import *
+from GetData.SoccerRound import *
+from SendMail import *
 
 AllGames = []
 AllBeginTimes = []
@@ -164,4 +160,4 @@ def getTodaySoccer(gameType):
 #
 # if __name__ == '__main__':
 #     getTodaySoccer(sys.argv[1])
-getTodaySoccer(1)
+getTodaySoccer(3)

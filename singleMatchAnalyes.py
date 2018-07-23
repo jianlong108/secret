@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from BeautifulSoupHelper import *
-from SoccerModels import *
-from soccerTool import *
-import time
 import sys
+import time
+
+from GetData.SoccerModels import *
+from GetData.soccerTool import *
 
 reload(sys)
 sys.setdefaultencoding('utf-8')

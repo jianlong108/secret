@@ -56,7 +56,7 @@ def creatCupGameModelWithComplexStr(complexStr,leagueStr,isCup = False):
                 games.append(model)
     return games
 
-def creatCupGameModel(gameStr,leagueStr,isCup=False):
+def creatCupGameModel(gameStr,leagueStr,isCup = False):
     print gameStr
     if isinstance(gameStr, str):
 
@@ -369,20 +369,20 @@ def getOneGameODD(game):
     try:
         oddURL = 'http://27.45.161.37:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
         # print oddURL
+
+
+        c = pycurl.Curl()
+
+        c.setopt(pycurl.URL, oddURL)
+
+        b = StringIO.StringIO()
+        c.setopt(pycurl.WRITEFUNCTION, b.write)
+        c.setopt(pycurl.FOLLOWLOCATION, 1)
+        c.setopt(pycurl.MAXREDIRS, 5)
+        c.perform()
+        resultStr = b.getvalue().decode('utf8')
     except:
         pass
-
-    c = pycurl.Curl()
-
-    c.setopt(pycurl.URL, oddURL)
-
-    b = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 5)
-    c.perform()
-    resultStr = b.getvalue().decode('utf8')
-
     if resultStr != '':
         array = resultStr.split('!')
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sqlite3
-import os
 import math
-
-from SoccerModels import *
+import os
+import sqlite3
 import sys
+
+from GetData.SoccerModels import *
 
 reload(sys)
 
@@ -1402,7 +1402,7 @@ def switchODDData(num):
 '''
 根据联赛id 获取联赛对应的详细信息
 '''
-def getLeagueDetail(tempLeagueID):
+def GET_LEAGUE_DETAIL_FROM_DB(tempLeagueID):
     global conn
     global c
 
@@ -1492,6 +1492,7 @@ def updateDatabase():
     global c
 
     conn = sqlite3.connect(location)
+    conn.text_factory = str
     c = conn.cursor()
     c.execute("select  soccerID,max_Handi from NewGames where max_Handi_com != '澳门'")
     resultlist = c.fetchall()
@@ -1512,4 +1513,44 @@ def updateDatabase():
     c.close()
     conn.close()
 
-# updateDatabase()
+def Create_JiFenAll_Table():
+    global conn
+    global c
+    # 连接到SQLite数据库
+    # 数据库文件是test.db
+    # 如果文件不存在，会自动在当前目录创建:
+    conn = sqlite3.connect(location)
+    conn.text_factory = str
+    c = conn.cursor()
+
+    sql0 = 'create table if not exists ' + 'JIFENALL' + \
+           '(ranking INTEGER, season varchar(20), league varchar(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, win INTEGER,' \
+           'draw INTEGER, lose INTEGER,getScores INTEGER,loseScores INTEGER,points INTEGER)'
+
+    c.execute(sql0)
+    conn.commit()
+    c.close()
+    conn.close()
+
+def InsertLeagueJiFenALL(teamPoints):
+    global conn
+    global c
+
+    conn = sqlite3.connect(location)
+    conn.text_factory = str
+    c = conn.cursor()
+
+    for teamPoint in teamPoints:
+        # if isinstance(teamPoint, TeamPoints):
+        params = (
+            teamPoint.ranking, teamPoint.season,teamPoint.league, teamPoint.teamID, teamPoint.teamName, teamPoint.seasonRound,
+        teamPoint.winCount, teamPoint.drawCount, teamPoint.loseCount, teamPoint.getScore, teamPoint.loseScore,
+            teamPoint.points)
+
+        c.execute("INSERT INTO JIFENALL VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", params)
+
+    conn.commit()
+    c.close()
+    conn.close()
+
+Create_JiFenAll_Table()
