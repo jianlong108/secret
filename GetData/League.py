@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 # import time
-# import requests
 from DBHelper import *
 from SoccerRound import *
+from NetWorkTools import *
 import sys
 # http://112.91.160.46:8072/phone/txt/analysisheader/cn/1/25/1253496.txt?an=iosQiuTan&av=5.9&from=2&r=1490440206
 # http://112.91.160.46:8072/phone/Handicap.aspx?ID=1252358&an=iosQiuTan&av=5.9&from=2&lang=0&r=1490449083
@@ -226,18 +226,8 @@ class GetLeague:
 
     # 获取此联赛是否包含附加赛,晋级赛之类的赛事
     def GetLeagueDetails(self):
-        resultStr = ''
 
-        self.orignalLeagueURL = 'http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=' \
-                                    + str(self.leagueModel.leagueID).encode('utf-8') + '&season=' + self.currentSeason + '&subid=0&apiversion=1&from=2'
-        print self.orignalLeagueURL
-
-        response = requests.get(self.orignalLeagueURL)
-
-        if response.ok:
-            resultStr = response.content;
-        else:
-            pass
+        resultStr = GetLeagueDetails(str(self.leagueModel.leagueID).encode('utf-8'),self.currentSeason)
 
         if resultStr != '':
 
