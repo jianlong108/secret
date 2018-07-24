@@ -3,7 +3,7 @@
 
 from GetData.DBHelper import *
 
-class MainSoccer:
+class GetLeagueList:
     def __init__(self):
         self.contientList = []
         self.index = 0
@@ -77,6 +77,6 @@ class MainSoccer:
 
 if __name__ == '__main__':
     create_database()
-    main = MainSoccer()
-    main.getData()
-    InsertLeagueList(main.leagueList)
+    getLeagueListModel = GetLeagueList()
+    getLeagueListModel.getData()
+    InsertLeagueList(getLeagueListModel.leagueList)
