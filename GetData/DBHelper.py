@@ -306,9 +306,7 @@ def create_database():
             'winODD REAL ,drawODD REAL,loseODD REAL)'
     c.execute(sql2)
 
-    sql3 = 'create table if not exists ' + 'League' + \
-           '(league_ID INTEGER PRIMARY KEY AUTOINCREMENT,leagueID INTEGER,leagueName varchar(15),briefLeagueName varchar(15),season varchar(300))'
-    c.execute(sql3)
+    c.execute("CREATE TABLE IF NOT EXISTS LEAGUE (leagueID INTEGER PRIMARY KEY, leagueName VARCHAR(20), briefLeagueName VARCHAR(15), country VARCHAR(20), continent VARCHAR(15), season VARCHAR(300))")
 
     conn.commit()
     c.close()
@@ -347,18 +345,22 @@ def insert_Result_Analyse_list(resultList):
     c.close()
     conn.close()
 
+
 '''
-插入一个联赛 数据
+插入所有联赛 数据
 '''
-def insert_League(league):
+def InsertLeagueList(leagueList):
     global conn
     global c
-    # conn = sqlite3.connect(location)
+    conn = sqlite3.connect(location)
+    conn.text_factory = str
     c = conn.cursor()
+    for league in leagueList:
+        if isinstance(league,League):
+            params = (league.leagueID, league.leagueName, league.breifLeagueName,league.belongtoCountryName,league.belongtoContinentName,
+                      league.aviableSeasonStr)
+            c.execute("INSERT INTO League VALUES (?,?,?,?,?,?)", params)
 
-    params = (league.leagueID, league.leagueName.decode('utf-8'), league.breifLeagueName.decode('utf-8'), league.aviableSeasonStr.decode('utf-8'))
-    c.execute("INSERT INTO League VALUES (NULL ,?,?,?,?)", params)
-    # c.execute(sql)
     conn.commit()
     c.close()
     conn.close()

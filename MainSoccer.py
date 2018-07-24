@@ -8,128 +8,76 @@ class MainSoccer:
         self.contientList = []
         self.index = 0
         self.countryList = []
-    def getContientModel(self, contientID):
-        targetModel = None
-        for model in self.contientList:
-            if model.continentID == contientID:
-                targetModel = model
-                break
-        return targetModel
-
-    def getCountryModel(self, countryID):
-        targetModel = None
-        for model in self.countryList:
-            if model.countryID == countryID:
-                targetModel = model
-                break
-        return targetModel
-
-
-    def switchModel(self, complexStr):
-        if self.index == 0:
-            array = complexStr.split('$$')
-
-            contientStr = array[0]
-            self.creatContientModel(contientStr)
-
-            countryStr = array[1]
-            self.creatCountryModel(countryStr)
-        elif self.index == 1:
-            array = complexStr.split('$$')
-
-            countryStr = array[0]
-            self.creatCountryModel(countryStr)
-
-            leagueStr = array[1]
-            self.creatLeagueModel(leagueStr)
-        else:
-            array = complexStr.split('$$')
-
-            leagueStr = array[0]
-            self.creatLeagueModel(leagueStr)
-
-        self.index += 1
+        self.leagueList = []
 
     def creatContientModel(self, complexStr):
-        model = ContinentSoccer()
-        array = complexStr.split('^')
-        model.continentID = array[0]
-        model.continentName = array[1]
-        self.contientList.append(model)
-
+        tmp_continentList = complexStr.split('!')
+        for continentStr in tmp_continentList:
+            continentModel = ContinentSoccer()
+            oneContinentList = continentStr.split('^')
+            continentModel.continentID = int(oneContinentList[0])
+            continentModel.continentName = oneContinentList[1]
+            self.contientList.append(continentModel)
 
     def creatCountryModel(self, complexStr):
-        model = CountrySoccer()
-        array = complexStr.split('^')
-        model.countryID = array[0]
-        model.belongtoContinentID = array[1]
-        model.countryName = array[2]
+        tmp_countryList = complexStr.split('!')
+        for countryStr in tmp_countryList:
+            countryModel = CountrySoccer()
+            oneCountryList = countryStr.split('^')
+            countryModel.countryID = int(oneCountryList[0])
+            countryModel.belongtoContinentID = int(oneCountryList[1])
+            countryModel.countryName = oneCountryList[2]
 
-        contientModel = self.getContientModel(model.belongtoContinentID)
-        contientModel.countryList.append(model)
-        self.countryList.append(model)
+            for tmpModel in self.contientList:
+                if isinstance(tmpModel,ContinentSoccer):
+                    if tmpModel.continentID == countryModel.belongtoContinentID:
+                        countryModel.belongtoContinentName = tmpModel.continentName
+            self.countryList.append(countryModel)
+
 
     def creatLeagueModel(self, complexStr):
-        model = League()
-        array = complexStr.split('^')
-        model.leagueID = int(array[0])
-        model.belongtoCountryID = int(array[1])
-        model.leagueName = array[2]
-        model.breifLeagueName = array[3]
-        model.aviableSeasonStr = array[5]
-        model.creatSeasonList()
-        countryModel = self.getCountryModel(model.belongtoCountryID)
-        if countryModel != None:
-            countryModel.leagueList.append(model)
-
-        insert_League(model)
-
-        # if model.leagueID == 26:
-        #     print model.leagueName + '========='
-        #     league = GetLeague(model)
-        #     # 杯赛去请求杯赛接口,逻辑
-        #     if '杯' in model.breifLeagueName:
-        #         league.getCupDetails()
-        #     #     否则全部视为联赛
-        #     else:
-        #         league.getOfficialLeague()
-
-
-
-
-
+        tmp_leagueList = complexStr.split('!')
+        for leagueStr in tmp_leagueList:
+            leagueModel = League()
+            oneLeagueList = leagueStr.split('^')
+            leagueModel.leagueID = int(oneLeagueList[0])
+            leagueModel.belongtoCountryID = int(oneLeagueList[1])
+            leagueModel.leagueName = oneLeagueList[2]
+            leagueModel.breifLeagueName = oneLeagueList[3]
+            leagueModel.subLeagueID = int(oneLeagueList[4])
+            leagueModel.aviableSeasonStr = oneLeagueList[5]
+            for tmpModel in self.countryList:
+                if isinstance(tmpModel, CountrySoccer):
+                    if tmpModel.countryID == leagueModel.belongtoCountryID:
+                        leagueModel.belongtoCountryName = tmpModel.countryName
+                        leagueModel.belongtoContinentName = tmpModel.belongtoContinentName
+            self.leagueList.append(leagueModel)
 
     def getData(self):
         try:
             url = "http://121.10.245.46:8072/phone/InfoIndex.aspx?an=iosQiuTan&av=5.9" \
                   "&from=2&lang=0&r=1491480939"
             print url
-        except:
-            pass
+        except BaseException as e:
+            print e
+
         resultStr = ''
         response = requests.get(url)
         if response.ok:
             resultStr = response.content;
         else:
-            pass
+            print '获取所有联赛接口失败'
 
         if resultStr != '':
-            allArray = resultStr.split('!')
-            for complexStr in allArray:
-                # print complexStr.decode('utf-8')
-                # print '===='
-                if '$$' in complexStr:
-                    # 切换模型 生成
-                    self.switchModel(complexStr)
-                else:
-                    unitArray = complexStr.split('^')
+            allArray = resultStr.split('$$')
+            contientComplexStr = allArray[0]
+            countryComplexStr = allArray[1]
+            leagueComplexStr = allArray[2]
 
-                    if len(unitArray) == 2:
-                        self.creatContientModel(complexStr)
-                    elif len(unitArray) == 3:
-                        self.creatCountryModel(complexStr)
-                    else:
-                        self.creatLeagueModel(complexStr)
+            self.creatContientModel(contientComplexStr)
+            self.creatCountryModel(countryComplexStr)
+            self.creatLeagueModel(leagueComplexStr)
+
 
 
 
@@ -137,3 +85,4 @@ if __name__ == '__main__':
     create_database()
     main = MainSoccer()
     main.getData()
+    InsertLeagueList(main.leagueList)

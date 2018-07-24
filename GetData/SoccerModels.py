@@ -313,12 +313,15 @@ class League:
     def __init__(self):
         # 联赛ID
         self.leagueID = 0
+        self.subLeagueID = 0
         # 联赛名称
         self.leagueName = ''
         # 联赛简称
         self.breifLeagueName = ''
         # 联赛所属国家ID
         self.belongtoCountryID = 0
+        self.belongtoCountryName = ''
+        self.belongtoContinentName = ''
         # 可支持查询的赛季列表
         self.aviableSeasonList = []
         # 球队数量
@@ -331,9 +334,6 @@ class League:
         self.currentSeason = ''
 
         self.aviableSeasonStr = ''
-
-
-
         # 附加赛ID
         self.playOffs_ID = 0
         # 附加赛决赛ID
@@ -341,18 +341,10 @@ class League:
         #正赛ID
         self.leagueSubID = 0
 
-    def creatSeasonList(self):
-        array = self.aviableSeasonStr.split(',')
-        self.aviableSeasonList = array
+    @property
+    def aviableSeasonList(self):
+        return self.aviableSeasonStr.split(',')
 
-    # def get_aviableseasonstr(self):
-    #     return self.aviableseasonstr
-    #
-    # def set_aviableseasonstr(self, value):
-    #     array = value.splite(',')
-    #     self.aviableSeasonList = array
-    #
-    # aviableSeasonStr = property(get_aviableseasonstr, set_aviableseasonstr)
 
 '''
 国家对应的数据模型
@@ -363,10 +355,9 @@ class CountrySoccer:
         self.countryID = 0
         # 所属洲
         self.belongtoContinentID = 0
+        self.belongtoContinentName = ''
         # 国家名称
         self.countryName = ''
-        # 包含的联赛列表
-        self.leagueList = []
 
 '''
 大洲对应的数据
@@ -377,8 +368,6 @@ class ContinentSoccer:
         self.continentName = ''
         # 洲ID
         self.continentID = 0
-        # 包含的国家
-        self.countryList = []
 
 
 # 球队积分模型
