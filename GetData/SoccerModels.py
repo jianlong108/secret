@@ -323,7 +323,7 @@ class League:
         self.belongtoCountryName = ''
         self.belongtoContinentName = ''
         # 可支持查询的赛季列表
-        self.aviableSeasonList = []
+        # self.aviableSeasonList = []
         # 球队数量
         self.teamNumber = 0
         # 当前轮数
@@ -332,7 +332,7 @@ class League:
         self.teams = []
         # 当前赛季
         self.currentSeason = ''
-
+        self._aviableSeasonList = []
         self.aviableSeasonStr = ''
         # 附加赛ID
         self.playOffs_ID = 0
@@ -343,7 +343,12 @@ class League:
 
     @property
     def aviableSeasonList(self):
-        return self.aviableSeasonStr.split(',')
+        if len(self._aviableSeasonList) > 0:
+            return self._aviableSeasonList
+        else:
+            self._aviableSeasonList = self.aviableSeasonStr.split(',')
+            return self._aviableSeasonList
+
 
 
 '''

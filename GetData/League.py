@@ -182,9 +182,9 @@ class GetLeague:
             return None
 
     # pointskind = 0总积分 1.半场积分2.主场积分3.客场积分
-    def GetLeagueJiFen(self,pointskind):
+    def GetLeagueJiFen(self,pointskind = '0'):
         resultStr = ''
-        self.jifenURL = 'http://27.45.161.46:8072/phone/Jifen2.aspx?an=iosQiuTan&av=6.5&from=2&pointsKind=%s&r=1532144326&sclassid=%s&season=%s&subVersion=2&subid=0' % ('0',str(self.leagueModel.leagueID).encode('utf-8'), self.currentSeason)
+        self.jifenURL = 'http://27.45.161.46:8072/phone/Jifen2.aspx?an=iosQiuTan&av=6.5&from=2&pointsKind=%s&r=1532144326&sclassid=%s&season=%s&subVersion=2&subid=0' % (pointskind,str(self.leagueModel.leagueID).encode('utf-8'), self.currentSeason)
         print '获取联赛: %s 赛季: %s 积分数据 url %s' % (str(self.leagueModel.leagueID).encode('utf-8'), self.currentSeason, self.jifenURL)
 
         response = requests.get(self.jifenURL)
@@ -340,8 +340,9 @@ class GetLeague:
 
             self.currentSeason = season
             self.GetLeagueJiFen(0)
-            InsertLeagueJiFenALL(self.teamPointsArr)
             time.sleep(3)
+
+        InsertLeagueJiFenALL(self.teamPointsArr)
             # self.GetLeagueDetails()
             # self.getAllData()
             # self.allSubLeagues = []
@@ -357,12 +358,12 @@ def GetLeagueDetailFromDB(leagueid = -1,isCup = False):
     leagueArray = GET_LEAGUE_DETAIL_FROM_DB(leagueid)
     leagueModel = League()
     if leagueArray is not None:
-        leagueModel.leagueID = leagueArray[1]
-        leagueModel.leagueName = leagueArray[2].encode('utf-8')
-        leagueModel.breifLeagueName = leagueArray[3].encode('utf-8')
-        leagueModel.aviableSeasonStr = leagueArray[4].encode('utf-8')
-        leagueModel.creatSeasonList()
-        leagueModel.aviableSeasonList.append('2017-2018')
+        leagueModel.leagueID = leagueArray[0]
+        leagueModel.leagueName = leagueArray[1].encode('utf-8')
+        leagueModel.breifLeagueName = leagueArray[2].encode('utf-8')
+        leagueModel.aviableSeasonStr = leagueArray[5].encode('utf-8')
+        print leagueModel.aviableSeasonList
+        leagueModel.aviableSeasonList.remove('2018-2019')
 
         # 杯赛去请求杯赛接口,逻辑
         print isCup

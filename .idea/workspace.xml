@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/MainSoccer.py" afterPath="$PROJECT_DIR$/GetLeagueList.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GetData/League.py" afterPath="$PROJECT_DIR$/GetData/League.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GetData/SoccerModels.py" afterPath="$PROJECT_DIR$/GetData/SoccerModels.py" />
     </list>
     <ignored path="Soccer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -19,7 +20,7 @@
     <SUITE FILE_PATH="coverage/Soccer$exchange.coverage" NAME="exchange Coverage Results" MODIFIED="1495340824727" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$todyay.coverage" NAME="实时分析 Coverage Results" MODIFIED="1505052312327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$DBhelper.coverage" NAME="DBhelper Coverage Results" MODIFIED="1532362175519" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Soccer$League.coverage" NAME="League Coverage Results" MODIFIED="1532362283999" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Soccer$League.coverage" NAME="League Coverage Results" MODIFIED="1532451770477" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$GetLeagueList.coverage" NAME="GetLeagueList Coverage Results" MODIFIED="1532449448560" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$yesterday.coverage" NAME="yesterday Coverage Results" MODIFIED="1509361817331" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$ModuleStudy.coverage" NAME="ModuleStudy Coverage Results" MODIFIED="1508773087461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -47,8 +48,8 @@
       <file leaf-file-name="DBHelper.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GetData/DBHelper.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-259">
-              <caret line="307" column="0" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
+            <state relative-caret-position="54">
+              <caret line="1406" column="4" selection-start-line="1406" selection-start-column="4" selection-end-line="1406" selection-end-column="4" />
               <folding>
                 <element signature="e#47#58#0" expanded="true" />
                 <element signature="e#340#876#0" expanded="false" />
@@ -73,7 +74,6 @@
                 <element signature="e#59096#61415#0" expanded="false" />
                 <element signature="e#61444#62240#0" expanded="false" />
                 <element signature="e#62271#62445#0" expanded="false" />
-                <element signature="e#62523#62824#0" expanded="false" />
                 <element signature="e#62862#65456#0" expanded="false" />
                 <marker date="1532449597000" expanded="true" signature="5445:5464" ph="drop table N... " />
                 <marker date="1532449597000" expanded="true" signature="5888:5917" ph="drop table N... " />
@@ -137,28 +137,18 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="League.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="League.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/GetData/League.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3404">
-              <caret line="157" column="0" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
+            <state relative-caret-position="77">
+              <caret line="186" column="179" selection-start-line="186" selection-start-column="179" selection-end-line="186" selection-end-column="179" />
               <folding>
-                <element signature="e#7886#9641#0" expanded="false" />
-                <element signature="e#4770#13096#0" expanded="false" />
-                <element signature="e#9677#10233#0" expanded="false" />
-                <element signature="e#10339#12440#0" expanded="false" />
-                <element signature="e#13159#14044#0" expanded="false" />
+                <element signature="e#61#83#0" expanded="true" />
+                <element signature="e#433#4740#0" expanded="false" />
+                <element signature="e#7899#9654#0" expanded="false" />
+                <element signature="e#9690#10246#0" expanded="false" />
+                <element signature="e#10352#12453#0" expanded="false" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GetLeagueList.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/GetLeagueList.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1380">
-              <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -166,8 +156,8 @@
       <file leaf-file-name="SoccerModels.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GetData/SoccerModels.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-173">
-              <caret line="344" column="25" selection-start-line="344" selection-start-column="8" selection-end-line="344" selection-end-column="25" />
+            <state relative-caret-position="155">
+              <caret line="342" column="0" selection-start-line="342" selection-start-column="0" selection-end-line="342" selection-end-column="0" />
               <folding>
                 <element signature="e#126#411#0" expanded="false" />
                 <element signature="e#438#965#0" expanded="false" />
@@ -182,7 +172,7 @@
       <file leaf-file-name="league.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/league.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="529">
+            <state relative-caret-position="420">
               <caret line="23" column="5" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="5" />
               <folding />
             </state>
@@ -237,10 +227,11 @@
         <option value="$PROJECT_DIR$/DBHelper.py" />
         <option value="$PROJECT_DIR$/League.py" />
         <option value="$PROJECT_DIR$/GetData/MYSQL_DBHELPER.py" />
-        <option value="$PROJECT_DIR$/GetData/League.py" />
-        <option value="$PROJECT_DIR$/GetData/SoccerModels.py" />
         <option value="$PROJECT_DIR$/GetData/DBHelper.py" />
         <option value="$PROJECT_DIR$/MainSoccer.py" />
+        <option value="$PROJECT_DIR$/GetLeagueList.py" />
+        <option value="$PROJECT_DIR$/GetData/SoccerModels.py" />
+        <option value="$PROJECT_DIR$/GetData/League.py" />
       </list>
     </option>
   </component>
@@ -356,7 +347,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.GetLeagueList">
+  <component name="RunManager" selected="Python.League">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -849,20 +840,6 @@
       <option name="presentableId" value="Default" />
       <updated>1490794748348</updated>
     </task>
-    <task id="LOCAL-00020" summary="优化 算法">
-      <created>1504344614185</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1504344614185</updated>
-    </task>
-    <task id="LOCAL-00021" summary="优化 算法">
-      <created>1504924466672</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1504924466672</updated>
-    </task>
     <task id="LOCAL-00022" summary="增加临场分析">
       <created>1505017339159</created>
       <option name="number" value="00022" />
@@ -1192,7 +1169,21 @@
       <option name="project" value="LOCAL" />
       <updated>1532449965126</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="获取所有联赛列表">
+      <created>1532450073979</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1532450073979</updated>
+    </task>
+    <task id="LOCAL-00070" summary="获取所有联赛列表">
+      <created>1532450179317</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1532450179317</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1206,15 +1197,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1436" height="873" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23771676" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32756633" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23771676" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32724902" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3587082" sideWeight="0.5131579" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32991204" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28552803" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3187572" sideWeight="0.49202552" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32871974" sideWeight="0.4984051" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31812257" sideWeight="0.49202552" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3285528" sideWeight="0.4984051" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29726207" sideWeight="0.4868421" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24974516" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298731" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -1317,11 +1308,6 @@
           <line>208</line>
           <option name="timeStamp" value="342" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/GetData/League.py</url>
-          <line>342</line>
-          <option name="timeStamp" value="365" />
-        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -1333,7 +1319,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="369" />
+      <option name="time" value="372" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1378,11 +1364,11 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#7886#9641#0" expanded="false" />
-            <element signature="e#4770#13096#0" expanded="false" />
-            <element signature="e#9677#10233#0" expanded="false" />
-            <element signature="e#10339#12440#0" expanded="false" />
-            <element signature="e#13159#14044#0" expanded="false" />
+            <element signature="e#61#83#0" expanded="true" />
+            <element signature="e#433#4740#0" expanded="false" />
+            <element signature="e#7899#9654#0" expanded="false" />
+            <element signature="e#9690#10246#0" expanded="false" />
+            <element signature="e#10352#12453#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1636,14 +1622,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/league.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="529">
-          <caret line="23" column="5" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SoccerGame.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="276">
@@ -1652,38 +1630,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GetData/League.py">
+    <entry file="file://$PROJECT_DIR$/GetLeagueList.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3404">
-          <caret line="157" column="0" selection-start-line="157" selection-start-column="0" selection-end-line="157" selection-end-column="0" />
-          <folding>
-            <element signature="e#7886#9641#0" expanded="false" />
-            <element signature="e#4770#13096#0" expanded="false" />
-            <element signature="e#9677#10233#0" expanded="false" />
-            <element signature="e#10339#12440#0" expanded="false" />
-            <element signature="e#13159#14044#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GetData/SoccerModels.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-173">
-          <caret line="344" column="25" selection-start-line="344" selection-start-column="8" selection-end-line="344" selection-end-column="25" />
-          <folding>
-            <element signature="e#126#411#0" expanded="false" />
-            <element signature="e#438#965#0" expanded="false" />
-            <element signature="e#1002#5254#0" expanded="false" />
-            <element signature="e#1050#2510#0" expanded="false" />
-            <element signature="e#4316#5254#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="1863">
+          <caret line="81" column="39" selection-start-line="81" selection-start-column="39" selection-end-line="81" selection-end-column="39" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/GetData/DBHelper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-259">
-          <caret line="307" column="0" selection-start-line="307" selection-start-column="0" selection-end-line="307" selection-end-column="0" />
+        <state relative-caret-position="54">
+          <caret line="1406" column="4" selection-start-line="1406" selection-start-column="4" selection-end-line="1406" selection-end-column="4" />
           <folding>
             <element signature="e#47#58#0" expanded="true" />
             <element signature="e#340#876#0" expanded="false" />
@@ -1708,7 +1666,6 @@
             <element signature="e#59096#61415#0" expanded="false" />
             <element signature="e#61444#62240#0" expanded="false" />
             <element signature="e#62271#62445#0" expanded="false" />
-            <element signature="e#62523#62824#0" expanded="false" />
             <element signature="e#62862#65456#0" expanded="false" />
             <marker date="1532449597000" expanded="true" signature="5445:5464" ph="drop table N... " />
             <marker date="1532449597000" expanded="true" signature="5888:5917" ph="drop table N... " />
@@ -1761,11 +1718,39 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GetLeagueList.py">
+    <entry file="file://$PROJECT_DIR$/GetData/SoccerModels.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1380">
-          <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+        <state relative-caret-position="155">
+          <caret line="342" column="0" selection-start-line="342" selection-start-column="0" selection-end-line="342" selection-end-column="0" />
+          <folding>
+            <element signature="e#126#411#0" expanded="false" />
+            <element signature="e#438#965#0" expanded="false" />
+            <element signature="e#1002#5254#0" expanded="false" />
+            <element signature="e#1050#2510#0" expanded="false" />
+            <element signature="e#4316#5254#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/league.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="23" column="5" selection-start-line="23" selection-start-column="3" selection-end-line="23" selection-end-column="5" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetData/League.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="77">
+          <caret line="186" column="179" selection-start-line="186" selection-start-column="179" selection-end-line="186" selection-end-column="179" />
+          <folding>
+            <element signature="e#61#83#0" expanded="true" />
+            <element signature="e#433#4740#0" expanded="false" />
+            <element signature="e#7899#9654#0" expanded="false" />
+            <element signature="e#9690#10246#0" expanded="false" />
+            <element signature="e#10352#12453#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
