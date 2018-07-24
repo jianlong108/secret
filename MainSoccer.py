@@ -9,6 +9,7 @@ class MainSoccer:
         self.index = 0
         self.countryList = []
         self.leagueList = []
+        self.url = "http://121.10.245.46:8072/phone/InfoIndex.aspx?an=iosQiuTan&av=5.9&from=2&lang=0&r=1491480939"
 
     def creatContientModel(self, complexStr):
         tmp_continentList = complexStr.split('!')
@@ -54,17 +55,10 @@ class MainSoccer:
             self.leagueList.append(leagueModel)
 
     def getData(self):
-        try:
-            url = "http://121.10.245.46:8072/phone/InfoIndex.aspx?an=iosQiuTan&av=5.9" \
-                  "&from=2&lang=0&r=1491480939"
-            print url
-        except BaseException as e:
-            print e
-
         resultStr = ''
-        response = requests.get(url)
+        response = requests.get(self.url)
         if response.ok:
-            resultStr = response.content;
+            resultStr = response.content
         else:
             print '获取所有联赛接口失败'
 
