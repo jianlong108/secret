@@ -374,6 +374,26 @@ class ContinentSoccer:
         # 洲ID
         self.continentID = 0
 
+class TeamPanLu:
+    def __init__(self):
+        self.season = ''
+        self.teamName = ''
+        self.teamID = ''
+        self.belongLeagueName = ''
+        self.rankIng = 0
+        self.jifenRanking = 0
+        self.rounds = 0
+        self.halfWinPan = 0
+        self.halfDrawPan = 0
+        self.halfLosePan = 0
+        self.winPan = 0
+        self.drawPan = 0
+        self.losePan = 0
+        self.winRate = ''
+        self.drawRate = ''
+        self.loseRate = ''
+        # 净盈利场数
+        self.netEarningCounts = 0
 
 # 球队积分模型
 class TeamPoints:

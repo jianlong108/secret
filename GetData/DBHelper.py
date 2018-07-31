@@ -307,7 +307,28 @@ def create_database():
     c.execute(sql2)
 
     c.execute("CREATE TABLE IF NOT EXISTS LEAGUE (leagueID INTEGER PRIMARY KEY, leagueName VARCHAR(20), briefLeagueName VARCHAR(15), country VARCHAR(20), continent VARCHAR(15), season VARCHAR(300))")
+    c.execute("CREATE TABLE IF NOT EXISTS LEAGUEPANLU (rangking INTEGER, season VARCHAR(20), league VARCHAR(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, winPan INTEGER, drawPan INTEGER, losePan INTEGER, halfWinPan INTEGER, halfDrawPan INTEGER, halfLosePan INTEGER)")
+    c.execute(
+        "CREATE TABLE IF NOT EXISTS LEAGUEDAXIAO (rangking INTEGER, season VARCHAR(20), league VARCHAR(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, winPan INTEGER, drawPan INTEGER, losePan INTEGER,winRate VARCHAR(18),drawRate VARCHAR(18),loseRate VARCHAR(18))")
 
+    sql0 = 'create table if not exists ' + 'JIFENALL' + \
+           '(ranking INTEGER, season varchar(20), league varchar(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, win INTEGER,' \
+           'draw INTEGER, lose INTEGER,getScores INTEGER,loseScores INTEGER,points INTEGER)'
+    c.execute(sql0)
+    # temp_TeamPanLu.rankIng = int(teamPointArr[0])
+    # temp_TeamPanLu.teamID = int(teamPointArr[1])
+    # temp_TeamPanLu.jifenRanking = self.GetJifenRanking(temp_TeamPanLu.teamID)
+    # temp_TeamPanLu.teamName = teamPointArr[2].encode('utf-8')
+    # temp_TeamPanLu.rounds = int(teamPointArr[4])
+    # temp_TeamPanLu.halfWinPan = int(teamPointArr[5])
+    # temp_TeamPanLu.halfDrawPan = int(teamPointArr[6])
+    # temp_TeamPanLu.halfLosePan = int(teamPointArr[7])
+    # temp_TeamPanLu.winPan = int(teamPointArr[8])
+    # temp_TeamPanLu.drawPan = int(teamPointArr[9])
+    # temp_TeamPanLu.losePan = int(teamPointArr[10])
+    # temp_TeamPanLu.netEarningCounts = int(teamPointArr[11])
+    # temp_TeamPanLu.belongLeagueName = self.leagueModel.breifLeagueName
+    # temp_TeamPanLu.season = self.currentSeason.encode('utf-8')
     conn.commit()
     c.close()
     conn.close()
@@ -1515,25 +1536,6 @@ def updateDatabase():
     c.close()
     conn.close()
 
-def Create_JiFenAll_Table():
-    global conn
-    global c
-    # 连接到SQLite数据库
-    # 数据库文件是test.db
-    # 如果文件不存在，会自动在当前目录创建:
-    conn = sqlite3.connect(location)
-    conn.text_factory = str
-    c = conn.cursor()
-
-    sql0 = 'create table if not exists ' + 'JIFENALL' + \
-           '(ranking INTEGER, season varchar(20), league varchar(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, win INTEGER,' \
-           'draw INTEGER, lose INTEGER,getScores INTEGER,loseScores INTEGER,points INTEGER)'
-
-    c.execute(sql0)
-    conn.commit()
-    c.close()
-    conn.close()
-
 def InsertLeagueJiFenALL(teamPoints):
     global conn
     global c
@@ -1555,4 +1557,45 @@ def InsertLeagueJiFenALL(teamPoints):
     c.close()
     conn.close()
 
-Create_JiFenAll_Table()
+def InsertLeaguePanLu(teamPanLus):
+    global conn
+    global c
+
+    conn = sqlite3.connect(location)
+    conn.text_factory = str
+    c = conn.cursor()
+
+    for teamPanLu in teamPanLus:
+        # if isinstance(teamPanLu, TeamPanLu):
+        params = (
+            teamPanLu.rankIng, teamPanLu.season,teamPanLu.belongLeagueName, teamPanLu.teamID, teamPanLu.teamName, teamPanLu.rounds,
+            teamPanLu.winPan, teamPanLu.drawPan, teamPanLu.losePan, teamPanLu.halfWinPan, teamPanLu.halfDrawPan,
+            teamPanLu.halfLosePan)
+
+        c.execute("INSERT INTO LEAGUEPANLU VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", params)
+
+    conn.commit()
+    c.close()
+    conn.close()
+
+def InsertLeagueDaXiao(teamDaXiao):
+    global conn
+    global c
+
+    conn = sqlite3.connect(location)
+    conn.text_factory = str
+    c = conn.cursor()
+    for teamPanLu in teamDaXiao:
+        # if isinstance(teamPanLu, TeamPanLu):
+        params = (
+            teamPanLu.rankIng, teamPanLu.season, teamPanLu.belongLeagueName, teamPanLu.teamID,
+            teamPanLu.teamName, teamPanLu.rounds,
+            teamPanLu.winPan, teamPanLu.drawPan, teamPanLu.losePan,teamPanLu.winRate,teamPanLu.drawRate,teamPanLu.loseRate)
+
+        c.execute("INSERT INTO LEAGUEDAXIAO VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", params)
+
+    conn.commit()
+    c.close()
+    conn.close()
+
+create_database()
