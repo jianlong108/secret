@@ -9,6 +9,7 @@ import getHandiOrignalTime
 from GetData.DBHelper import *
 from GetData.SoccerRound import *
 from SendMail import *
+from  NetWorkTools import *
 
 AllGames = []
 AllBeginTimes = []
@@ -19,23 +20,16 @@ def getTodaySoccer(gameType):
     # type == 1 精简
     # type == 2 十四场
     gameType = int(gameType)
+    url = ''
+    resultStr = ''
     try:
         url = "http://27.45.161.37:8071/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=6.2&from=2&r="+str(int(time.time()))
         print url
     except Exception as e:
         print '请求接口出错' + url
         print e
-
-    curlInstance = pycurl.Curl()
-
-    curlInstance.setopt(pycurl.URL, url)
-
-    b = StringIO.StringIO()
-    curlInstance.setopt(pycurl.WRITEFUNCTION, b.write)
-    curlInstance.setopt(pycurl.FOLLOWLOCATION, 1)
-    curlInstance.setopt(pycurl.MAXREDIRS, 5)
-    curlInstance.perform()
-    resultStr = b.getvalue().decode('utf8')
+    if url != '':
+        resultStr = GetResultStrWithURLStr(url)
 
     global AllGames
     global AllBeginTimes

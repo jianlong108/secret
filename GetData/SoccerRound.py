@@ -1,43 +1,41 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import requests
 from SoccerModels import *
 import time
-import pycurl
-import StringIO
+from NetWorkTools import *
 
-def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
-    resultStr = ''
-
-    try:
-        if gameRound == 0:
-            url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
-                leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
-                leagueSubID).encode('utf-8') + "&apiversion=1&from=2"
-        else:
-
-            url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
-                    leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
-                    leagueSubID).encode('utf-8') + "&round=" + str(gameRound).encode('utf-8') + "&apiversion=1&from=2"
-
-        print url
-    except:
-        pass
-
-    response = requests.get(url)
-
-    if response.ok:
-        resultStr = response.content;
-    else:
-        pass
-
-    games = []
-
-    if resultStr != '':
-        games = creatGameModelWithComplexStr(resultStr, leaguename)
-
-    return games
+# def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
+#     resultStr = ''
+#
+#     try:
+#         if gameRound == 0:
+#             url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
+#                 leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
+#                 leagueSubID).encode('utf-8') + "&apiversion=1&from=2"
+#         else:
+#
+#             url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
+#                     leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
+#                     leagueSubID).encode('utf-8') + "&round=" + str(gameRound).encode('utf-8') + "&apiversion=1&from=2"
+#
+#         print url
+#     except:
+#         pass
+#
+#     response = requests.get(url)
+#
+#     if response.ok:
+#         resultStr = response.content
+#     else:
+#         pass
+#
+#     games = []
+#
+#     if resultStr != '':
+#         games = creatGameModelWithComplexStr(resultStr, leaguename)
+#
+#     return games
 
 def creatCupGameModelWithComplexStr(complexStr,leagueStr,isCup = False):
     array = complexStr.split('!')
@@ -57,7 +55,7 @@ def creatCupGameModelWithComplexStr(complexStr,leagueStr,isCup = False):
     return games
 
 def creatCupGameModel(gameStr,leagueStr,isCup = False):
-    print gameStr
+    print gameStr + isCup
     if isinstance(gameStr, str):
 
         try:
@@ -97,7 +95,8 @@ def creatCupGameModel(gameStr,leagueStr,isCup = False):
                 return model
 
 
-        except:
+        except BaseException as e:
+            print e
             return None
 
     else:
@@ -170,7 +169,8 @@ def creatGameModel(gameStr,leagueStr,isCup=False):
                 model.oddCompanies = getOneGameODD(model)
                 model.handiCompanies = getOneGameHandi(model)
                 return model
-        except:
+        except BaseException as e:
+            print e
             return None
 
     else:
@@ -184,23 +184,15 @@ def creatGameModel(gameStr,leagueStr,isCup=False):
 def getOneGameHandi(game):
 
     resultStr = ''
-
+    url = ''
     try:
-        handiURL = 'http://27.45.161.37:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
+        url = 'http://27.45.161.37:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
         # print handiURL
-    except:
-        pass
+    except BaseException as e:
+        print e
 
-    c = pycurl.Curl()
-
-    c.setopt(pycurl.URL, handiURL)
-
-    b = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 5)
-    c.perform()
-    resultStr = b.getvalue().encode('utf-8')
+    if url != '':
+        resultStr = GetResultStrWithURLStr(url)
 
     if resultStr != '':
         array = resultStr.split('!')
@@ -287,7 +279,7 @@ def getOneGameHandi(game):
                     temp_bottomMax = company.now_bottom
                     temp_bottomMaxCompany = company.companyTitle
 
-                if temp_topMin > company.now_top and company.now_top > 0.00:
+                if (temp_topMin > company.now_top) and (company.now_top > 0.00):
                     temp_topMin = company.now_top
                     temp_topMinCompany = company.companyTitle
 
@@ -366,23 +358,17 @@ def getOneGameHandi(game):
 '''
 def getOneGameODD(game):
     resultStr = ''
+    url = ''
     try:
-        oddURL = 'http://27.45.161.37:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
-        # print oddURL
+        url = 'http://27.45.161.37:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
 
-
-        c = pycurl.Curl()
-
-        c.setopt(pycurl.URL, oddURL)
-
-        b = StringIO.StringIO()
-        c.setopt(pycurl.WRITEFUNCTION, b.write)
-        c.setopt(pycurl.FOLLOWLOCATION, 1)
-        c.setopt(pycurl.MAXREDIRS, 5)
-        c.perform()
-        resultStr = b.getvalue().decode('utf8')
-    except:
+    except BaseException as e:
+        print e
         pass
+
+    if url != '':
+        resultStr = GetResultStrWithURLStr(url)
+
     if resultStr != '':
         array = resultStr.split('!')
 
@@ -390,7 +376,7 @@ def getOneGameODD(game):
         for unit in array:
             # print unit.decode('utf-8')
             company = BetCompany()
-            company.league = game.leauge;
+            company.league = game.leauge
             company.result = game.soccer
             company.homeSoccer = game.allHome
             company.friendSoccer = game.allFriend

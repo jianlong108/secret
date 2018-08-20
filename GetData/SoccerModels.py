@@ -26,17 +26,17 @@ class CompanyChange:
 
         # 0 不变 1 升 2 降 3反转
         # self.handi_change = -1
-        @property
-        def handi_change(self):
-            if self.ori_handi * self.now_handi == 0.0:
-                if self.now_handi - self.ori_handi == 0.0:
-                    return 1
-                else:
-                    return
-            elif self.ori_handi * self.now_handi < 0.0:
-                return 3
+    @property
+    def handi_change(self):
+        if self.ori_handi * self.now_handi == 0.0:
+            if self.now_handi - self.ori_handi == 0.0:
+                return 1
             else:
-                return 0
+                return
+        elif self.ori_handi * self.now_handi < 0.0:
+            return 3
+        else:
+            return 0
 
 '''
 博彩公司
@@ -45,12 +45,12 @@ class BetCompany:
     def __init__(self,title = '',src = ''):
         # 公司id
         self.companyID = 0
+        # 公司名称
+        self.companyTitle = title
         # 比赛id
         self.soccerGameId = ''
         # 比赛所属联赛
         self.league = ''
-        # 公司名称
-        self.companyTitle = ''
         # 初盘 主队水位
         self.orignal_top = 0.00
         # 初盘 客队水位
