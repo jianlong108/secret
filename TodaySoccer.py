@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 
 
-
-import datetime
-
 import getHandiOrignalTime
 from GetData.DBHelper import *
 from GetData.SoccerRound import *
 from SendMail import *
 from  NetWorkTools import *
+import datetime
 
 AllGames = []
 AllBeginTimes = []
@@ -19,6 +17,13 @@ def getTodaySoccer(gameType):
     # type == 3 竞彩
     # type == 1 精简
     # type == 2 十四场
+    print time.time()
+
+    i = datetime.datetime.now()
+    print i.year
+    print i.month
+    print i.day
+
     gameType = int(gameType)
     url = ''
     resultStr = ''
@@ -137,7 +142,7 @@ def getTodaySoccer(gameType):
 
             time.sleep(3)
 
-        i = datetime.now()
+        i = datetime.datetime.now()
 
         if gameType == 1:
             subjectstr = '精简足球分析'
@@ -154,4 +159,4 @@ def getTodaySoccer(gameType):
 #
 # if __name__ == '__main__':
 #     getTodaySoccer(sys.argv[1])
-getTodaySoccer(3)
+getTodaySoccer(1)

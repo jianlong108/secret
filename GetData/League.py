@@ -329,8 +329,10 @@ class GetLeague:
                         print e
     # 获取此联赛是否包含附加赛,晋级赛之类的赛事
     def GetLeagueDetails(self):
-
-        resultStr = GetLeagueDetails(str(self.leagueModel.leagueID).encode('utf-8'),self.currentSeason)
+        self.orignalLeagueURL = 'http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=' \
+                                + str(self.leagueModel.leagueID).encode(
+            'utf-8') + '&season=' + self.currentSeason + '&subid=0&apiversion=1&from=2'
+        resultStr = GetResultStrWithURLStr(self.orignalLeagueURL)
 
         if resultStr != '':
 

@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import StringIO
-import pycurl
-import sys
 
-from BeautifulSoupHelper import *
+from NetWorkTools import *
 from GetData.DBHelper import *
 from SendMail import *
 
@@ -55,17 +52,18 @@ def getTodaySoccer(type):
 
 
     print url
-    c = pycurl.Curl()
+    # c = pycurl.Curl()
+    #
+    # c.setopt(pycurl.URL, url)
+    #
+    # b = StringIO.StringIO()
+    # c.setopt(pycurl.WRITEFUNCTION, b.write)
+    # c.setopt(pycurl.FOLLOWLOCATION, 1)
+    # c.setopt(pycurl.MAXREDIRS, 5)
+    # c.perform()
+    # resultStr = b.getvalue().decode('utf8')
 
-    c.setopt(pycurl.URL, url)
-
-    b = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 5)
-    c.perform()
-    resultStr = b.getvalue().decode('utf8')
-
+    resultStr = GetResultStrWithURLStr(url)
     AllGames = []
     AllBeginTimes = []
 

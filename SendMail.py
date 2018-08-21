@@ -4,11 +4,6 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 import sys
-from datetime import date, time, datetime, timedelta
-
-
-
-
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
