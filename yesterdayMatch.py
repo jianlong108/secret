@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-import StringIO
-import pycurl
+import datetime
 import time
-
+from NetWorkTools import *
 import getHandiOrignalTime
 from GetData import SoccerRound
 from GetData.DBHelper import *
@@ -33,27 +32,18 @@ def getYesterdaySoccer(timestr):
 # 'http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=2017-08-21&from=1&kind=3&r=1503367511&subversion=3'
 
         print url
-    except:
+    except BaseException as e:
+        print e
         pass
-    c = pycurl.Curl()
 
-    c.setopt(pycurl.URL, url)
-
-    b = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 5)
-    c.perform()
-    resultStr = b.getvalue().decode('utf8')
+    resultStr = GetResultStrWithURLStr(url)
 
     global AllGames
     global AllBeginTimes
     global AllResultAnalyseGames
 
     if resultStr != '':
-        # print resultStr
         allArray = resultStr.split('$$')
-        leagueStr = ''
         if type == 1:
             leagueStr = allArray[0]
         else:
@@ -267,13 +257,14 @@ def getYesterdaySoccer(timestr):
 
 
 def main():
-    now = datetime.now()
-    aDay = timedelta(days=-1)
-    now = now + aDay
-    yesterdaystr = now.strftime('%Y-%m-%d')
+    days = 365
+    while days > 0:
+        now = datetime.datetime.strptime('2018-08-21', '%Y-%m-%d')
+        aDay = now - datetime.timedelta(days=days)
 
-    # 10.11.12.13.14.15.16.17.18.19.20.21.22.23.24.25.26.27
-    getYesterdaySoccer('2017-10-28')
+        aDaystr = aDay.strftime('%Y-%m-%d')
+        getYesterdaySoccer(aDaystr)
+        days -= 1
 
 
 if __name__ == '__main__':

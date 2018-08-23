@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from NetWorkTools import *
+
 from GetData.DBHelper import *
 from SendMail import *
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="替换网络库">
+    <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/BeautifulSoupHelper.py" afterPath="$PROJECT_DIR$/BeautifulSoupHelper.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TodaySoccer.py" afterPath="$PROJECT_DIR$/TodaySoccer.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/getHandiOrignalTime.py" afterPath="$PROJECT_DIR$/getHandiOrignalTime.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yesterdayMatch.py" afterPath="$PROJECT_DIR$/yesterdayMatch.py" />
     </list>
     <ignored path="Soccer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -20,6 +20,7 @@
     <SUITE FILE_PATH="coverage/Soccer$yesterday.coverage" NAME="yesterday Coverage Results" MODIFIED="1509361817331" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$ModuleStudy.coverage" NAME="ModuleStudy Coverage Results" MODIFIED="1508773087461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$exchange.coverage" NAME="exchange Coverage Results" MODIFIED="1495340824727" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/secret$yesterday.coverage" NAME="yesterday Coverage Results" MODIFIED="1535027267997" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$League.coverage" NAME="League Coverage Results" MODIFIED="1533052411889" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/secret$.coverage" NAME="今日比赛 Coverage Results" MODIFIED="1535016659582" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Soccer$todyay.coverage" NAME="实时分析 Coverage Results" MODIFIED="1505052312327" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -46,24 +47,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="League.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GetData/League.py">
+      <file leaf-file-name="SoccerRound.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/GetData/SoccerRound.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6620">
-              <caret line="334" column="17" lean-forward="false" selection-start-line="334" selection-start-column="8" selection-end-line="334" selection-end-column="17" />
-              <folding>
-                <element signature="e#14634#15190#0" expanded="false" />
-                <element signature="e#15296#17397#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="exchangeODD.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/exchangeODD.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="140">
-              <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+            <state relative-caret-position="60">
+              <caret line="3" column="14" lean-forward="false" selection-start-line="3" selection-start-column="14" selection-end-line="3" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -79,17 +67,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SoccerRound.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/GetData/SoccerRound.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="3" column="14" lean-forward="false" selection-start-line="3" selection-start-column="14" selection-end-line="3" selection-end-column="14" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TodaySoccer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TodaySoccer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TodaySoccer.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1060">
@@ -101,44 +79,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="time.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.3/python_stubs/-2125986627/time.py">
+      <file leaf-file-name="yesterdayMatch.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/yesterdayMatch.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1060">
-              <caret line="113" column="4" lean-forward="false" selection-start-line="113" selection-start-column="4" selection-end-line="113" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="calendar.py" pinned="false" current-in-tab="false">
-        <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/calendar.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2260">
-              <caret line="115" column="4" lean-forward="false" selection-start-line="115" selection-start-column="4" selection-end-line="115" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="datetime.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.3/python_stubs/-2125986627/datetime.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="742">
-              <caret line="213" column="8" lean-forward="false" selection-start-line="213" selection-start-column="8" selection-end-line="213" selection-end-column="8" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="getHandiOrignalTime.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/getHandiOrignalTime.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="700">
-              <caret line="61" column="31" lean-forward="false" selection-start-line="61" selection-start-column="31" selection-end-line="61" selection-end-column="31" />
+            <state relative-caret-position="520">
+              <caret line="26" column="3" lean-forward="true" selection-start-line="26" selection-start-column="3" selection-end-line="26" selection-end-column="3" />
               <folding>
-                <element signature="e#47#73#0" expanded="true" />
-                <element signature="e#257#1160#0" expanded="false" />
+                <element signature="e#48#63#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -181,7 +128,6 @@
         <option value="$PROJECT_DIR$/MODULE_STUDY.py" />
         <option value="$PROJECT_DIR$/TimingSoccer.py" />
         <option value="$PROJECT_DIR$/SoccerModels.py" />
-        <option value="$PROJECT_DIR$/yesterdayMatch.py" />
         <option value="$PROJECT_DIR$/league.txt" />
         <option value="$PROJECT_DIR$/HandiDisunion.py" />
         <option value="$PROJECT_DIR$/SoccerGame.py" />
@@ -199,8 +145,9 @@
         <option value="$PROJECT_DIR$/SendMail.py" />
         <option value="$PROJECT_DIR$/GetData/League.py" />
         <option value="$PROJECT_DIR$/BeautifulSoupHelper.py" />
-        <option value="$PROJECT_DIR$/getHandiOrignalTime.py" />
         <option value="$PROJECT_DIR$/TodaySoccer.py" />
+        <option value="$PROJECT_DIR$/getHandiOrignalTime.py" />
+        <option value="$PROJECT_DIR$/yesterdayMatch.py" />
       </list>
     </option>
   </component>
@@ -299,7 +246,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.今日比赛">
+  <component name="RunManager" selected="Python.yesterday">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -798,13 +745,6 @@
       <option name="presentableId" value="Default" />
       <updated>1490794748348</updated>
     </task>
-    <task id="LOCAL-00025" summary="增加欧亚转换数据">
-      <created>1505154338927</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1505154338927</updated>
-    </task>
     <task id="LOCAL-00026" summary="增加欧亚转换数据">
       <created>1505154853801</created>
       <option name="number" value="00026" />
@@ -1141,7 +1081,14 @@
       <option name="project" value="LOCAL" />
       <updated>1534854178499</updated>
     </task>
-    <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00074" summary="对已开场和已结束比赛进行过滤">
+      <created>1535018173913</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1535018173913</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1229,7 +1176,8 @@
     <MESSAGE value="积分数据" />
     <MESSAGE value="积分数据,盘路数据,大小数据" />
     <MESSAGE value="替换网络库" />
-    <option name="LAST_COMMIT_MESSAGE" value="替换网络库" />
+    <MESSAGE value="对已开场和已结束比赛进行过滤" />
+    <option name="LAST_COMMIT_MESSAGE" value="对已开场和已结束比赛进行过滤" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1284,6 +1232,16 @@
           <line>75</line>
           <option name="timeStamp" value="381" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/yesterdayMatch.py</url>
+          <line>265</line>
+          <option name="timeStamp" value="382" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/yesterdayMatch.py</url>
+          <line>44</line>
+          <option name="timeStamp" value="383" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -1295,7 +1253,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="382" />
+      <option name="time" value="384" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1397,25 +1355,11 @@
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.2/python_stubs/-2125986627/_sqlite3.py" />
-    <entry file="file://$PROJECT_DIR$/RESULT_HTML_STRING.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="17" column="21" lean-forward="false" selection-start-line="17" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Caches/PyCharm2016.2/python_stubs/-2125986627/datetime.py" />
     <entry file="file://$PROJECT_DIR$/MODULE_STUDY.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="391">
           <caret line="20" column="36" lean-forward="false" selection-start-line="20" selection-start-column="36" selection-end-line="20" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/yesterdayMatch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
-          <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="277" selection-end-column="36" />
         </state>
       </provider>
     </entry>
@@ -1525,55 +1469,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/NetWorkTools.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SendMail.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/GetData/DBHelper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" column="10" lean-forward="true" selection-start-line="6" selection-start-column="10" selection-end-line="6" selection-end-column="10" />
-          <folding>
-            <element signature="e#340#876#0" expanded="false" />
-            <element signature="e#916#2657#0" expanded="false" />
-            <element signature="e#2694#4236#0" expanded="false" />
-            <element signature="e#4270#6399#0" expanded="false" />
-            <element signature="e#6432#8934#0" expanded="false" />
-            <element signature="e#8971#11816#0" expanded="false" />
-            <element signature="e#15410#17799#0" expanded="false" />
-            <element signature="e#17858#18345#0" expanded="false" />
-            <element signature="e#18393#18793#0" expanded="false" />
-            <element signature="e#18841#20597#0" expanded="false" />
-            <element signature="e#20652#21249#0" expanded="false" />
-            <element signature="e#21302#21804#0" expanded="false" />
-            <element signature="e#21856#22431#0" expanded="false" />
-            <element signature="e#22479#22987#0" expanded="false" />
-            <element signature="e#23087#29234#0" expanded="false" />
-            <element signature="e#29330#36783#0" expanded="false" />
-            <element signature="e#36876#46315#0" expanded="false" />
-            <element signature="e#46413#56359#0" expanded="false" />
-            <element signature="e#56407#57126#0" expanded="false" />
-            <element signature="e#57156#60761#0" expanded="false" />
-            <element signature="e#60788#63107#0" expanded="false" />
-            <element signature="e#63136#63932#0" expanded="false" />
-            <element signature="e#63963#64137#0" expanded="false" />
-            <element signature="e#64554#67148#0" expanded="false" />
-            <element signature="e#67176#67940#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/GetData/League.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="6620">
@@ -1581,17 +1476,6 @@
           <folding>
             <element signature="e#14634#15190#0" expanded="false" />
             <element signature="e#15296#17397#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/getHandiOrignalTime.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="700">
-          <caret line="61" column="31" lean-forward="false" selection-start-line="61" selection-start-column="31" selection-end-line="61" selection-end-column="31" />
-          <folding>
-            <element signature="e#47#73#0" expanded="true" />
-            <element signature="e#257#1160#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1628,12 +1512,131 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/RESULT_HTML_STRING.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="520">
+          <caret line="26" column="24" lean-forward="true" selection-start-line="26" selection-start-column="24" selection-end-line="26" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/TodaySoccer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1060">
           <caret line="56" column="17" lean-forward="false" selection-start-line="56" selection-start-column="17" selection-end-line="56" selection-end-column="17" />
           <folding>
             <element signature="e#48#74#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/GetData/DBHelper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="6" column="10" lean-forward="true" selection-start-line="6" selection-start-column="10" selection-end-line="6" selection-end-column="10" />
+          <folding>
+            <element signature="e#340#876#0" expanded="false" />
+            <element signature="e#916#2657#0" expanded="false" />
+            <element signature="e#2694#4236#0" expanded="false" />
+            <element signature="e#4270#6399#0" expanded="false" />
+            <element signature="e#6432#8934#0" expanded="false" />
+            <element signature="e#8971#11816#0" expanded="false" />
+            <element signature="e#15410#17799#0" expanded="false" />
+            <element signature="e#17858#18345#0" expanded="false" />
+            <element signature="e#18393#18793#0" expanded="false" />
+            <element signature="e#18841#20597#0" expanded="false" />
+            <element signature="e#20652#21249#0" expanded="false" />
+            <element signature="e#21302#21804#0" expanded="false" />
+            <element signature="e#21856#22431#0" expanded="false" />
+            <element signature="e#22479#22987#0" expanded="false" />
+            <element signature="e#23087#29234#0" expanded="false" />
+            <element signature="e#29330#36783#0" expanded="false" />
+            <element signature="e#36876#46315#0" expanded="false" />
+            <element signature="e#46413#56359#0" expanded="false" />
+            <element signature="e#56407#57126#0" expanded="false" />
+            <element signature="e#57156#60761#0" expanded="false" />
+            <element signature="e#60788#63107#0" expanded="false" />
+            <element signature="e#63136#63932#0" expanded="false" />
+            <element signature="e#63963#64137#0" expanded="false" />
+            <element signature="e#64554#67148#0" expanded="false" />
+            <element signature="e#67176#67940#0" expanded="false" />
+            <marker date="1534820046346" expanded="true" signature="7406:7515" ph="INSERT INTO NewGames... " />
+            <marker date="1534820046346" expanded="true" signature="8204:8278" ph="INSERT INTO NewCompanyHandicap... " />
+            <marker date="1534820046346" expanded="true" signature="8798:8862" ph="INSERT INTO NewCompanyODD... " />
+            <marker date="1534820046346" expanded="true" signature="10258:10367" ph="INSERT INTO NewGames... " />
+            <marker date="1534820046346" expanded="true" signature="11093:11167" ph="INSERT INTO NewCompanyHandicap... " />
+            <marker date="1534820046346" expanded="true" signature="11691:11755" ph="INSERT INTO NewCompanyODD... " />
+            <marker date="1534820046346" expanded="true" signature="13414:13596" ph="CREATE TABLE... LEAGUE" />
+            <marker date="1534820046346" expanded="true" signature="13614:13873" ph="CREATE TABLE... LEAGUEPANLU" />
+            <marker date="1534820046346" expanded="true" signature="13900:14160" ph="CREATE TABLE... LEAGUEDAXIAO" />
+            <marker date="1534820046346" expanded="true" signature="17476:17598" ph="INSERT INTO ResultAnalyse... " />
+            <marker date="1534820046346" expanded="true" signature="18246:18285" ph="INSERT INTO League... " />
+            <marker date="1534820046346" expanded="true" signature="18682:18734" ph="INSERT INTO Games... " />
+            <marker date="1534820046346" expanded="true" signature="19233:19285" ph="INSERT INTO Games... " />
+            <marker date="1534820046346" expanded="true" signature="19884:19951" ph="INSERT INTO CompanyHandicap... " />
+            <marker date="1534820046346" expanded="true" signature="20475:20536" ph="INSERT INTO CompanyODD... " />
+            <marker date="1534820046346" expanded="true" signature="21123:21187" ph="INSERT INTO CompanyHandicap... " />
+            <marker date="1534820046346" expanded="true" signature="21685:21744" ph="INSERT INTO CompanyODD... " />
+            <marker date="1534820046346" expanded="true" signature="22286:22350" ph="INSERT INTO CompanyHandicap... " />
+            <marker date="1534820046346" expanded="true" signature="22848:22907" ph="INSERT INTO CompanyODD... " />
+            <marker date="1534820046346" expanded="true" signature="24086:24313" ph="SELECT * FRO... Games" />
+            <marker date="1534820046346" expanded="true" signature="24154:24295" ph="select socce... CompanyODD" />
+            <marker date="1534820046346" expanded="true" signature="30341:30556" ph="SELECT * FRO... Games" />
+            <marker date="1534820046346" expanded="true" signature="30409:30538" ph="select socce... CompanyODD" />
+            <marker date="1534820046346" expanded="true" signature="38142:38364" ph="SELECT * FRO... Games" />
+            <marker date="1534820046346" expanded="true" signature="38210:38346" ph="select socce... CompanyHandicap" />
+            <marker date="1534820046346" expanded="true" signature="47352:47570" ph="SELECT * FRO... Games" />
+            <marker date="1534820046346" expanded="true" signature="47420:47552" ph="select socce... CompanyHandicap" />
+            <marker date="1534820046346" expanded="true" signature="57611:57957" ph="SELECT * FRO... Games" />
+            <marker date="1534820046346" expanded="true" signature="61047:61437" ph="SELECT * FRO... Games" />
+            <marker date="1534820046346" expanded="true" signature="64316:64356" ph="SELECT * FRO... League" />
+            <marker date="1534820046346" expanded="true" signature="65218:65321" ph="SELECT socce... NewCompanyHandicap" />
+            <marker date="1534820046346" expanded="true" signature="65604:65707" ph="SELECT socce... NewCompanyHandicap" />
+            <marker date="1534820046346" expanded="true" signature="66320:66435" ph="SELECT * FRO... NewGames" />
+            <marker date="1534820046346" expanded="true" signature="67304:67372" ph="select socce... NewGames" />
+            <marker date="1534820046346" expanded="true" signature="67536:67621" ph="SELECT * FRO... NewCompanyHandicap" />
+            <marker date="1534820046346" expanded="true" signature="67820:67880" ph="UPDATE NewGa... " />
+            <marker date="1534820046346" expanded="true" signature="68486:68539" ph="INSERT INTO JIFENALL... " />
+            <marker date="1534820046346" expanded="true" signature="69153:69209" ph="INSERT INTO LEAGUEPANLU... " />
+            <marker date="1534820046346" expanded="true" signature="69812:69869" ph="INSERT INTO LEAGUEDAXIAO... " />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/NetWorkTools.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SendMail.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding>
+            <element signature="e#25#71#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/getHandiOrignalTime.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="5" column="10" lean-forward="true" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
+          <folding>
+            <element signature="e#231#1134#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yesterdayMatch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="520">
+          <caret line="26" column="3" lean-forward="true" selection-start-line="26" selection-start-column="3" selection-end-line="26" selection-end-column="3" />
+          <folding>
+            <element signature="e#48#63#0" expanded="true" />
           </folding>
         </state>
       </provider>
