@@ -17,12 +17,6 @@ def getTodaySoccer(gameType):
     # type == 3 竞彩
     # type == 1 精简
     # type == 2 十四场
-    print time.time()
-
-    i = datetime.datetime.now()
-    print i.year
-    print i.month
-    print i.day
 
     gameType = int(gameType)
     url = ''
@@ -42,7 +36,6 @@ def getTodaySoccer(gameType):
     if resultStr != '':
         # print resultStr
         allArray = resultStr.split('$$')
-        leagueStr = ''
         if gameType == 1:
             leagueStr = allArray[0]
         else:
@@ -54,26 +47,33 @@ def getTodaySoccer(gameType):
             oneLeague = league.split('^')
             dic[oneLeague[1]] = oneLeague[0].encode('utf-8')
 
-        gameStr = ''
         if gameType == 1:
             gameStr = allArray[1]
         else:
             gameStr = allArray[2]
 
         games = gameStr.split('!')
-        # firstobject = games[0]
+
+        # 获取当前时间戳
+        nowTimestamp = time.time()
+
         contentStr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>初盘预测</title></head><body>"
         for game in games:
-            # if game is not firstobject:
-            #     continue;
             onegame = FootballGame()
             oneGameArray = game.split('^')
             oneGameArray.remove('')
             onegame.soccerID = int(oneGameArray[0])
             onegame.leauge = dic.get(oneGameArray[1])
             beginTime = oneGameArray[3].encode('utf-8')
-            onegame.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[8:10] + ':' + beginTime[10:12]
+            onegame.beginTime = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[8:10] + ':' + beginTime[10:12] + ':' + beginTime[12:14]
 
+            beginTime_datetime = datetime.datetime.strptime(onegame.beginTime,'%Y-%m-%d %H:%M:%S')
+            beginTime_timestamp = time.mktime(beginTime_datetime.timetuple())
+            delta = nowTimestamp - beginTime_timestamp
+
+            # 比赛已经开始或者已经结束
+            if delta >= 0:
+                continue
 
             briefTimeStr = beginTime[0:4] + '-' + beginTime[4:6] + '-' + beginTime[6:8] + ' ' + beginTime[8:10] + ':' + beginTime[10:12]
             if briefTimeStr not in AllBeginTimes:

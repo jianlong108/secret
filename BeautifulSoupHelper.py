@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 from bs4 import Tag
-import requests
+from NetWorkTools import *
 
 class SoupHelper(object):
     def __init__(self, url):
@@ -11,18 +11,10 @@ class SoupHelper(object):
         self.download(url)
 
     def download(self,url):
-        # try:
-        #     # html = requests.urlopen(url).read()
-        #     html = requests.get(url)
-        #     print(html)
-        # except requests.URLError as e:
-        #     print("download error")
-        #     html = None
 
         try:
-            html = requests.get(url)
-            self.html = html.content
-            return html.content
+            self.html = GetResultStrWithURLStr(url)
+            return self.html
         except EnvironmentError:
             pass
         else:
