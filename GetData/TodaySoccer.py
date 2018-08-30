@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 
 
-import getHandiOrignalTime
-from GetData.DBHelper import *
-from GetData.SoccerRound import *
-from SendMail import *
-from  NetWorkTools import *
 import datetime
+import time
+
+import getHandiOrignalTime
+from GetData.DBHelper import getHandiProbability,getnowHandiProbability,getOrignalODDProbability,getnowODDProbability
+from GetData.SoccerModels import FootballGame
+from GetData.SoccerRound import getOneGameHandi,getOneGameODD
+from SendMail import send_mail
+from  NetWorkTools import GetResultStrWithURLStr
 
 AllGames = []
 AllBeginTimes = []
@@ -18,11 +21,18 @@ def getTodaySoccer(gameType):
     # type == 1 精简
     # type == 2 十四场
 
+    # http://119.29.29.29/d?ttl=1&dn=txt.city007.net
+    httpHomeStr = GetResultStrWithURLStr('http://119.29.29.29/d?ttl=1&dn=txt.city007.net')
+    httpHomeList = httpHomeStr.split(';')
+    host = httpHomeList[0]
+
     gameType = int(gameType)
     url = ''
     resultStr = ''
     try:
-        url = "http://27.45.161.37:8071/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=6.2&from=2&r="+str(int(time.time()))
+        #  url = "http://%s:8071/phone/schedule_0_%s.txt?an=iosQiuTan&av=6.2&from=2&r=%s" % (host,str(gameType),str(int(time.time())))
+        # http://61.143.224.156:8071/phone/schedule_0_0.txt?an=iosQiuTan&av=7.1&from=24&r=1535452669
+        url = "http://61.143.224.156:8071/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=7.1&from=24&r="+str(int(time.time()))
         print url
     except Exception as e:
         print '请求接口出错' + url
@@ -87,8 +97,8 @@ def getTodaySoccer(gameType):
                 onegame.friendTeam = oneGameArray[5].encode('utf-8')
             AllGames.append(onegame)
             # 获取欧赔,亚盘数据
-            onegame.oddCompanies = getOneGameODD(onegame)
-            onegame.handiCompanies = getOneGameHandi(onegame)
+            onegame.oddCompanies = getOneGameODD(host,onegame)
+            onegame.handiCompanies = getOneGameHandi(host,onegame)
 
             titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
                      str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ', str(onegame.now_aomenHandi)])

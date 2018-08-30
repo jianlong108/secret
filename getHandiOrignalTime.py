@@ -2,11 +2,14 @@
 # -*- coding: utf-8 -*-
 
 
-from GetData.DBHelper import *
-from SendMail import *
+# from GetData.DBHelper import *
+from GetData.SoccerModels import FootballGame
+from BeautifulSoupHelper import SoupHelper,getelementlistwithlabel,isTagClass
 
-reload(sys)
-sys.setdefaultencoding('utf8')
+from NetWorkTools import GetResultStrWithURLStr
+
+# import sys
+# sys.setdefaultencoding('utf8')
 
 '''这个代码一定要放在 import sys 之后.不知为何'''
 import time

@@ -1,41 +1,38 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from SoccerModels import *
 import time
 from NetWorkTools import *
+from SoccerModels import BetCompany,FootballGame
 
-# def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
-#     resultStr = ''
-#
-#     try:
-#         if gameRound == 0:
-#             url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
-#                 leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
-#                 leagueSubID).encode('utf-8') + "&apiversion=1&from=2"
-#         else:
-#
-#             url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
-#                     leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
-#                     leagueSubID).encode('utf-8') + "&round=" + str(gameRound).encode('utf-8') + "&apiversion=1&from=2"
-#
-#         print url
-#     except:
-#         pass
-#
-#     response = requests.get(url)
-#
-#     if response.ok:
-#         resultStr = response.content
-#     else:
-#         pass
-#
-#     games = []
-#
-#     if resultStr != '':
-#         games = creatGameModelWithComplexStr(resultStr, leaguename)
-#
-#     return games
+
+
+def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
+    resultStr = ''
+
+    try:
+        if gameRound == 0:
+            url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
+                leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
+                leagueSubID).encode('utf-8') + "&apiversion=1&from=2"
+        else:
+
+            url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
+                    leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
+                    leagueSubID).encode('utf-8') + "&round=" + str(gameRound).encode('utf-8') + "&apiversion=1&from=2"
+
+        print url
+    except BaseException as e:
+        print e
+        pass
+
+    resultStr = GetResultStrWithURLStr(url)
+    games = []
+
+    if resultStr != '':
+        games = creatGameModelWithComplexStr(resultStr, leaguename)
+
+    return games
 
 def creatCupGameModelWithComplexStr(complexStr,leagueStr,isCup = False):
     array = complexStr.split('!')
@@ -181,13 +178,14 @@ def creatGameModel(gameStr,leagueStr,isCup=False):
 '''
 获取一场比赛的亚盘数据
 '''
-def getOneGameHandi(game):
+def getOneGameHandi(host, game):
 
     resultStr = ''
     url = ''
     try:
-        url = 'http://27.45.161.37:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
-        # print handiURL
+        # url = 'http://27.45.161.37:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
+
+        url = 'http://%s:8072/phone/Handicap.aspx?ID=%s&an=iosQiuTan&av=7.1&from=2&lang=0&subversion=1' % (host, str(game.soccerID))
     except BaseException as e:
         print e
 
@@ -347,8 +345,6 @@ def getOneGameHandi(game):
         else:
             return []
 
-
-
     else:
         return []
 
@@ -356,11 +352,12 @@ def getOneGameHandi(game):
 '''
 获取一场比赛的欧赔数据
 '''
-def getOneGameODD(game):
+def getOneGameODD(host,game):
     resultStr = ''
     url = ''
     try:
-        url = 'http://27.45.161.37:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
+        # url = 'http://27.45.161.37:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
+        url = 'http://%s:8072/phone/1x2.aspx?ID=%s&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1' % (host, str(game.soccerID))
 
     except BaseException as e:
         print e
@@ -399,11 +396,10 @@ def getOneGameODD(game):
                 print unitArray
 
 
-            if company.companyTitle in ['竞彩官方', '10BET', 'bet 365', 'bwin', 'Interwetten', 'SB', '澳门', '立博', '威廉希尔', '香港马会', '伟德','Oddset','SNAI','ManbetX']:
-                companys.append(company)
-                if company.companyTitle == '澳门':
-                    game.orignal_aomenOdd = (company.orignal_winOdd, company.orignal_drawOdd, company.orignal_loseOdd)
-                    game.now_aomenOdd = (company.winOdd, company.drawOdd, company.loseOdd)
+            companys.append(company)
+            if company.companyTitle == '澳门':
+                game.orignal_aomenOdd = (company.orignal_winOdd, company.orignal_drawOdd, company.orignal_loseOdd)
+                game.now_aomenOdd = (company.winOdd, company.drawOdd, company.loseOdd)
 
         return companys
     else:

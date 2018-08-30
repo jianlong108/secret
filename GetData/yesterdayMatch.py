@@ -4,11 +4,11 @@
 
 import datetime
 import time
-from NetWorkTools import *
 import getHandiOrignalTime
-from GetData import SoccerRound
+# from GetData import SoccerRound
 from GetData.DBHelper import *
-from SendMail import *
+# from SendMail import Send
+from NetWorkTools import GetResultStrWithURLStr
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -27,10 +27,10 @@ AllBeginTimes = []
 主函数
 '''
 def getYesterdaySoccer(timestr):
+    url = ''
     try:
-        url = "http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=" + timestr + '&from=1&kind=3&r=1503367511&subversion=3'
-# 'http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=2017-08-21&from=1&kind=3&r=1503367511&subversion=3'
-
+        url = "http://61.143.225.85:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=" + timestr + '&from=1&kind=3&r=1503367511&subversion=3'
+# http://61.143.225.85:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.5&date=2018-08-21&from=2&kind=0&r=1535094647&subversion=2
         print url
     except BaseException as e:
         print e
@@ -238,7 +238,7 @@ def getYesterdaySoccer(timestr):
                 else:
                     result = '走'
 
-                if (len(onegame.nowHandiList) > 1):
+                if len(onegame.nowHandiList) > 1:
                     result_leaguelistfile.write('%s: %s %s vs %s %d:%d 盘口:%s 澳初:%s 即:%s %s\n'%
                                                 (onegame.beginTime, onegame.leauge ,onegame.homeTeam,
                                                  onegame.friendTeam,onegame.allHome,onegame.allFriend,

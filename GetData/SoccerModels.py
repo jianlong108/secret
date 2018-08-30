@@ -4,44 +4,9 @@
 from BeautifulSoupHelper import *
 
 '''
-终盘不统一模型
-'''
-class NowHandiDisunion:
-    def __init__(self):
-        self.AomenOri_Handi = 0.0
-        self.AomenNow_Handi = 0.0
-        self.AomenChange = 0
-        self.maxHandi = 0.0
-        self.countOfHandi = 0
-        self.minHandi = 0.0
-        self.homeSoccer = 0
-        self.friengSoccer = 0
-        self.result = -1
-
-class CompanyChange:
-    def __init__(self):
-        self.name = ''
-        self.ori_handi = 0.0
-        self.now_handi = 0.0
-
-        # 0 不变 1 升 2 降 3反转
-        # self.handi_change = -1
-    @property
-    def handi_change(self):
-        if self.ori_handi * self.now_handi == 0.0:
-            if self.now_handi - self.ori_handi == 0.0:
-                return 1
-            else:
-                return
-        elif self.ori_handi * self.now_handi < 0.0:
-            return 3
-        else:
-            return 0
-
-'''
 博彩公司
 '''
-class BetCompany:
+class BetCompany(object):
     def __init__(self,title = '',src = ''):
         # 公司id
         self.companyID = 0
@@ -196,11 +161,10 @@ class BetCompany:
         print self.homeWinningPercentage
         print self.friendWiningPercentage
 
-
 '''
 单场比赛
 '''
-class FootballGame:
+class FootballGame(object):
     def __init__(self):
         # 比赛ID
         self.soccerID = 0
@@ -209,6 +173,7 @@ class FootballGame:
         self.handiCompanies = []
         # 所属联赛
         self.leauge = ''
+        self.leaugeid = 0
         # 开赛时间
         self.beginTime = ''
         # 主队排名
@@ -307,6 +272,41 @@ class FootballGame:
                 return '输'
 
 '''
+终盘不统一模型
+'''
+class NowHandiDisunion:
+    def __init__(self):
+        self.AomenOri_Handi = 0.0
+        self.AomenNow_Handi = 0.0
+        self.AomenChange = 0
+        self.maxHandi = 0.0
+        self.countOfHandi = 0
+        self.minHandi = 0.0
+        self.homeSoccer = 0
+        self.friengSoccer = 0
+        self.result = -1
+
+class CompanyChange:
+    def __init__(self):
+        self.name = ''
+        self.ori_handi = 0.0
+        self.now_handi = 0.0
+
+        # 0 不变 1 升 2 降 3反转
+        # self.handi_change = -1
+    @property
+    def handi_change(self):
+        if self.ori_handi * self.now_handi == 0.0:
+            if self.now_handi - self.ori_handi == 0.0:
+                return 1
+            else:
+                return
+        elif self.ori_handi * self.now_handi < 0.0:
+            return 3
+        else:
+            return 0
+
+'''
 联赛
 '''
 class League:
@@ -348,8 +348,6 @@ class League:
         else:
             self._aviableSeasonList = self.aviableSeasonStr.split(',')
             return self._aviableSeasonList
-
-
 
 '''
 国家对应的数据模型

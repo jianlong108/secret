@@ -6,9 +6,12 @@ import os
 import sqlite3
 import sys
 
-from GetData.SoccerModels import *
+from GetData.SoccerModels import (League)
+from GetData.SoccerRound import (BetCompany,FootballGame)
+import SoccerRound
 
 reload(sys)
+reload(SoccerRound)
 
 sys.setdefaultencoding('utf8')
 
@@ -16,6 +19,22 @@ location = os.path.expanduser('~/Desktop/Soccer.db')
 
 conn = sqlite3.connect(location)
 c = conn.cursor()
+
+def GetResultFromDBWithSQLstr(sql_str,parameters=()):
+    global conn
+    global c
+
+    conn = sqlite3.connect(location)
+    conn.text_factory = str
+    c = conn.cursor()
+    c.execute(sql_str,parameters)
+    result = c.fetchall()
+
+    conn.commit()
+    c.close()
+    conn.close()
+
+    return result
 
 def resultWithHandiAndPercent(handi,win,draw,lose):
 
@@ -311,24 +330,86 @@ def create_database():
     c.execute(
         "CREATE TABLE IF NOT EXISTS LEAGUEDAXIAO (rangking INTEGER, season VARCHAR(20), league VARCHAR(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, winPan INTEGER, drawPan INTEGER, losePan INTEGER,winRate VARCHAR(18),drawRate VARCHAR(18),loseRate VARCHAR(18))")
 
-    sql0 = 'create table if not exists ' + 'JIFENALL' + \
-           '(ranking INTEGER, season varchar(20), league varchar(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, win INTEGER,' \
-           'draw INTEGER, lose INTEGER,getScores INTEGER,loseScores INTEGER,points INTEGER)'
-    c.execute(sql0)
-    # temp_TeamPanLu.rankIng = int(teamPointArr[0])
-    # temp_TeamPanLu.teamID = int(teamPointArr[1])
-    # temp_TeamPanLu.jifenRanking = self.GetJifenRanking(temp_TeamPanLu.teamID)
-    # temp_TeamPanLu.teamName = teamPointArr[2].encode('utf-8')
-    # temp_TeamPanLu.rounds = int(teamPointArr[4])
-    # temp_TeamPanLu.halfWinPan = int(teamPointArr[5])
-    # temp_TeamPanLu.halfDrawPan = int(teamPointArr[6])
-    # temp_TeamPanLu.halfLosePan = int(teamPointArr[7])
-    # temp_TeamPanLu.winPan = int(teamPointArr[8])
-    # temp_TeamPanLu.drawPan = int(teamPointArr[9])
-    # temp_TeamPanLu.losePan = int(teamPointArr[10])
-    # temp_TeamPanLu.netEarningCounts = int(teamPointArr[11])
-    # temp_TeamPanLu.belongLeagueName = self.leagueModel.breifLeagueName
-    # temp_TeamPanLu.season = self.currentSeason.encode('utf-8')
+
+    sql_creat_disorderpan_game = 'create table if not exists ' + 'DisorderPanGames' + \
+          '(gameID INTEGER PRIMARY KEY,'\
+            'time VARCHAR(15),result INTEGER,' \
+          'homeLevel INTEGER,home VARCHAR(20),homeSoccer INTEGER,'\
+            'friendLevel INTEGER,friend VARCHAR(20) ,friendSoccer INTEGER, league VARCHAR(20), leagueid VARCHAR(10) ,panResult VARCHAR(10))'
+
+    c.execute(sql_creat_disorderpan_game)
+
+    sql_creat_disorderpan_pan = 'create table if not exists ' + 'DisorderPanCompanyHandicap' + \
+           '(soccerID INTEGER,result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),otodds REAL ,' \
+          'orignalpan REAL,ododds REAL,ntodds REAL ,nowpan REAL,ndodds REAL)'
+    c.execute(sql_creat_disorderpan_pan)
+
+    sql_creat_disorderpan_odd = 'create table if not exists ' + 'DisorderPanCompanyODD' + \
+           '(soccerID INTEGER, result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),' \
+           'ori_winODD REAL ,ori_drawODD REAL,ori_loseODD REAL,'\
+            'winODD REAL ,drawODD REAL,loseODD REAL)'
+    c.execute(sql_creat_disorderpan_odd)
+
+    conn.commit()
+    c.close()
+    conn.close()
+
+
+def DB_InsertDisorderGameList(games):
+    global conn
+    global c
+
+    conn = sqlite3.connect(location)
+    conn.text_factory = str
+    c = conn.cursor()
+
+    for game in games:
+        # c.execute("SELECT * FROM DisorderPanCompanyHandicap WHERE soccerID == ?",(game.soccerID,))
+        # result = c.fetchall()
+        # if len(result) > 0:
+        #     continue
+        #
+        # if isinstance(game,FootballGame):
+        #     params = (game.soccerID, game.beginTime.decode('utf-8'), game.soccer, game.homeTeamLevel,
+        #               game.homeTeam.decode('utf-8'),
+        #               game.allHome, game.friendTeamLevel, game.friendTeam.decode('utf-8'), game.allFriend,
+        #               game.leauge.decode('utf-8'), game.leaugeid, game.winhandi)
+        #     c.execute("INSERT INTO DisorderPanGames VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", params)
+
+
+        handi = game.handiCompanies
+        if handi is None:
+            pass
+        else:
+            for company in handi:
+                print company.__class__.__name__
+                print type(company)
+                if isinstance(company,BetCompany):
+                # if company.__class__.__name__ == 'BetCompany':
+                    params1 = (
+                        game.soccerID, company.result, company.homeSoccer, company.friendSoccer,
+                        company.companyTitle.decode('utf-8'),
+                        company.orignal_top, company.orignal_Handicap, company.orignal_bottom, company.now_top,
+                        company.now_Handicap,
+                        company.now_bottom)
+
+                    c.execute("INSERT INTO DisorderPanCompanyHandicap VALUES (?,?,?,?,?,?,?,?,?,?,?)", params1)
+
+
+
+
+        # odd  = game.oddCompanies
+        # if odd is None:
+        #     pass
+        # else:
+        #     for company in odd:
+        #         oddparams = (game.soccerID, company.result, company.homeSoccer, company.friendSoccer,
+        #                   company.companyTitle.decode('utf-8'),
+        #                   company.orignal_winOdd, company.orignal_drawOdd,
+        #                   company.orignal_loseOdd, company.winOdd, company.drawOdd, company.loseOdd)
+        #         c.execute("INSERT INTO DisorderPanCompanyODD  VALUES (?,?,?,?,?,?,?,?,?,?,?)", oddparams)
+
+
     conn.commit()
     c.close()
     conn.close()
@@ -410,6 +491,7 @@ def insertGameList(games):
     global c
 
     conn = sqlite3.connect(location)
+    conn.text_factory = str
     c = conn.cursor()
 
     for game in games:
@@ -1443,7 +1525,6 @@ def GET_LEAGUE_DETAIL_FROM_DB(tempLeagueID):
     c.close()
     conn.close()
 
-
 def getHandiDisunion(onegame):
     if isinstance(onegame, FootballGame):
         if len(onegame.orignalHandiList) <= 2:
@@ -1599,3 +1680,40 @@ def InsertLeagueDaXiao(teamDaXiao):
     conn.close()
 
 create_database()
+
+
+
+def GetOriPanCount():
+    global conn
+    global c
+
+    conn = sqlite3.connect(location)
+    conn.text_factory = str
+    c = conn.cursor()
+
+
+    c.execute("select gameid,orignalpan,count(*) as count from CompanyHandicap group by gameid having count>4")
+    r = c.fetchall()
+    games_id_list = []
+    for game in r:
+        gameid = game[0]
+        games_id_list.append(gameid)
+
+    for gameid in games_id_list:
+        c.execute("SELECT orignalpan FROM CompanyHandicap WHERE gameid == ?", (gameid, ))
+        result = c.fetchall()
+
+        tempTuple = []
+        for panTuple in result:
+            pan = panTuple[0]
+            if pan not in tempTuple:
+                tempTuple.append(pan)
+        if len(tempTuple) > 2:
+            print gameid
+
+
+    conn.commit()
+    c.close()
+    conn.close()
+
+# GetOriPanCount()
