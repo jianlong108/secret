@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
+import os
 import datetime
 import time
-import getHandiOrignalTime
-# from GetData import SoccerRound
-from GetData.DBHelper import *
-# from SendMail import Send
-from NetWorkTools import GetResultStrWithURLStr
+import SOCCER_ORIGNAL_PAN_TIME
+from GetData.DBHELPER import (ResultAnalyseGame,getHandiProbability,getOrignalODDProbability,
+                              getnowODDProbability,getnowHandiProbability)
+from NetWorkTools import get_resultstr_with_url
+from SOCCER_MODELS import FootballGame
+from GetData.SOCCER_ROUND import getOneGameODD,getOneGameHandi
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 
 
@@ -36,7 +35,7 @@ def getYesterdaySoccer(timestr):
         print e
         pass
 
-    resultStr = GetResultStrWithURLStr(url)
+    resultStr = get_resultstr_with_url(url)
 
     global AllGames
     global AllBeginTimes
@@ -148,8 +147,8 @@ def getYesterdaySoccer(timestr):
                 AllResultAnalyseGames.append(resultGame)
                 # 赋值结束
 
-                onegame.oddCompanies = SoccerRound.getOneGameODD(onegame)
-                onegame.handiCompanies = SoccerRound.getOneGameHandi(onegame)
+                onegame.oddCompanies = getOneGameODD(onegame)
+                onegame.handiCompanies = getOneGameHandi(onegame)
                 handiOffset = onegame.now_aomenHandi - onegame.orignal_aomenHandi
                 if handiOffset == 0:
                     resultGame.handiDeeper = 0
@@ -182,7 +181,7 @@ def getYesterdaySoccer(timestr):
                 contentStr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
 
                 # 获取开盘时间
-                flag = getHandiOrignalTime.gethandiTime(onegame.soccerID)
+                flag = SOCCER_ORIGNAL_PAN_TIME.gethandiTime(onegame.soccerID)
                 if flag:
                     # contentStr += '澳盘开盘早\n'.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
                     contentStr += "<h4 style=\"color:red;\" align=\"center\">澳盘开盘早</h4>"

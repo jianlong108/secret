@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from BeautifulSoupHelper import *
+from BEAUTIFUL_SOUP_HELPER import *
 
 '''
 博彩公司

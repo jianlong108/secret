@@ -6,11 +6,11 @@
 '''
 
 import threading
-
-import exchangeODD
-from GetData.DBHelper import *
-from GetData.SoccerRound import *
-from SendMail import *
+import datetime
+import PAN_CONVERT_ODD
+from GetData.DBHELPER import *
+from GetData.SOCCER_ROUND import *
+from SEND_MAIL import *
 
 AllGames = []
 AllBeginTimes = []
@@ -23,6 +23,8 @@ def getTodaySoccer(type = 3):
     # type == 3 竞彩
     # type == 1 精简
     # type == 2 十四场
+    url = ''
+    resultStr = ''
 
     try:
         url = "http://27.45.161.37:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=6.2&from=2&r=" + str(
@@ -31,18 +33,21 @@ def getTodaySoccer(type = 3):
 
 
         print url
-    except:
+    except BaseException as e:
+        print e
         pass
-    c = pycurl.Curl()
-
-    c.setopt(pycurl.URL, url)
-
-    b = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 5)
-    c.perform()
-    resultStr = b.getvalue().decode('utf8')
+    # c = pycurl.Curl()
+    #
+    # c.setopt(pycurl.URL, url)
+    #
+    # b = StringIO.StringIO()
+    # c.setopt(pycurl.WRITEFUNCTION, b.write)
+    # c.setopt(pycurl.FOLLOWLOCATION, 1)
+    # c.setopt(pycurl.MAXREDIRS, 5)
+    # c.perform()
+    # resultStr = b.getvalue().decode('utf8')
+    if url != '':
+        resultStr = get_resultstr_with_url(url)
 
     global AllGames
     global AllBeginTimes
@@ -139,11 +144,11 @@ def timerAnalys(threadName, delay, counter):
     global exitflag
     while exitflag:
 
-        now = datetime.now()
-        offset_half_hour = timedelta(minutes=-30)
-        offset_three_hour = timedelta(hours=-3)
+        now = datetime.datetime.now()
+        offset_half_hour = datetime.timedelta(minutes=-30)
+        offset_three_hour = datetime.timedelta(hours=-3)
 
-        offset_one_hour = timedelta(hours=-1)
+        offset_one_hour = datetime.timedelta(hours=-1)
         now_offset_halfHour = now - offset_half_hour
         now_offset_threehour = now - offset_three_hour
         now_offset_onehour = now - offset_one_hour
@@ -218,7 +223,7 @@ def timerAnalys(threadName, delay, counter):
 
                             resultstr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
                                          "<caption style=\"color:red;\"><h5>欧亚转换</h5></caption><tr bgcolor=#663399 ><td>博彩公司</td> <td>转换后</td><td>主</td><td>盘口</td><td>客</td><td>实际</td><td>主</td><td>盘口</td><td>客</td>"
-                            resultstr += exchangeODD.getexchange(onegame.soccerID)
+                            resultstr += PAN_CONVERT_ODD.getexchange(onegame.soccerID)
                             resultstr += '</table>'
                 if resultstr != '' or resultstr is not None:
                     a = datetime.strptime(timeStr, '%Y-%m-%d %H:%M')

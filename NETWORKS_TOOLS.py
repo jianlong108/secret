@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import requests
+import urllib2
 # import time
 # import pycurl
 # import StringIO
 
-def GetResultStrWithURLStr(urlStr):
+def get_resultstr_with_url(urlStr):
     # c = pycurl.Curl()
     #
     # c.setopt(pycurl.URL, handiURL)
@@ -23,3 +24,11 @@ def GetResultStrWithURLStr(urlStr):
     if response.ok:
         resultStr = response.content
     return resultStr
+
+def get_htmlcontent_with_url(url, htmldecode = 'utf-8'):
+    header = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0"}
+    request = urllib2.Request(url=url, headers=header)  # 模拟浏览器进行访问
+    response = urllib2.urlopen(request)
+    text = response.read()
+    text = text.decode(htmldecode)
+    return text

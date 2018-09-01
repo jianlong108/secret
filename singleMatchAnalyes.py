@@ -4,8 +4,8 @@
 import sys
 import time
 
-from GetData.SoccerModels import *
-from GetData.soccerTool import *
+from GetData.SOCCER_MODELS import *
+from GetData.SOCCER_TOOL import *
 
 reload(sys)
 sys.setdefaultencoding('utf-8')

@@ -3,7 +3,7 @@
 
 import time
 from NetWorkTools import *
-from SoccerModels import BetCompany,FootballGame
+from SOCCER_MODELS import BetCompany,FootballGame
 
 
 
@@ -26,7 +26,7 @@ def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
         print e
         pass
 
-    resultStr = GetResultStrWithURLStr(url)
+    resultStr = get_resultstr_with_url(url)
     games = []
 
     if resultStr != '':
@@ -190,7 +190,7 @@ def getOneGameHandi(host, game):
         print e
 
     if url != '':
-        resultStr = GetResultStrWithURLStr(url)
+        resultStr = get_resultstr_with_url(url)
 
     if resultStr != '':
         array = resultStr.split('!')
@@ -364,7 +364,7 @@ def getOneGameODD(host,game):
         pass
 
     if url != '':
-        resultStr = GetResultStrWithURLStr(url)
+        resultStr = get_resultstr_with_url(url)
 
     if resultStr != '':
         array = resultStr.split('!')

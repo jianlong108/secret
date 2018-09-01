@@ -5,12 +5,12 @@
 import datetime
 import time
 
-import getHandiOrignalTime
-from GetData.DBHelper import getHandiProbability,getnowHandiProbability,getOrignalODDProbability,getnowODDProbability
-from GetData.SoccerModels import FootballGame
-from GetData.SoccerRound import getOneGameHandi,getOneGameODD
-from SendMail import send_mail
-from  NetWorkTools import GetResultStrWithURLStr
+import SOCCER_ORIGNAL_PAN_TIME
+from GetData.DBHELPER import getHandiProbability,getnowHandiProbability,getOrignalODDProbability,getnowODDProbability
+from GetData.SOCCER_MODELS import FootballGame
+from GetData.SOCCER_ROUND import getOneGameHandi,getOneGameODD
+from SEND_MAIL import send_mail
+from  NetWorkTools import get_resultstr_with_url
 
 AllGames = []
 AllBeginTimes = []
@@ -22,7 +22,7 @@ def getTodaySoccer(gameType):
     # type == 2 十四场
 
     # http://119.29.29.29/d?ttl=1&dn=txt.city007.net
-    httpHomeStr = GetResultStrWithURLStr('http://119.29.29.29/d?ttl=1&dn=txt.city007.net')
+    httpHomeStr = get_resultstr_with_url('http://119.29.29.29/d?ttl=1&dn=txt.city007.net')
     httpHomeList = httpHomeStr.split(';')
     host = httpHomeList[0]
 
@@ -38,7 +38,7 @@ def getTodaySoccer(gameType):
         print '请求接口出错' + url
         print e
     if url != '':
-        resultStr = GetResultStrWithURLStr(url)
+        resultStr = get_resultstr_with_url(url)
 
     global AllGames
     global AllBeginTimes
@@ -105,7 +105,7 @@ def getTodaySoccer(gameType):
             contentStr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
 
             # 获取开盘时间
-            flag = getHandiOrignalTime.gethandiTime(onegame.soccerID)
+            flag = SOCCER_ORIGNAL_PAN_TIME.gethandiTime(onegame.soccerID)
             if flag:
                 # contentStr += '澳盘开盘早\n'.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
                 contentStr += "<h4 style=\"color:red;\" align=\"center\">澳盘开盘早</h4>"

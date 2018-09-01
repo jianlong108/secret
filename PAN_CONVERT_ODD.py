@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 import sys
 
-from GetData.SoccerModels import *
+from GetData.SOCCER_MODELS import BetCompany
+from BEAUTIFUL_SOUP_HELPER import SoupHelper,isTagClass
 
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 '''
 16 10bet
@@ -81,7 +79,6 @@ def getexchange(soccerid=0):
 
             except BaseException as e:
                 print e
-                pass
             else:
                 companieslist.append(oneCompany)
 

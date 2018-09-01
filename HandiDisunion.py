@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-
 import datetime
-
-from GetData.DBHelper import *
-from GetData.SoccerRound import *
-from SendMail import *
+from GetData.DBHELPER import *
+from GetData.SOCCER_ROUND import *
+from SEND_MAIL import send_mail
 
 AllGames = []
 AllBeginTimes = []
@@ -17,6 +14,8 @@ def getTodaySoccer(gameType):
     # type == 3 竞彩
     # type == 1 精简
     # type == 2 十四场
+    url = ''
+    resultStr = ''
     gameType = int(gameType)
     try:
         url = "http://27.45.161.37:8071/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=6.2&from=2&r="+str(int(time.time()))
@@ -25,17 +24,8 @@ def getTodaySoccer(gameType):
         print '请求接口出错' + url
         print e
 
-    curlInstance = pycurl.Curl()
-
-    curlInstance.setopt(pycurl.URL, url)
-
-    b = StringIO.StringIO()
-    curlInstance.setopt(pycurl.WRITEFUNCTION, b.write)
-    curlInstance.setopt(pycurl.FOLLOWLOCATION, 1)
-    curlInstance.setopt(pycurl.MAXREDIRS, 5)
-    curlInstance.perform()
-
-    resultStr = b.getvalue().decode('utf8')
+    if url != '':
+        resultStr = get_resultstr_with_url(url)
 
     global AllGames
     global AllBeginTimes
@@ -144,7 +134,7 @@ def getTodaySoccer(gameType):
 
             time.sleep(3)
 
-        i = datetime.now()
+        i = datetime.datetime.now()
 
         if gameType == 1:
             subjectstr = '精简足球分析'
@@ -157,32 +147,24 @@ def getTodaySoccer(gameType):
         send_mail("%s %s/%s/%s" % (subjectstr, i.year, i.month, i.day), contentStr,'html')
 
 def getYesterdaySoccer(timestr):
+    url = ''
+    resultStr = ''
     try:
         url = "http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=" + timestr + '&from=1&kind=3&r=1503367511&subversion=3'
         # 'http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=2017-08-21&from=1&kind=3&r=1503367511&subversion=3'
-
         print url
-    except:
+    except BaseException as e:
+        print e
         pass
-    c = pycurl.Curl()
-
-    c.setopt(pycurl.URL, url)
-
-    b = StringIO.StringIO()
-    c.setopt(pycurl.WRITEFUNCTION, b.write)
-    c.setopt(pycurl.FOLLOWLOCATION, 1)
-    c.setopt(pycurl.MAXREDIRS, 5)
-    c.perform()
-    resultStr = b.getvalue().decode('utf8')
+    if url != '':
+        resultStr = get_resultstr_with_url(url)
 
     global AllGames
     global AllBeginTimes
     global AllResultAnalyseGames
 
     if resultStr != '':
-        # print resultStr
         allArray = resultStr.split('$$')
-        leagueStr = ''
         if type == 1:
             leagueStr = allArray[0]
         else:
@@ -195,9 +177,7 @@ def getYesterdaySoccer(timestr):
         for league in allLeague:
             oneLeague = league.split('^')
             dic[oneLeague[1]] = oneLeague[0]
-            # leaguelistfile.write('%s:%s\n'%(oneLeague[1],oneLeague[0]))
         leaguelist = leaguelistfile.readlines()
-        # return
         if type == 1:
             gameStr = allArray[1]
         else:
@@ -398,13 +378,12 @@ def getYesterdaySoccer(timestr):
             # send_mail("%s %s/%s/%s" % ('往日比赛分析', i.year, i.month, i.day), contentStr, 'html')
 
 def main():
-    now = datetime.now()
-    aDay = timedelta(days=-1)
+    now = datetime.datetime.now()
+    aDay = datetime.timedelta(days=-1)
     now = now + aDay
     yesterdaystr = now.strftime('%Y-%m-%d')
 
-    # 10.11.12.13.14.15.16.17.18.19.20.21.22.23.24.25.26.27
-    getYesterdaySoccer('2017-10-28')
+    getYesterdaySoccer(yesterdaystr)
 
 
 # if sys.argv.__len__()==1:

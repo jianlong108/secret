@@ -3,12 +3,11 @@
 
 import os
 import time
-
 import requests
 
-import BeautifulSoupHelper
-from GetData.SoccerModels import BetCompany
-from GetData.soccerTool import *
+import BEAUTIFUL_SOUP_HELPER
+from GetData.SOCCER_MODELS import BetCompany
+from GetData.SOCCER_TOOL import *
 
 
 class SoccerGame:
@@ -38,18 +37,18 @@ class SoccerGame:
 
 
     def gethandidata(self):
-        instance =  BeautifulSoupHelper.SoupHelper(self.handiurl)
+        instance =  BEAUTIFUL_SOUP_HELPER.SoupHelper(self.handiurl)
         companycontainer=  instance.gethtmllistwithlabel('table', {'class' : 'socai','width' : "100%"})
         if len(companycontainer) == 0:
             return
         companylist = companycontainer[0]
         handicompanylist = []
-        if BeautifulSoupHelper.isTagClass(companylist):
+        if BEAUTIFUL_SOUP_HELPER.isTagClass(companylist):
             for ele in companylist.children:
-                if BeautifulSoupHelper.isTagClass(ele):
+                if BEAUTIFUL_SOUP_HELPER.isTagClass(ele):
                     company = BetCompany()
                     if ele.get('class')[0]  in  [u'ni', u'ni2']:
-                        targetelelist = BeautifulSoupHelper.getelementlistwithlabel(ele, 'td')
+                        targetelelist = BEAUTIFUL_SOUP_HELPER.getelementlistwithlabel(ele, 'td')
                         if len(targetelelist) > 0:
                             try:
                                 company.companyTitle = targetelelist[0].get_text().encode('utf-8')
@@ -65,7 +64,7 @@ class SoccerGame:
                                 # 球队盘口走势 暂时忽略
                                 # company.companyTitle = targetelelist[7].get_text().encode('utf-8')
                                 subele = targetelelist[8]
-                                sublist = BeautifulSoupHelper.getelementlistwithlabel(subele, 'a')
+                                sublist = BEAUTIFUL_SOUP_HELPER.getelementlistwithlabel(subele, 'a')
                                 for aElement in sublist:
                                     if aElement.get_text().encode('utf-8') == '同':
                                         company.similerMatchURL = self.url + aElement.get('href').encode('utf-8')
@@ -84,9 +83,9 @@ class SoccerGame:
         print len(handicompanylist)
 
     def getodddata(self):
-        instance = BeautifulSoupHelper.SoupHelper(self.oddurl)
+        instance = BEAUTIFUL_SOUP_HELPER.SoupHelper(self.oddurl)
         oddsList_tab = instance.gethtmllistwithlabel('table', {'id':'oddsList_tab'})
-        if BeautifulSoupHelper.isTagClass(oddsList_tab):
+        if BEAUTIFUL_SOUP_HELPER.isTagClass(oddsList_tab):
             pass
     def writeLocal(self):
         print('写文件')

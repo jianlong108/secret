@@ -4,23 +4,18 @@
 import math
 import os
 import sqlite3
-import sys
 
-from GetData.SoccerModels import (League)
-from GetData.SoccerRound import (BetCompany,FootballGame)
-import SoccerRound
+from GetData.SOCCER_MODELS import (League)
+from GetData.SOCCER_ROUND import (BetCompany, FootballGame)
 
-reload(sys)
-reload(SoccerRound)
 
-sys.setdefaultencoding('utf8')
 
 location = os.path.expanduser('~/Desktop/Soccer.db')
 
 conn = sqlite3.connect(location)
 c = conn.cursor()
 
-def GetResultFromDBWithSQLstr(sql_str,parameters=()):
+def get_result_from_db_with_SQL_str(sql_str, parameters=()):
     global conn
     global c
 

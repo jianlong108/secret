@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from GetData.DBHelper import *
+import requests
+
+from GetData.DBHELPER import *
+from GetData.SOCCER_MODELS import ContinentSoccer,CountrySoccer
 
 class GetLeagueList:
     def __init__(self):
@@ -71,9 +74,6 @@ class GetLeagueList:
             self.creatContientModel(contientComplexStr)
             self.creatCountryModel(countryComplexStr)
             self.creatLeagueModel(leagueComplexStr)
-
-
-
 
 if __name__ == '__main__':
     create_database()

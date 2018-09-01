@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # import time
-from DBHelper import *
-from SoccerRound import *
+from DBHELPER import *
+from SOCCER_ROUND import *
 from NetWorkTools import *
 import sys
 # http://112.91.160.46:8072/phone/txt/analysisheader/cn/1/25/1253496.txt?an=iosQiuTan&av=5.9&from=2&r=1490440206
@@ -332,7 +332,7 @@ class GetLeague:
         self.orignalLeagueURL = 'http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=' \
                                 + str(self.leagueModel.leagueID).encode(
             'utf-8') + '&season=' + self.currentSeason + '&subid=0&apiversion=1&from=2'
-        resultStr = GetResultStrWithURLStr(self.orignalLeagueURL)
+        resultStr = get_resultstr_with_url(self.orignalLeagueURL)
 
         if resultStr != '':
 

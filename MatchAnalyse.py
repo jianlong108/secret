@@ -3,7 +3,7 @@
 
 from SoccerGame import SoccerGame
 import datetime
-import BeautifulSoupHelper
+import BEAUTIFUL_SOUP_HELPER
 import time
 import sys
 
@@ -29,26 +29,26 @@ def main():
     for dateStr in date_list:
         url = "http://www.310win.com/buy/JingCai.aspx?typeID=105&oddstype=2&date=" + dateStr
         print url
-        instance = BeautifulSoupHelper.SoupHelper(url)
+        instance = BEAUTIFUL_SOUP_HELPER.SoupHelper(url)
         matchtable = instance.gethtmllistwithlabel('table', {'id': 'MatchTable'})
         # matchtable 类型是数组类型
         table = matchtable[0]
         allGameList = []
         for tr in table.children:
-            if BeautifulSoupHelper.isTagClass(tr):
+            if BEAUTIFUL_SOUP_HELPER.isTagClass(tr):
                 if tr.get('matchid') is not None:
                     game = SoccerGame('http://www.310win.com')
                     game.leauge = tr.get('gamename').encode('utf-8')
 
-                    if BeautifulSoupHelper.getelementlistwithlabel(tr, 'a', {'id': True}):
-                        alist = BeautifulSoupHelper.getelementlistwithlabel(tr, 'a')
+                    if BEAUTIFUL_SOUP_HELPER.getelementlistwithlabel(tr, 'a', {'id': True}):
+                        alist = BEAUTIFUL_SOUP_HELPER.getelementlistwithlabel(tr, 'a')
                         game.hometeam = alist[1].get_text().encode('utf-8')
                         home_a_id = alist[1].get('id').encode('utf-8')
                         game.matchid = (home_a_id.split('_')[1]).encode('utf-8')
                         game.guestteam = alist[2].get_text().encode('utf-8')
 
                     for td in tr.descendants:
-                        if BeautifulSoupHelper.isTagClass(td):
+                        if BEAUTIFUL_SOUP_HELPER.isTagClass(td):
 
 
 

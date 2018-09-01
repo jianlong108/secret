@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-import BeautifulSoupHelper
+import BEAUTIFUL_SOUP_HELPER
 # from biplist import *
 
 
@@ -15,7 +15,7 @@ class OneGirl:
         # self.getNumImages()
 
     def getNumImages(self):
-        instance = BeautifulSoupHelper.SoupHelper(self.url)
+        instance = BEAUTIFUL_SOUP_HELPER.SoupHelper(self.url)
         span = instance.gethtmllistwithlabel('span', attrs={'class': 'page-ch'})
         # html = HtmlParser.download(self.url)
         # soup = BeautifulSoup(html, 'html.parser', from_encoding='gb18030')
@@ -73,7 +73,7 @@ class PageGirls:
         # url = "http://www.mm131.com/qingchun/"
         # html = HtmlParser.download(url)
         # mainSoup = BeautifulSoup(html, 'html.parser',from_encoding='gb18030')
-        instance = BeautifulSoupHelper.SoupHelper(url)
+        instance = BEAUTIFUL_SOUP_HELPER.SoupHelper(url,'gbk')
         dlList = instance.gethtmllistwithlabel('dl', {'class': 'list-left public-box'})
         # dlList = mainSoup.find('dl', {'class': 'list-left public-box'})
         # dlList = HtmlParser.getHtmlListWithLabel(html, 'dl', {'class': 'list-left public-box'})
@@ -107,13 +107,6 @@ class PageGirls:
         self.one_girl_list = []
         self.girList = []
 
-
-
-
-
-
-
-
     def parserOtherPage(self):
         self.otherCateoryPage = []
         for num in range(100):
@@ -139,7 +132,7 @@ class ChannelGirl:
         self.pagesHtmlList = {}
 
     def getAllPages(self):
-        instance = BeautifulSoupHelper.SoupHelper(self.channelURL)
+        instance = BEAUTIFUL_SOUP_HELPER.SoupHelper(self.channelURL)
         aList = instance.gethtmllistwithlabel('a', {'class': 'page-en'}, fromencoding= 'gb2312')
         # html = HtmlParser.download(self.channelURL)
         # mainSoup = BeautifulSoup(html, 'html.parser',from_encoding='gb2312')
@@ -168,7 +161,7 @@ class MainView:
         self.channelList = []
         self.loclDic ={}
     def getAllCateogry(self):
-        instance = BeautifulSoupHelper.SoupHelper(self.url)
+        instance = BEAUTIFUL_SOUP_HELPER.SoupHelper(self.url)
         navHtml = instance.gethtmllistwithlabel('div', attrs={'class': 'nav'})
         # html = HtmlParser.download(self.url)
         # webSoup = HtmlParser.getSoup(html)
@@ -192,7 +185,6 @@ def main():
     # writePlist(main.loclDic, "/Users/autohome/Desktop/channel.plist")
     page = PageGirls('清纯','http://www.mm131.com/qingchun/')
     page.parseAllGirls()
-
 
 if __name__ == '__main__':
     main()

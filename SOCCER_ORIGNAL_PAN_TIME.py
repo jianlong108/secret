@@ -2,17 +2,12 @@
 # -*- coding: utf-8 -*-
 
 
-# from GetData.DBHelper import *
-from GetData.SoccerModels import FootballGame
-from BeautifulSoupHelper import SoupHelper,getelementlistwithlabel,isTagClass
-
-from NetWorkTools import GetResultStrWithURLStr
-
-# import sys
-# sys.setdefaultencoding('utf8')
-
-'''这个代码一定要放在 import sys 之后.不知为何'''
 import time
+
+from GetData.SOCCER_MODELS import FootballGame
+from BEAUTIFUL_SOUP_HELPER import SoupHelper,getelementlistwithlabel,isTagClass
+from NetWorkTools import get_resultstr_with_url
+
 
 
 def gethandiTime(soccerid=0):
@@ -44,13 +39,15 @@ def gethandiTime(soccerid=0):
         return False
 
 
-def getTodaySoccer(type):
+def getTodaySoccer(soccer_type = 0):
+    typeStr = ''
+    if isinstance(soccer_type,int):
+        typeStr = str(soccer_type)
     # type == 3 竞彩
     # type == 1 精简
     # type == 2 十四场
-    type = int(type)
-    url = "http://27.45.161.37:8071/phone/schedule_0_" + str(
-        type) + ".txt?an=iosQiuTan&av=6.2&from=2&r=" + str(int(time.time()))
+
+    url = "http://27.45.161.37:8071/phone/schedule_0_" + typeStr + ".txt?an=iosQiuTan&av=6.2&from=2&r=" + str(int(time.time()))
     # url = "http://112.91.160.49:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=5.9&from=2&r=1494229747"
 
 
@@ -66,7 +63,7 @@ def getTodaySoccer(type):
     # c.perform()
     # resultStr = b.getvalue().decode('utf8')
 
-    resultStr = GetResultStrWithURLStr(url)
+    resultStr = get_resultstr_with_url(url)
     AllGames = []
     AllBeginTimes = []
 

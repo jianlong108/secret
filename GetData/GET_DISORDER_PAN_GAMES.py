@@ -3,10 +3,10 @@
 
 import time
 import os
-from SoccerModels import FootballGame
-from SoccerRound import getOneGameODD,getOneGameHandi
-from DBHelper import DB_InsertDisorderGameList
-from NetWorkTools import GetResultStrWithURLStr
+from SOCCER_MODELS import FootballGame
+from SOCCER_ROUND import getOneGameODD,getOneGameHandi
+from DBHELPER import DB_InsertDisorderGameList
+from NetWorkTools import get_resultstr_with_url
 
 def ReadData_from_local_file():
     # codeFilePaths = os.path.abspath('.')
@@ -18,7 +18,7 @@ def ReadData_from_local_file():
     gamelistfile = open(gameidpath, 'r+')
     gameidlist = gamelistfile.readlines()
 
-    httpHomeStr = GetResultStrWithURLStr('http://119.29.29.29/d?ttl=1&dn=txt.city007.net')
+    httpHomeStr = get_resultstr_with_url('http://119.29.29.29/d?ttl=1&dn=txt.city007.net')
     httpHomeList = httpHomeStr.split(';')
     host = httpHomeList[0]
 
@@ -49,7 +49,7 @@ def GetGameBriefWithGameid(gameid):
         print e
 
     if url != '':
-        result = GetResultStrWithURLStr(url)
+        result = get_resultstr_with_url(url)
         if result != '':
             game = FootballGame()
             game.soccerID = int(gameid)
