@@ -6,7 +6,7 @@ import time
 
 from GetData.SOCCER_MODELS import FootballGame
 from BEAUTIFUL_SOUP_HELPER import SoupHelper,getelementlistwithlabel,isTagClass
-from NetWorkTools import get_resultstr_with_url
+from NETWORKS_TOOLS import get_resultstr_with_url
 
 
 

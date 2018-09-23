@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from NetWorkTools import *
+from NETWORKS_TOOLS import get_resultstr_with_url
 from SOCCER_MODELS import BetCompany,FootballGame
 
 

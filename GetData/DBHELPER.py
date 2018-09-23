@@ -325,6 +325,8 @@ def create_database():
     c.execute(
         "CREATE TABLE IF NOT EXISTS LEAGUEDAXIAO (rangking INTEGER, season VARCHAR(20), league VARCHAR(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, winPan INTEGER, drawPan INTEGER, losePan INTEGER,winRate VARCHAR(18),drawRate VARCHAR(18),loseRate VARCHAR(18))")
 
+    c.execute(
+        "CREATE TABLE IF NOT EXISTS LEAGUEJIFENALL (rangking INTEGER, season VARCHAR(20), league VARCHAR(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, winCount INTEGER, drawCount INTEGER, loseCount INTEGER, goals INTEGER,loseGoals INTEGER,jifen INTEGER)")
 
     sql_creat_disorderpan_game = 'create table if not exists ' + 'DisorderPanGames' + \
           '(gameID INTEGER PRIMARY KEY,'\
@@ -1622,12 +1624,13 @@ def InsertLeagueJiFenALL(teamPoints):
 
     for teamPoint in teamPoints:
         # if isinstance(teamPoint, TeamPoints):
+
         params = (
             teamPoint.ranking, teamPoint.season,teamPoint.league, teamPoint.teamID, teamPoint.teamName, teamPoint.seasonRound,
         teamPoint.winCount, teamPoint.drawCount, teamPoint.loseCount, teamPoint.getScore, teamPoint.loseScore,
             teamPoint.points)
 
-        c.execute("INSERT INTO JIFENALL VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", params)
+        c.execute("INSERT INTO LEAGUEJIFENALL VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", params)
 
     conn.commit()
     c.close()

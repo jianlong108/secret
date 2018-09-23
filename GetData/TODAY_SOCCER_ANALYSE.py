@@ -10,7 +10,7 @@ from GetData.DBHELPER import getHandiProbability,getnowHandiProbability,getOrign
 from GetData.SOCCER_MODELS import FootballGame
 from GetData.SOCCER_ROUND import getOneGameHandi,getOneGameODD
 from SEND_MAIL import send_mail
-from  NetWorkTools import get_resultstr_with_url
+from  NETWORKS_TOOLS import get_resultstr_with_url
 
 AllGames = []
 AllBeginTimes = []

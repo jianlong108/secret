@@ -3,9 +3,13 @@
 
 import requests
 import urllib2
+# from selenium import webdriver
 # import time
 # import pycurl
 # import StringIO
+# browser = webdriver.Chrome()
+# browser.get("http://zq.win007.com/cn/League/2018-2019/36.html")
+# print browser.page_source
 
 def get_resultstr_with_url(urlStr):
     # c = pycurl.Curl()

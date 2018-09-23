@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# import time
-from DBHELPER import *
-from SOCCER_ROUND import *
-from NetWorkTools import *
-import sys
+import time
+from DBHELPER import (insertGameList,insertNewGameList,GET_LEAGUE_DETAIL_FROM_DB,
+                      InsertLeagueJiFenALL,InsertLeagueDaXiao,InsertLeaguePanLu)
+from SOCCER_ROUND import GetRound,creatCupGameModelWithComplexStr
+from NETWORKS_TOOLS import get_resultstr_with_url
+from SOCCER_MODELS import TeamPanLu,TeamPoints,League
+# import sys
 # http://112.91.160.46:8072/phone/txt/analysisheader/cn/1/25/1253496.txt?an=iosQiuTan&av=5.9&from=2&r=1490440206
 # http://112.91.160.46:8072/phone/Handicap.aspx?ID=1252358&an=iosQiuTan&av=5.9&from=2&lang=0&r=1490449083
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
+# reload(sys)
+# sys.setdefaultencoding('utf-8')
 
 
 
@@ -55,12 +57,7 @@ class GetCup:
         self.orignalCupURL = 'http://ios.win007.com/phone/CupSaiCheng.aspx?ID=' + str(self.leagueModel.leagueID).encode(
             'utf-8') + '&lang=0&Season=' + season
         print self.orignalCupURL
-        response = requests.get(self.orignalCupURL)
-
-        if response.ok:
-            resultStr = response.content
-        else:
-            pass
+        resultStr = get_resultstr_with_url(self.orignalCupURL)
 
         # 1.非顶级联赛;正在进行的赛季
         if resultStr != '':
@@ -124,11 +121,7 @@ class GetCup:
         responseStr = ''
         url = 'http://ios.win007.com/phone/CupSaiCheng.aspx?ID=' + str(self.leagueModel.leagueID) + '&lang=0&Season=' + season + '&GroupId=' + str(gameID)
         print url
-        response = requests.get(url)
-        if response.ok:
-            responseStr = response.content
-        else:
-            pass
+        responseStr = get_resultstr_with_url(url)
 
         if responseStr != '':
             if '$$$$' in responseStr:
@@ -186,21 +179,18 @@ class GetLeague:
             self.allSubLeagues = []
             self.abortSeasonList = []
             self.middleSeasonTuple = ('2010-2011',1,)
+            self.httpHost = ''
+
         else:
             return None
 
     # pointskind = 0总积分 1.半场积分2.主场积分3.客场积分
     def GetLeagueJiFen(self,pointskind = '0',season = '2017-2018'):
         resultStr = ''
-        self.jifenURL = 'http://27.45.161.46:8072/phone/Jifen2.aspx?an=iosQiuTan&av=6.5&from=2&pointsKind=%s&r=1532144326&sclassid=%s&season=%s&subVersion=2&subid=0' % (pointskind,str(self.leagueModel.leagueID).encode('utf-8'), self.currentSeason)
+        self.jifenURL = 'http://%s:8072/phone/Jifen2.aspx?an=iosQiuTan&av=6.5&from=2&pointsKind=%s&r=1532144326&sclassid=%s&season=%s&subVersion=2&subid=0' % (self.httpHost,pointskind,str(self.leagueModel.leagueID).encode('utf-8'), self.currentSeason)
         print '获取联赛: %s 赛季: %s 积分数据 url %s' % (str(self.leagueModel.leagueID).encode('utf-8'), season, self.jifenURL)
 
-        response = requests.get(self.jifenURL)
-
-        if response.ok:
-            resultStr = response.content
-        else:
-            pass
+        resultStr = get_resultstr_with_url(self.jifenURL)
 
         if resultStr != '':
             print resultStr
@@ -216,9 +206,12 @@ class GetLeague:
                         teamPointArr = teamDataStr.split('^')
                         try:
                             # 1^24^切尔西^車路士^38^30^3^5^85^33^93^0^0^^^0
+                            temp_TeamPoints.season = season
+                            temp_TeamPoints.league = self.leagueModel.breifLeagueName
+
                             temp_TeamPoints.ranking = int(teamPointArr[0])
                             temp_TeamPoints.teamID = int(teamPointArr[1])
-                            temp_TeamPoints.teamName = teamPointArr[2].encode('utf-8')
+                            temp_TeamPoints.teamName = teamPointArr[2]
                             temp_TeamPoints.seasonRound = int(teamPointArr[4])
                             temp_TeamPoints.winCount = int(teamPointArr[5])
                             temp_TeamPoints.drawCount = int(teamPointArr[6])
@@ -226,8 +219,7 @@ class GetLeague:
                             temp_TeamPoints.getScore = int(teamPointArr[8])
                             temp_TeamPoints.loseScore = int(teamPointArr[9])
                             temp_TeamPoints.points = int(teamPointArr[10])
-                            temp_TeamPoints.league = self.leagueModel.breifLeagueName.encode('utf-8')
-                            temp_TeamPoints.season = season
+
                         except BaseException, e:
                             print '解析比赛积分出错'
                             print e
@@ -252,12 +244,7 @@ class GetLeague:
         print '获取联赛: %s 赛季: %s 盘路数据 url %s' % (
         str(self.leagueModel.leagueID).encode('utf-8'), season, self.panLuURL)
 
-        response = requests.get(self.panLuURL)
-
-        if response.ok:
-            resultStr = response.content
-        else:
-            pass
+        resultStr = get_resultstr_with_url(self.panLuURL)
 
         if resultStr != '':
             print resultStr
@@ -273,7 +260,7 @@ class GetLeague:
                         temp_TeamPanLu.rankIng = int(teamPointArr[0])
                         temp_TeamPanLu.teamID = int(teamPointArr[1])
                         temp_TeamPanLu.jifenRanking = self.GetJifenRanking(temp_TeamPanLu.teamID)
-                        temp_TeamPanLu.teamName = teamPointArr[2].encode('utf-8')
+                        temp_TeamPanLu.teamName = teamPointArr[2]
                         temp_TeamPanLu.rounds = int(teamPointArr[4])
                         temp_TeamPanLu.halfWinPan = int(teamPointArr[5])
                         temp_TeamPanLu.halfDrawPan = int(teamPointArr[6])
@@ -293,12 +280,7 @@ class GetLeague:
         print '获取联赛: %s 赛季: %s 大小球数据 url %s' % (
         str(self.leagueModel.leagueID).encode('utf-8'), season, self.DaXiaoURL)
 
-        response = requests.get(self.panLuURL)
-
-        if response.ok:
-            resultStr = response.content
-        else:
-            pass
+        resultStr = get_resultstr_with_url(self.DaXiaoURL)
 
         if resultStr != '':
             print resultStr
@@ -314,7 +296,7 @@ class GetLeague:
                         temp_TeamPanLu.rankIng = int(teamPointArr[0])
                         temp_TeamPanLu.teamID = int(teamPointArr[1])
                         temp_TeamPanLu.jifenRanking = self.GetJifenRanking(temp_TeamPanLu.teamID)
-                        temp_TeamPanLu.teamName = teamPointArr[2].encode('utf-8')
+                        temp_TeamPanLu.teamName = teamPointArr[2]
                         temp_TeamPanLu.rounds = int(teamPointArr[4])
                         temp_TeamPanLu.winPan = int(teamPointArr[5])
                         temp_TeamPanLu.drawPan = int(teamPointArr[6])
@@ -456,16 +438,20 @@ class GetLeague:
         for season in self.leagueModel.aviableSeasonList:
             if season in self.abortSeasonList:
                 continue
+            else:
+                self.currentSeason = season
             # 获取联赛积分榜
-            self.GetLeagueJiFen(0,season)
+            self.GetLeagueJiFen(pointskind = 0,season= season)
             # 获取赢盘榜
-            self.GetLeaguePanlu(season)
-            self.GetLeagueDaXiao(season)
-            time.sleep(1)
+            self.GetLeaguePanlu(season = season)
+            self.GetLeagueDaXiao(season = season)
 
             InsertLeagueJiFenALL(self.teamPointsArr)
             InsertLeaguePanLu(self.teamPanLuArr)
             InsertLeagueDaXiao(self.teamDaXiaoArr)
+            self.teamPointsArr = []
+            self.teamDaXiaoArr = []
+            self.teamPanLuArr = []
 
 
 def GetLeagueDetailFromDB(leagueid = -1,isCup = False):
@@ -480,7 +466,13 @@ def GetLeagueDetailFromDB(leagueid = -1,isCup = False):
         leagueModel.breifLeagueName = leagueArray[2].encode('utf-8')
         leagueModel.aviableSeasonStr = leagueArray[5].encode('utf-8')
         print leagueModel.aviableSeasonList
-        leagueModel.aviableSeasonList.remove('2018-2019')
+        if '2018-2019' in leagueModel.aviableSeasonList:
+            leagueModel.aviableSeasonList.remove('2018-2019')
+
+
+        httpHomeStr = get_resultstr_with_url('http://119.29.29.29/d?ttl=1&dn=txt.city007.net')
+        httpHomeList = httpHomeStr.split(';')
+        host = httpHomeList[0]
 
         # 杯赛去请求杯赛接口,逻辑
         print isCup
@@ -493,6 +485,7 @@ def GetLeagueDetailFromDB(leagueid = -1,isCup = False):
         else:
             print '请求联赛接口'
             league = GetLeague(leagueModel)
+            league.httpHost = host
             # league.getOfficialLeague()
             league.Get_basic_league_data()
 
@@ -505,7 +498,7 @@ def GetLeagueDetailFromDB(leagueid = -1,isCup = False):
 #     getLeagueData(leagueid,isCup)
 
 
-GetLeagueDetailFromDB(36,1)
+GetLeagueDetailFromDB(34,1)
 
 
 
