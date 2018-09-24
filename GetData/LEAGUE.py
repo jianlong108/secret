@@ -3,10 +3,11 @@
 
 import time
 from DBHELPER import (insertGameList,insertNewGameList,GET_LEAGUE_DETAIL_FROM_DB,
-                      InsertLeagueJiFenALL,InsertLeagueDaXiao,InsertLeaguePanLu)
+                      InsertLeagueJiFenALL,InsertLeagueDaXiao,InsertLeaguePanLu,get_team_history_panlu_fromdb_with_teamid)
 from SOCCER_ROUND import GetRound,creatCupGameModelWithComplexStr
 from NETWORKS_TOOLS import get_resultstr_with_url
 from SOCCER_MODELS import TeamPanLu,TeamPoints,League
+from EXCEL_HELPER import write_excel
 # import sys
 # http://112.91.160.46:8072/phone/txt/analysisheader/cn/1/25/1253496.txt?an=iosQiuTan&av=5.9&from=2&r=1490440206
 # http://112.91.160.46:8072/phone/Handicap.aspx?ID=1252358&an=iosQiuTan&av=5.9&from=2&lang=0&r=1490449083
@@ -454,7 +455,7 @@ class GetLeague:
             self.teamPanLuArr = []
 
 
-def GetLeagueDetailFromDB(leagueid = -1,isCup = False):
+def GetLeagueDetailFromDB(leagueid = -1,getDataType = 0 ,isCup = False):
     if leagueid < 0:
         print '联赛id 非法'
         return
@@ -468,6 +469,8 @@ def GetLeagueDetailFromDB(leagueid = -1,isCup = False):
         print leagueModel.aviableSeasonList
         if '2018-2019' in leagueModel.aviableSeasonList:
             leagueModel.aviableSeasonList.remove('2018-2019')
+        elif '2018' in leagueModel.aviableSeasonList:
+            leagueModel.aviableSeasonList.remove('2018')
 
 
         httpHomeStr = get_resultstr_with_url('http://119.29.29.29/d?ttl=1&dn=txt.city007.net')
@@ -486,8 +489,51 @@ def GetLeagueDetailFromDB(leagueid = -1,isCup = False):
             print '请求联赛接口'
             league = GetLeague(leagueModel)
             league.httpHost = host
-            # league.getOfficialLeague()
-            league.Get_basic_league_data()
+            if getDataType == 0:
+                league.getOfficialLeague()
+            elif getDataType == 1:
+                league.Get_basic_league_data()
+            elif getDataType == 2:
+                league.GetLeaguePanlu('2018-2019')
+                if not len(league.teamPanLuArr) > 0:
+                    league.GetLeaguePanlu('2018')
+                team_panlu_list = []
+                header = leagueModel.aviableSeasonList
+                header.insert(0,'联赛')
+                header.insert(0, '球队')
+                # header = ['球队', '联赛',
+                #           '2018-2019', '2017-2018', '2016-2017', '2015-2016', '2014-2015', '2013-2014',
+                #           '2012-2013', '2011-2012', '2010-2011', '2009-2010', '2008-2009', '2007-2008',
+                #           '2006-2007',
+                #           '2005-2006', '2004-2005', '2003-2004']
+
+                for teamPanlu in league.teamPanLuArr:
+                    if isinstance(teamPanlu, TeamPanLu):
+                        # 插入当前赛季
+                        one_team_data = [teamPanlu.teamName.decode('utf-8'), leagueModel.breifLeagueName.decode('utf-8'),
+                                         str(teamPanlu.winPan * 100 / teamPanlu.rounds), '', '', '', '', '', '', '', '', '',
+                                         '', '',
+                                         '', '', '', '']
+
+                        gamelist = get_team_history_panlu_fromdb_with_teamid(teamPanlu.teamID, leagueModel.breifLeagueName)
+
+                        for tempGameTuple in gamelist:
+                            if tempGameTuple[0] in header:
+                                index = header.index(tempGameTuple[0])
+                                winCount = tempGameTuple[3]
+                                rounds = tempGameTuple[2]
+                                if rounds == 0:
+                                    continue
+                                rate = str(winCount * 100 / rounds)
+                                one_team_data.insert(index, rate)
+
+                        team_panlu_list.append(one_team_data)
+
+                write_excel(team_panlu_list)
+
+
+
+
 
 # if sys.argv.__len__()==1:
 #     sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 144 True\033[0m')
@@ -497,8 +543,10 @@ def GetLeagueDetailFromDB(leagueid = -1,isCup = False):
 #     isCup = sys.argv[2]
 #     getLeagueData(leagueid,isCup)
 
+# leagueid 联赛id getDataType 0获取球赛数据,1获取盘路数据,2获取当前赢盘率并写入excel
+GetLeagueDetailFromDB(leagueid=22,getDataType=2,isCup=1)
 
-GetLeagueDetailFromDB(34,1)
+
 
 
 

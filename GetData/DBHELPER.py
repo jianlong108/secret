@@ -1679,7 +1679,19 @@ def InsertLeagueDaXiao(teamDaXiao):
 
 create_database()
 
+def  get_team_history_panlu_fromdb_with_teamid(teamid,league):
+    global conn
+    global c
 
+    conn = sqlite3.connect(location)
+    conn.text_factory = str
+    c = conn.cursor()
+
+    c.execute("select season,team,rounds,winPan from LEAGUEPANLU WHERE teamid = ? AND league = ?",(teamid,league))
+    r = c.fetchall()
+    return r
+    # for game in r:
+    #     print game
 
 def GetOriPanCount():
     global conn
