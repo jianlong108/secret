@@ -494,11 +494,14 @@ def GetLeagueDetailFromDB(leagueid = -1,getDataType = 0 ,isCup = False):
             elif getDataType == 1:
                 league.Get_basic_league_data()
             elif getDataType == 2:
+                header = leagueModel.aviableSeasonList
                 league.GetLeaguePanlu('2018-2019')
+                currentSeason = '2018-2019'
                 if not len(league.teamPanLuArr) > 0:
                     league.GetLeaguePanlu('2018')
+                    currentSeason = '2018'
                 team_panlu_list = []
-                header = leagueModel.aviableSeasonList
+                header.insert(0,currentSeason)
                 header.insert(0,'联赛')
                 header.insert(0, '球队')
                 # header = ['球队', '联赛',
@@ -544,9 +547,10 @@ def GetLeagueDetailFromDB(leagueid = -1,getDataType = 0 ,isCup = False):
 #     getLeagueData(leagueid,isCup)
 
 # leagueid 联赛id getDataType 0获取球赛数据,1获取盘路数据,2获取当前赢盘率并写入excel
-GetLeagueDetailFromDB(leagueid=22,getDataType=2,isCup=1)
+for leagueid in [5,8,9,11,12,16,17,23,31,33,34,40,36,37]:
+    GetLeagueDetailFromDB(leagueid=leagueid,getDataType=2,isCup=1)
 
-
+# GetLeagueDetailFromDB(leagueid=5,getDataType=1,isCup=1)
 
 
 
