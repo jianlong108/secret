@@ -43,8 +43,9 @@ def write_excel(teamList):
 
     for teamTuple in teamList:
         for i in range(len(header)):
-            winPanSheet.write(index, i, teamTuple[i], set_style('Times New Roman', 220, True))
+            # winPanSheet.write(index, i, teamTuple[i], set_style('Times New Roman', 220, True))
+            winPanSheet.write(index, i, teamTuple[i])
         index += 1
     wb.save(location)
 
-# write_excel([])
+creat_excel()

@@ -1677,8 +1677,6 @@ def InsertLeagueDaXiao(teamDaXiao):
     c.close()
     conn.close()
 
-create_database()
-
 def  get_team_history_panlu_fromdb_with_teamid(teamid,league):
     global conn
     global c
@@ -1727,3 +1725,6 @@ def GetOriPanCount():
     conn.close()
 
 # GetOriPanCount()
+
+
+create_database()
