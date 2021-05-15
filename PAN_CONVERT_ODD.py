@@ -87,10 +87,10 @@ def getexchange(soccerid=0):
 
 
 
-if sys.argv.__len__()==1:
-    sys.exit('\033[0;36;40m使用说明:\n1个参数:\n事例: python TodaySoccer.pyc 12344\033[0m')
-
-if __name__ == '__main__':
-    getexchange(sys.argv[1])
+# if sys.argv.__len__()==1:
+#     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n事例: python TodaySoccer.pyc 12344\033[0m')
+#
+# if __name__ == '__main__':
+#     getexchange(sys.argv[1])
 
 # getexchange(1444073)

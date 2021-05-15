@@ -10,16 +10,17 @@ import datetime
 import PAN_CONVERT_ODD
 from GetData.DBHELPER import *
 from GetData.SOCCER_ROUND import *
-from SEND_MAIL import *
+from SendMail import *
 
 AllGames = []
 AllBeginTimes = []
 exitflag = 1
+gameListHost = "http://61.143.224.166:8071"
+oneGameListHost = "http://61.143.225.85:8072"
 
 
 
-
-def getTodaySoccer(type = 3):
+def getTodaySoccer(gameType = 3):
     # type == 3 竞彩
     # type == 1 精简
     # type == 2 十四场
@@ -27,25 +28,12 @@ def getTodaySoccer(type = 3):
     resultStr = ''
 
     try:
-        url = "http://27.45.161.37:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=6.2&from=2&r=" + str(
+        url = gameListHost + "/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=2.4&from=2&r=" + str(
             int(time.time()))
         # url = "http://112.91.160.49:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=5.9&from=2&r=1494229747"
-
-
         print url
     except BaseException as e:
         print e
-        pass
-    # c = pycurl.Curl()
-    #
-    # c.setopt(pycurl.URL, url)
-    #
-    # b = StringIO.StringIO()
-    # c.setopt(pycurl.WRITEFUNCTION, b.write)
-    # c.setopt(pycurl.FOLLOWLOCATION, 1)
-    # c.setopt(pycurl.MAXREDIRS, 5)
-    # c.perform()
-    # resultStr = b.getvalue().decode('utf8')
     if url != '':
         resultStr = get_resultstr_with_url(url)
 
@@ -53,7 +41,7 @@ def getTodaySoccer(type = 3):
     global AllBeginTimes
 
     if resultStr != '':
-        # print resultStr
+        print resultStr
         allArray = resultStr.split('$$')
         leagueStr = ''
         if type == 1:
@@ -104,25 +92,15 @@ def getTodaySoccer(type = 3):
                 onegame.friendTeam = oneGameArray[5].encode('utf-8')
 
             AllGames.append(onegame)
-
+    else:
+        print "没有获取到当日数据"
 
 def getgame(game):
     print '开始分析比赛'
-    getOneGameODD(game)
-    getOneGameHandi(game)
-    getHandiProbability(game)
+    getOneGameODD(oneGameListHost,game)
+    getOneGameHandi(oneGameListHost,game)
+    getHandiProbability(oneGameListHost,game)
 
-class gameThread(threading.Thread):
-    def __init__(self, threadID, name, game):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-        self.game = game
-    def run(self):
-        print "Starting " + self.name
-        # 定时300秒 执行一次
-        getgame(self.game)
-        print "Exiting " + self.name
 
 class TimeingThread(threading.Thread):  # 继承父类threading.Thread
     def __init__(self, threadID, name, counter):
@@ -133,7 +111,7 @@ class TimeingThread(threading.Thread):  # 继承父类threading.Thread
 
     def run(self):  # 把要执行的代码写到run函数里面 线程在创建后会直接运行run函数
         print "Starting " + self.name
-        # 定时300秒 执行一次
+        # 定时60秒 执行一次
         timerAnalys(self.name, 60, len(AllBeginTimes))
         print "Exiting " + self.name
 
@@ -176,9 +154,8 @@ def timerAnalys(threadName, delay, counter):
                     if isinstance(onegame, FootballGame):
 
                         if onegame.beginTime == timeStr:
-                            # gameThread(2, '比赛线程', game)
-                            onegame.oddCompanies = getOneGameODD(onegame)
-                            onegame.handiCompanies = getOneGameHandi(onegame)
+                            onegame.oddCompanies = getOneGameODD(oneGameListHost,onegame)
+                            onegame.handiCompanies = getOneGameHandi(oneGameListHost,onegame)
                             titlestr = ''.join(
                                 [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs',
                                  onegame.friendTeam, ' id: ',
@@ -226,7 +203,7 @@ def timerAnalys(threadName, delay, counter):
                             resultstr += PAN_CONVERT_ODD.getexchange(onegame.soccerID)
                             resultstr += '</table>'
                 if resultstr != '' or resultstr is not None:
-                    a = datetime.strptime(timeStr, '%Y-%m-%d %H:%M')
+                    a = datetime.datetime.strptime(timeStr, '%Y-%m-%d %H:%M')
                     b = now
                     c = a - b
                     offsetTimeNum = c.seconds / 3600.0
@@ -247,7 +224,8 @@ def timerAnalys(threadName, delay, counter):
 #     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
 
 if __name__ == '__main__':
-    getTodaySoccer(sys.argv[1])
-    # getTodaySoccer(3)
+    print "实时分析:main函数"
+    # getTodaySoccer(sys.argv[1])
+    getTodaySoccer(3)
     thread1 = TimeingThread(1, "实时分析", 1)
     thread1.start()

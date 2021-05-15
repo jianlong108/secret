@@ -183,9 +183,9 @@ def getOneGameHandi(host, game):
     resultStr = ''
     url = ''
     try:
-        # url = 'http://27.45.161.37:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
+        # url = 'http://xxx:8072/phone/Handicap.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0'
 
-        url = 'http://%s:8072/phone/Handicap.aspx?ID=%s&an=iosQiuTan&av=7.1&from=2&lang=0&subversion=1' % (host, str(game.soccerID))
+        url = '%s/phone/Handicap.aspx?ID=%s&an=iosQiuTan&av=7.1&from=2&lang=0&subversion=1' % (host, str(game.soccerID))
     except BaseException as e:
         print e
 
@@ -356,8 +356,8 @@ def getOneGameODD(host,game):
     resultStr = ''
     url = ''
     try:
-        # url = 'http://27.45.161.37:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
-        url = 'http://%s:8072/phone/1x2.aspx?ID=%s&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1' % (host, str(game.soccerID))
+        # url = 'http://xxx:8072/phone/1x2.aspx?ID=' + str(game.soccerID) + '&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1'
+        url = '%s/phone/1x2.aspx?ID=%s&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1' % (host, str(game.soccerID))
 
     except BaseException as e:
         print e

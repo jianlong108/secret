@@ -4,7 +4,7 @@
 import datetime
 from GetData.DBHELPER import *
 from GetData.SOCCER_ROUND import *
-from SEND_MAIL import send_mail
+from SendMail import send_mail
 
 AllGames = []
 AllBeginTimes = []
@@ -18,7 +18,7 @@ def getTodaySoccer(gameType):
     resultStr = ''
     gameType = int(gameType)
     try:
-        url = "http://27.45.161.37:8071/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=6.2&from=2&r="+str(int(time.time()))
+        url = "http://61.143.225.85:8072/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=2.4&from=2&r="+str(int(time.time()))
         print url
     except Exception as e:
         print '请求接口出错' + url
@@ -386,10 +386,11 @@ def main():
     getYesterdaySoccer(yesterdaystr)
 
 
+
 # if sys.argv.__len__()==1:
 #     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
 #
-# if __name__ == '__main__':
+if __name__ == '__main__':
 #     getTodaySoccer(sys.argv[1])
-# getTodaySoccer(3)
-getYesterdaySoccer('2017-11-10')
+    getTodaySoccer(3)
+# getYesterdaySoccer('2017-11-10')

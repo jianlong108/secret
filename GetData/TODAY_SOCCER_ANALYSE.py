@@ -9,7 +9,7 @@ import SOCCER_ORIGNAL_PAN_TIME
 from GetData.DBHELPER import getHandiProbability,getnowHandiProbability,getOrignalODDProbability,getnowODDProbability
 from GetData.SOCCER_MODELS import FootballGame
 from GetData.SOCCER_ROUND import getOneGameHandi,getOneGameODD
-from SEND_MAIL import send_mail
+from SendMail import send_mail
 from  NETWORKS_TOOLS import get_resultstr_with_url
 
 AllGames = []
