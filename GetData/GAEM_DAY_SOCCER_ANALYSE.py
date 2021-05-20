@@ -4,7 +4,7 @@
 import os
 import datetime
 import time
-import SOCCER_ORIGNAL_PAN_TIME
+import SoccerOrignalPanTime
 from GetData.DBHELPER import (ResultAnalyseGame,getHandiProbability,getOrignalODDProbability,
                               getnowODDProbability,getnowHandiProbability)
 from NetWorkTools import get_resultstr_with_url
@@ -181,7 +181,7 @@ def getYesterdaySoccer(timestr):
                 contentStr += "<h3 style=\"color:red;\">%s</h3>" % (titlestr,)
 
                 # 获取开盘时间
-                flag = SOCCER_ORIGNAL_PAN_TIME.gethandiTime(onegame.soccerID)
+                flag = SoccerOrignalPanTime.gethandiTime(onegame.soccerID)
                 if flag:
                     # contentStr += '澳盘开盘早\n'.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
                     contentStr += "<h4 style=\"color:red;\" align=\"center\">澳盘开盘早</h4>"

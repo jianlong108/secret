@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+# 终盘不一
+
 import datetime
 from GetData.DBHELPER import *
 from GetData.SOCCER_ROUND import *
@@ -9,6 +12,8 @@ from SendMail import send_mail
 AllGames = []
 AllBeginTimes = []
 AllResultAnalyseGames = []
+gameListHost = "http://61.143.224.166:8071"
+oneGameListHost = "http://61.143.225.85:8072"
 
 def getTodaySoccer(gameType):
     # type == 3 竞彩
@@ -51,11 +56,8 @@ def getTodaySoccer(gameType):
             gameStr = allArray[2]
 
         games = gameStr.split('!')
-        # firstobject = games[0]
         contentStr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>初盘预测</title></head><body>"
         for game in games:
-            # if game is not firstobject:
-            #     continue;
             onegame = FootballGame()
             oneGameArray = game.split('^')
             oneGameArray.remove('')
@@ -77,8 +79,8 @@ def getTodaySoccer(gameType):
                 onegame.friendTeam = oneGameArray[5].encode('utf-8')
             AllGames.append(onegame)
             # 获取欧赔,亚盘数据
-            onegame.oddCompanies = getOneGameODD(onegame)
-            onegame.handiCompanies = getOneGameHandi(onegame)
+            onegame.oddCompanies = getOneGameODD(oneGameListHost,onegame)
+            onegame.handiCompanies = getOneGameHandi(oneGameListHost,onegame)
 
             titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
                      str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ', str(onegame.now_aomenHandi)])
@@ -86,51 +88,6 @@ def getTodaySoccer(gameType):
 
             if len(onegame.nowHandiList) > 1:
                 getHandiDisunion(onegame)
-
-            # 获取开盘时间
-            # flag = getHandiOrignalTime.gethandiTime(onegame.soccerID)
-            # if flag:
-            #     contentStr += "<h4 style=\"color:red;\" align=\"center\">澳盘开盘早</h4>"
-            # 获取初始盘口数量
-            # if len(onegame.orignalHandiList) > 2:
-            #     contentStr += "<h4 style=\"color:red;\" align=\"center\">初盘混乱</h4>"
-                # contentStr += '初盘混乱\n'
-                # contentStr += ''.join(
-                #     [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
-
-            # contentStr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\">" \
-            #               "<caption style=\"color:red;\"><h5>亚盘</h5></caption><tr bgcolor=#663399><th>博彩公司</th><th>盘口</th><th>数量</th><th>赢盘</th><th>走盘</th><th>输盘</th><th>胜</th><th>平</th><th>负</th></tr> "
-            # tempHandistr = getHandiProbability(onegame)
-            # if tempHandistr is not None:
-            #     contentStr += tempHandistr
-            #     # contentStr += '\n'
-            #
-            #
-            # tempNowHandistr = getnowHandiProbability(onegame)
-            # if tempNowHandistr is not None:
-            #     contentStr += "<tr bgcolor=#888888><th>即时盘口</th><th>%s</th><th></th><th></th><th></th><th></th><th></th><th></th><th></th></tr> "%(str(len(onegame.nowHandiList)))
-            #     contentStr += tempNowHandistr
-            #     contentStr += '</table>'
-            # else:
-            #     contentStr += '</table>'
-            #
-            #
-            # contentStr += '</table>'
-            # contentStr += "<table bgcolor=\"black\"cellspacing=\"1px\"width=\"375px\" align=\"center\"><caption style=\"color:red;\"><h5>欧赔</h5></caption>" \
-            #               "<tr bgcolor=\"white\" ><td>博彩公司</td> <td>数量</td><td>胜</td><td>平</td><td>负</td><td>胜率</td><td>平率</td><td>负率</td>"
-            # tempOddstr = getOrignalODDProbability(onegame)
-            # if tempOddstr is not None:
-            #     contentStr += tempOddstr
-            #     # contentStr += '\n'
-            #
-            # tempNowOddstr = getnowODDProbability(onegame)
-            #
-            # if tempNowOddstr is not None:
-            #     contentStr += "<tr bgcolor=#888888 ><td>即时欧赔</td> <td></td><td></td><td></td><td></td><td></td><td></td><td></td>"
-            #     contentStr += tempNowOddstr
-            #     contentStr += '</table>'
-            # else:
-            #     contentStr += '</table>'
 
             time.sleep(3)
 
