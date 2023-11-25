@@ -34,8 +34,8 @@ def gethandiTime(soccerid=0):
         else:
             return False
     except IndexError as e:
-        print url
-        print e
+        # print url
+        # print e
         return False
 
 
@@ -51,7 +51,7 @@ def getTodaySoccer(soccer_type = 0):
     # url = "http://112.91.160.49:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=5.9&from=2&r=1494229747"
 
 
-    print url
+    # print url
 
     resultStr = get_resultstr_with_url(url)
     AllGames = []
@@ -88,7 +88,7 @@ def getTodaySoccer(soccer_type = 0):
 
             gameing = int(oneGameArray[2])
             if gameing != 0:
-                print "比赛已经开始或结束"
+                # print "比赛已经开始或结束"
                 continue
             onegame.soccerID = int(oneGameArray[0])
             onegame.leauge = dic.get(oneGameArray[1])
@@ -113,8 +113,9 @@ def getTodaySoccer(soccer_type = 0):
             # 获取开盘时间
             flag = gethandiTime(onegame.soccerID)
             if flag:
-                print onegame.soccerID
-                print ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
+                pass
+                # print onegame.soccerID
+                # print ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam])
             else:
                 pass
             time.sleep(3)

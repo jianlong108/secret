@@ -157,9 +157,9 @@ class BetCompany(object):
             subdiv = subdivlist[0]
             self.friendWiningPercentage = gettextlistwithlabel(subdiv)
 
-        print self.companyTitle + str(self.now_Handicap)
-        print self.homeWinningPercentage
-        print self.friendWiningPercentage
+        # print self.companyTitle + str(self.now_Handicap)
+        # print self.homeWinningPercentage
+        # print self.friendWiningPercentage
 
 '''
 单场比赛

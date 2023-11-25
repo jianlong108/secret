@@ -38,7 +38,7 @@ class OneGirl:
     def writeToJsonFile(self):
         resultDir = os.getcwd()
         resultJsonPath = os.path.join(resultDir,"{}.json".format(self.name))
-        print resultJsonPath
+        # print resultJsonPath
         with open(resultJsonPath,"w") as f:
             json.dump({self.name:self.imageList},f)
 
@@ -57,15 +57,15 @@ class ChannelPageGirls:
         # for child in ulElement.descendants:
         for child in ulElement.find_all('li'):
             thumbnailEle = child.find('div',{'class':'thumbnail'})
-            print thumbnailEle.find('a').get('href')
+            # print thumbnailEle.find('a').get('href')
 
 
     def parserAllPages(self,url):
         instance = SoupHelper(url)
         divElement = instance.getOneTagObjWithClass('div','pagination')
         if not divElement:
-            print url + ' 不合法'
-            print self.pageList
+            # print url + ' 不合法'
+            # print self.pageList
             return
         pageList = divElement.find_all('a')
         lastPage = None
@@ -83,7 +83,8 @@ class ChannelPageGirls:
         if foundNextPageFlag == True:
             self.parserAllPages(lastPage)
         else:
-            print self.pageList
+            pass
+            # print self.pageList
 
 def main():
     channelPage = ChannelPageGirls('性感','http://www.taotuxp.com/xinggan/page/110')

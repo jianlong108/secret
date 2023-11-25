@@ -57,7 +57,6 @@ class GetCup:
 
         self.orignalCupURL = 'http://ios.win007.com/phone/CupSaiCheng.aspx?ID=' + str(self.leagueModel.leagueID).encode(
             'utf-8') + '&lang=0&Season=' + season
-        print self.orignalCupURL
         resultStr = get_resultstr_with_url(self.orignalCupURL)
 
         # 1.非顶级联赛;正在进行的赛季
@@ -121,7 +120,6 @@ class GetCup:
 
         responseStr = ''
         url = 'http://ios.win007.com/phone/CupSaiCheng.aspx?ID=' + str(self.leagueModel.leagueID) + '&lang=0&Season=' + season + '&GroupId=' + str(gameID)
-        print url
         responseStr = get_resultstr_with_url(url)
 
         if responseStr != '':
@@ -189,12 +187,11 @@ class GetLeague:
     def GetLeagueJiFen(self,pointskind = '0',season = '2017-2018'):
         resultStr = ''
         self.jifenURL = 'http://%s:8072/phone/Jifen2.aspx?an=iosQiuTan&av=6.5&from=2&pointsKind=%s&r=1532144326&sclassid=%s&season=%s&subVersion=2&subid=0' % (self.httpHost,pointskind,str(self.leagueModel.leagueID).encode('utf-8'), self.currentSeason)
-        print '获取联赛: %s 赛季: %s 积分数据 url %s' % (str(self.leagueModel.leagueID).encode('utf-8'), season, self.jifenURL)
+        print('获取联赛: %s 赛季: %s 积分数据 url %s' % (str(self.leagueModel.leagueID).encode('utf-8'), season, self.jifenURL))
 
         resultStr = get_resultstr_with_url(self.jifenURL)
 
         if resultStr != '':
-            print resultStr
 
             array = resultStr.split('$$')
             if len(array) > 2:
@@ -205,25 +202,19 @@ class GetLeague:
                         temp_TeamPoints = TeamPoints()
                         self.teamPointsArr.append(temp_TeamPoints)
                         teamPointArr = teamDataStr.split('^')
-                        try:
-                            # 1^24^切尔西^車路士^38^30^3^5^85^33^93^0^0^^^0
-                            temp_TeamPoints.season = season
-                            temp_TeamPoints.league = self.leagueModel.breifLeagueName
-
-                            temp_TeamPoints.ranking = int(teamPointArr[0])
-                            temp_TeamPoints.teamID = int(teamPointArr[1])
-                            temp_TeamPoints.teamName = teamPointArr[2]
-                            temp_TeamPoints.seasonRound = int(teamPointArr[4])
-                            temp_TeamPoints.winCount = int(teamPointArr[5])
-                            temp_TeamPoints.drawCount = int(teamPointArr[6])
-                            temp_TeamPoints.loseCount = int(teamPointArr[7])
-                            temp_TeamPoints.getScore = int(teamPointArr[8])
-                            temp_TeamPoints.loseScore = int(teamPointArr[9])
-                            temp_TeamPoints.points = int(teamPointArr[10])
-
-                        except BaseException, e:
-                            print '解析比赛积分出错'
-                            print e
+                        # 1^24^切尔西^車路士^38^30^3^5^85^33^93^0^0^^^0
+                        temp_TeamPoints.season = season
+                        temp_TeamPoints.league = self.leagueModel.breifLeagueName
+                        temp_TeamPoints.ranking = int(teamPointArr[0])
+                        temp_TeamPoints.teamID = int(teamPointArr[1])
+                        temp_TeamPoints.teamName = teamPointArr[2]
+                        temp_TeamPoints.seasonRound = int(teamPointArr[4])
+                        temp_TeamPoints.winCount = int(teamPointArr[5])
+                        temp_TeamPoints.drawCount = int(teamPointArr[6])
+                        temp_TeamPoints.loseCount = int(teamPointArr[7])
+                        temp_TeamPoints.getScore = int(teamPointArr[8])
+                        temp_TeamPoints.loseScore = int(teamPointArr[9])
+                        temp_TeamPoints.points = int(teamPointArr[10])
 
     # 根据球队id 获取对应球队的积分排名
     def GetJifenRanking(self,teamID):
@@ -242,13 +233,12 @@ class GetLeague:
     def GetLeaguePanlu(self, season = '2017-2018'):
         resultStr = ''
         self.panLuURL = 'http://ios.win007.com/phone/Panlu.aspx?id=%s&season=%s&apiversion=1&from=2' % (str(self.leagueModel.leagueID).encode('utf-8'), season)
-        print '获取联赛: %s 赛季: %s 盘路数据 url %s' % (
-        str(self.leagueModel.leagueID).encode('utf-8'), season, self.panLuURL)
+        print('获取联赛: %s 赛季: %s 盘路数据 url %s' % (
+        str(self.leagueModel.leagueID).encode('utf-8'), season, self.panLuURL))
 
         resultStr = get_resultstr_with_url(self.panLuURL)
 
         if resultStr != '':
-            print resultStr
 
             array = resultStr.split('!')
             for teamDataStr in array:
@@ -256,35 +246,31 @@ class GetLeague:
                     temp_TeamPanLu = TeamPanLu()
                     self.teamPanLuArr.append(temp_TeamPanLu)
                     teamPointArr = teamDataStr.split('^')
-                    try:
-                        # 1^46^伯恩利^般尼^38^8^7^23^21^4^13^8
-                        temp_TeamPanLu.rankIng = int(teamPointArr[0])
-                        temp_TeamPanLu.teamID = int(teamPointArr[1])
-                        temp_TeamPanLu.jifenRanking = self.GetJifenRanking(temp_TeamPanLu.teamID)
-                        temp_TeamPanLu.teamName = teamPointArr[2]
-                        temp_TeamPanLu.rounds = int(teamPointArr[4])
-                        temp_TeamPanLu.halfWinPan = int(teamPointArr[5])
-                        temp_TeamPanLu.halfDrawPan = int(teamPointArr[6])
-                        temp_TeamPanLu.halfLosePan = int(teamPointArr[7])
-                        temp_TeamPanLu.winPan = int(teamPointArr[8])
-                        temp_TeamPanLu.drawPan = int(teamPointArr[9])
-                        temp_TeamPanLu.losePan = int(teamPointArr[10])
-                        temp_TeamPanLu.netEarningCounts = int(teamPointArr[11])
-                        temp_TeamPanLu.belongLeagueName = self.leagueModel.breifLeagueName
-                        temp_TeamPanLu.season = season
-                    except BaseException, e:
-                        print '解析联赛盘路出错'
-                        print e
+                    # 1^46^伯恩利^般尼^38^8^7^23^21^4^13^8
+                    temp_TeamPanLu.rankIng = int(teamPointArr[0])
+                    temp_TeamPanLu.teamID = int(teamPointArr[1])
+                    temp_TeamPanLu.jifenRanking = self.GetJifenRanking(temp_TeamPanLu.teamID)
+                    temp_TeamPanLu.teamName = teamPointArr[2]
+                    temp_TeamPanLu.rounds = int(teamPointArr[4])
+                    temp_TeamPanLu.halfWinPan = int(teamPointArr[5])
+                    temp_TeamPanLu.halfDrawPan = int(teamPointArr[6])
+                    temp_TeamPanLu.halfLosePan = int(teamPointArr[7])
+                    temp_TeamPanLu.winPan = int(teamPointArr[8])
+                    temp_TeamPanLu.drawPan = int(teamPointArr[9])
+                    temp_TeamPanLu.losePan = int(teamPointArr[10])
+                    temp_TeamPanLu.netEarningCounts = int(teamPointArr[11])
+                    temp_TeamPanLu.belongLeagueName = self.leagueModel.breifLeagueName
+                    temp_TeamPanLu.season = season
+
     def GetLeagueDaXiao(self, season = '2017-2018'):
         resultStr = ''
         self.DaXiaoURL = 'http://ios.win007.com/phone/Daxiao.aspx?id=%s&season=%s&apiversion=1&from=2' % (str(self.leagueModel.leagueID).encode('utf-8'), season)
-        print '获取联赛: %s 赛季: %s 大小球数据 url %s' % (
-        str(self.leagueModel.leagueID).encode('utf-8'), season, self.DaXiaoURL)
+        print('获取联赛: %s 赛季: %s 大小球数据 url %s' % (
+        str(self.leagueModel.leagueID).encode('utf-8'), season, self.DaXiaoURL))
 
         resultStr = get_resultstr_with_url(self.DaXiaoURL)
 
         if resultStr != '':
-            print resultStr
 
             array = resultStr.split('!')
             for teamDataStr in array:
@@ -292,24 +278,22 @@ class GetLeague:
                     temp_TeamPanLu = TeamPanLu()
                     self.teamDaXiaoArr.append(temp_TeamPanLu)
                     teamPointArr = teamDataStr.split('^')
-                    try:
+
                         # 1^39^上海绿地申花^上海绿地申花^30^19^1^10^63.3%^3.3%^33.3%
-                        temp_TeamPanLu.rankIng = int(teamPointArr[0])
-                        temp_TeamPanLu.teamID = int(teamPointArr[1])
-                        temp_TeamPanLu.jifenRanking = self.GetJifenRanking(temp_TeamPanLu.teamID)
-                        temp_TeamPanLu.teamName = teamPointArr[2]
-                        temp_TeamPanLu.rounds = int(teamPointArr[4])
-                        temp_TeamPanLu.winPan = int(teamPointArr[5])
-                        temp_TeamPanLu.drawPan = int(teamPointArr[6])
-                        temp_TeamPanLu.losePan = int(teamPointArr[7])
-                        temp_TeamPanLu.winRate = teamPointArr[8]
-                        temp_TeamPanLu.drawRate = teamPointArr[9]
-                        temp_TeamPanLu.loseRate = teamPointArr[10]
-                        temp_TeamPanLu.belongLeagueName = self.leagueModel.breifLeagueName
-                        temp_TeamPanLu.season = season
-                    except BaseException, e:
-                        print '解析联赛盘路出错'
-                        print e
+                    temp_TeamPanLu.rankIng = int(teamPointArr[0])
+                    temp_TeamPanLu.teamID = int(teamPointArr[1])
+                    temp_TeamPanLu.jifenRanking = self.GetJifenRanking(temp_TeamPanLu.teamID)
+                    temp_TeamPanLu.teamName = teamPointArr[2]
+                    temp_TeamPanLu.rounds = int(teamPointArr[4])
+                    temp_TeamPanLu.winPan = int(teamPointArr[5])
+                    temp_TeamPanLu.drawPan = int(teamPointArr[6])
+                    temp_TeamPanLu.losePan = int(teamPointArr[7])
+                    temp_TeamPanLu.winRate = teamPointArr[8]
+                    temp_TeamPanLu.drawRate = teamPointArr[9]
+                    temp_TeamPanLu.loseRate = teamPointArr[10]
+                    temp_TeamPanLu.belongLeagueName = self.leagueModel.breifLeagueName
+                    temp_TeamPanLu.season = season
+
     # 获取此联赛是否包含附加赛,晋级赛之类的赛事
     def GetLeagueDetails(self):
         self.orignalLeagueURL = 'http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=' \
@@ -318,8 +302,6 @@ class GetLeague:
         resultStr = get_resultstr_with_url(self.orignalLeagueURL)
 
         if resultStr != '':
-
-            print resultStr
 
             array = resultStr.split('$$')
             if '!' in array[0]:
@@ -340,7 +322,6 @@ class GetLeague:
                         if len(newDic) > 0:
                             self.allSubLeagues.append(newDic)
             else:
-                print '不包含附加赛' + 'header' + array[0]
                 gameIDArray = array[0].split('^')
                 newDic = {}
                 if len(gameIDArray) > 3:
@@ -397,7 +378,6 @@ class GetLeague:
                         #                      currentRound,
                         #                      self.currentSeason)
                         self.allGames.extend(games)
-                        print '获取正赛数据 ' + self.currentSeason + ' ' + str(currentRound) + ' ' + str(len(games))
                         currentRound -= 1
                         # if len(self.allGames) != 0:
                         #     insertNewGameList(self.allGames)
@@ -409,7 +389,6 @@ class GetLeague:
                                      currentRound,
                                      self.currentSeason)
                     self.allGames.extend(games)
-                    print '获取正赛数据 ' + self.currentSeason + ' ' + str(currentRound) + ' ' + str(len(games))
                     currentRound -= 1
                     # if len(self.allGames) != 0:
                     #     insertNewGameList(self.allGames)
@@ -457,7 +436,6 @@ class GetLeague:
 
 def GetLeagueDetailFromDB(leagueid = -1,getDataType = 0 ,isCup = False):
     if leagueid < 0:
-        print '联赛id 非法'
         return
     leagueArray = GET_LEAGUE_DETAIL_FROM_DB(leagueid)
     leagueModel = League()
@@ -466,7 +444,6 @@ def GetLeagueDetailFromDB(leagueid = -1,getDataType = 0 ,isCup = False):
         leagueModel.leagueName = leagueArray[1].encode('utf-8')
         leagueModel.breifLeagueName = leagueArray[2].encode('utf-8')
         leagueModel.aviableSeasonStr = leagueArray[5].encode('utf-8')
-        print leagueModel.aviableSeasonList
         if '2018-2019' in leagueModel.aviableSeasonList:
             leagueModel.aviableSeasonList.remove('2018-2019')
         elif '2018' in leagueModel.aviableSeasonList:
@@ -478,15 +455,12 @@ def GetLeagueDetailFromDB(leagueid = -1,getDataType = 0 ,isCup = False):
         host = httpHomeList[0]
 
         # 杯赛去请求杯赛接口,逻辑
-        print isCup
         if isCup == 0:
-            print '请求杯赛接口'
             cup = GetCup(leagueModel)
             cup.cupName = leagueModel.breifLeagueName
             cup.getOfficialLeague()
         #     否则全部视为联赛
         else:
-            print '请求联赛接口'
             league = GetLeague(leagueModel)
             league.httpHost = host
             if getDataType == 0:

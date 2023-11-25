@@ -13,7 +13,7 @@ cur = db.cursor()
 cur.execute("SELECT VERSION()")
 
 # cur.execute("SELECT * FROM pages WHERE id=1")
-print cur.fetchone()
+# print cur.fetchone()
 
 cur.close()
 db.close()

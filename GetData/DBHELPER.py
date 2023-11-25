@@ -379,8 +379,7 @@ def DB_InsertDisorderGameList(games):
             pass
         else:
             for company in handi:
-                print company.__class__.__name__
-                print type(company)
+                print(company.__class__.__name__, type(company))
                 if isinstance(company,BetCompany):
                 # if company.__class__.__name__ == 'BetCompany':
                     params1 = (
@@ -435,8 +434,7 @@ def insert_Result_Analyse_list(resultList):
             try:
                 c.execute("INSERT INTO ResultAnalyse VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params)
             except sqlite3.IntegrityError as e:
-                print e
-                print reslut.soccerID
+                print(e, reslut.soccerID)
         else:
             pass
 
@@ -638,7 +636,7 @@ def getOrignalODDProbability(game, isYesterday = False, resultGame = None):
             [str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ',
              str(game.soccerID)])
         # contentstr += titlestr
-        print titlestr
+        print(titlestr)
 
         # 总场次
         totalcount = 0
@@ -785,7 +783,7 @@ def getnowODDProbability(game, isYesterday = False, resultGame = None):
             [str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ',
              str(game.soccerID)])
         # contentstr += titlestr
-        print titlestr
+        print(titlestr)
 
         # 总场次
         totalcount = 0
@@ -941,7 +939,7 @@ def getHandiProbability(game, isYesterday = False, resultGame = None):
             [str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ',
              str(game.soccerID), '澳盘: ',str(game.orignal_aomenHandi), ' -> ',str(game.now_aomenHandi)])
         # contentstr += titlestr
-        print titlestr
+        print(titlestr)
 
         # 总场次
         totalcount = 0
@@ -1296,7 +1294,7 @@ def getGameData(game):
     # 将比赛开始时间 对阵双方信息 录入
     contentstr = contentstr.join([str(game.beginTime), ':', game.leauge, ':', game.homeTeam, 'vs', game.friendTeam, ' id: ', str(game.soccerID)])
     contentstr += '\n'
-    print str(game.beginTime) + ':' + game.leauge + ':' + game.homeTeam + 'vs' + game.friendTeam  +'  '+str(game.allHome)+ ' : ' + str(game.allFriend) + ' ' + str(game.soccerID)
+    print(str(game.beginTime) + ':' + game.leauge + ':' + game.homeTeam + 'vs' + game.friendTeam  +'  '+str(game.allHome)+ ' : ' + str(game.allFriend) + ' ' + str(game.soccerID))
 
     # 获取亚盘数据
     handituple = getHandi(game ,c)
@@ -1384,18 +1382,18 @@ def getHandi(game, c):
 
             # 终端的字符颜色是用转义序列控制的，是文本模式下的系统显示功能，和具体的语言无 关。
             # 转义序列是以 ESC 开头,可以用 \033 完成相同的工作（ESC 的 ASCII 码用十进制表 示就是 27， = 用八进制表示的 33）
-            print "\033[1;31;40m%s\033[0m" % tempstr_one
-            print "\033[1;31;40m%s\033[0m" % tempstr_two
+            print("\033[1;31;40m%s\033[0m" % tempstr_one)
+            print("\033[1;31;40m%s\033[0m" % tempstr_two)
         else:
-            print '忽略' + tempstr_one
+            print('忽略' + tempstr_one)
 
-            print '忽略' + tempstr_two
+            print('忽略' + tempstr_two)
             # 当概率小于55%.就不通过邮件发送
             # contentstr += ('忽略' + tempstr_one)
             # contentstr += '\n'
             # contentstr += ('忽略' + tempstr_two)
     else:
-        print '无亚盘数据'
+        print('无亚盘数据')
         contentstr = contentstr + '无亚盘数据'
 
     return (contentstr, )
@@ -1447,13 +1445,13 @@ def getOdd(game, c):
 
             contentstr = contentstr + tempstr
 
-            print "\033[1;31;40m%s\033[0m" % tempstr
-            print '\n'
+            print("\033[1;31;40m%s\033[0m" % tempstr)
+            print('\n')
         else:
-            print '忽略' + tempstr
+            print('忽略' + tempstr)
             # contentstr = contentstr + '忽略' + tempstr
     else:
-        print '无欧赔数据'
+        print('无欧赔数据')
         contentstr = contentstr + '无欧赔数据'
 
     return (contentstr, )
@@ -1578,12 +1576,12 @@ def getHandiDisunion(onegame):
         titlestr = ''.join(
             [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
              str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ', str(onegame.now_aomenHandi)])
-        print titlestr
+        print(titlestr)
         try:
-            print '总数: %d  赢:%d 赢盘率: %4.2f' % (gamelist, wincount,float(wincount)/gamelist)
+            print('总数: %d  赢:%d 赢盘率: %4.2f' % (gamelist, wincount,float(wincount)/gamelist))
         except Exception as e:
-            print '总数: %d  赢:%d' % (gamelist, wincount,)
-            print e
+            print('总数: %d  赢:%d' % (gamelist, wincount,), e)
+
 
     else:
         pass
@@ -1717,7 +1715,7 @@ def GetOriPanCount():
             if pan not in tempTuple:
                 tempTuple.append(pan)
         if len(tempTuple) > 2:
-            print gameid
+            print(gameid)
 
 
     conn.commit()

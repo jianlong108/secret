@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 import smtplib
 import sys
 
-reload(sys)
+# reload(sys)
 sys.setdefaultencoding("utf-8")
 
 
@@ -13,10 +13,10 @@ sys.setdefaultencoding("utf-8")
 
 class MailHelper:
     def __init__(self):
-        self.mailtoList = ["wangjianlong108@vip.qq.com"]  # 目标邮箱
+        self.mailtoList = []  # 目标邮箱
         self.mailHost = "smtp.163.com"
         self.mailUser = "18600510929@163.com"
-        self.mailPassWord = "wangge108"  # 163邮箱smtp生成的密码
+        self.mailPassWord = ""  # 163邮箱smtp生成的密码
 
     def sendMail(self,sub, content, contentType = 'plain'):
         me = "足球" + "<" + mail_user + ">"
@@ -33,10 +33,10 @@ class MailHelper:
             server.login(self.mailUser, self.mailPassWord)
             server.sendmail(me, self.mailtoList, msg.as_string())
             server.close()
-            print '发送成功'
+            # print '发送成功'
             return True
-        except Exception, e:
-            print '发送失败 ' + str(e)
+        except Exception as e:
+            # print '发送失败 ' + str(e)
             return False
 
 
@@ -61,10 +61,10 @@ def send_mail(sub, content,contentType = 'plain'):
         server.login(mail_user, mail_pass)
         server.sendmail(me, mailto_list, msg.as_string())
         server.close()
-        print '发送成功'
+        # print '发送成功'
         return True
-    except Exception, e:
-        print '发送失败 ' + str(e)
+    except Exception as e:
+        # print '发送失败 ' + str(e)
         return False
 
 # contentstr = "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>预测展示</title></head>" \
