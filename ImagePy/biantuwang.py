@@ -4,8 +4,8 @@ import time
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 
-def dl_page(url):
-    res = requests.get(url, headers=headers, proxies=proxies)
+def dl_page(imgurl):
+    res = requests.get(imgurl, headers=headers, proxies=proxies)
     res.encoding = "gbk"
     main_page = BeautifulSoup(res.text, "html.parser")
     main_url = main_page.find("ul", attrs={"class": "clearfix"})
@@ -31,13 +31,12 @@ def dl_page(url):
     print("提取完毕")
 
 
-#
 if __name__ == '__main__':
 
     headers = {
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36 Edg/95.0.1020.44",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
         "referer": "https://pic.netbian.com/4kmeinv/index.html",
-        "cookie": "__yjs_duid=1_c427763b6a77b795723fe580805d86f41635746735356; Hm_lvt_14b14198b6e26157b7eba06b390ab763=1635749214,1636550738,1636550843; zkhanecookieclassrecord=%2C54%2C; Hm_lvt_526caf4e20c21f06a4e9209712d6a20e=1635746736,1636550853,1636557267,1636606416; Hm_lpvt_526caf4e20c21f06a4e9209712d6a20e=1636606416; yjs_js_security_passport=d0fe81024fb5a59de630df3fb7dd52134fe3a84c_1636606550_js"
+        "cookie": "zkhanecookieclassrecord=%2C54%2C; __vtins__3GcHHlFooxXoEQzA=%7B%22sid%22%3A%20%220cbcd5a5-682b-550b-a5c1-d582cc2fce52%22%2C%20%22vd%22%3A%201%2C%20%22stt%22%3A%200%2C%20%22dr%22%3A%200%2C%20%22expires%22%3A%201701007933804%2C%20%22ct%22%3A%201701006133804%7D; __51uvsct__3GcHHlFooxXoEQzA=1; __51vcke__3GcHHlFooxXoEQzA=0444cf11-246b-5d92-96d2-fa31d66a7017; __51vuft__3GcHHlFooxXoEQzA=1701006133806"
 
     }
     proxies = {

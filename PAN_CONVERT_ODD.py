@@ -22,7 +22,7 @@ def getexchange(soccerid=0):
 
     # url = 'http://www.310win.com/info/1x2exchange.aspx?id=' + str(soccerid) + '&cids=,' + str(companyid) + ',&type=3'
     url = 'http://www.310win.com/info/1x2exchange.aspx?id=' + str(soccerid) + '&cids=,16,18,80,81,90,281,517,545,&type=3'
-    print url
+    print(url)
     soupInstance = SoupHelper(url)
     trlist = soupInstance.gethtmllistwithlabel('tr', {'bgcolor': '#FFFFFF'})
 
@@ -78,11 +78,11 @@ def getexchange(soccerid=0):
                 oneCompany.now_top = float(unitStrList[10])
 
             except BaseException as e:
-                print e
+                print(e)
             else:
                 companieslist.append(oneCompany)
 
-    print "\033[1;31;40m%s\033[0m" % colorResultStr
+    print("\033[1;31;40m%s\033[0m" % colorResultStr)
     return htmlstr
 
 

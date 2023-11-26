@@ -31,9 +31,9 @@ def getTodaySoccer(gameType = 3):
         url = gameListHost + "/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=2.4&from=2&r=" + str(
             int(time.time()))
         # url = "http://112.91.160.49:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=5.9&from=2&r=1494229747"
-        print url
+        print(url)
     except BaseException as e:
-        print e
+        print(e)
     if url != '':
         resultStr = get_resultstr_with_url(url)
 
@@ -41,7 +41,7 @@ def getTodaySoccer(gameType = 3):
     global AllBeginTimes
 
     if resultStr != '':
-        print resultStr
+        print(resultStr)
         allArray = resultStr.split('$$')
         leagueStr = ''
         if type == 1:
@@ -93,10 +93,10 @@ def getTodaySoccer(gameType = 3):
 
             AllGames.append(onegame)
     else:
-        print "没有获取到当日数据"
+        print("没有获取到当日数据")
 
 def getgame(game):
-    print '开始分析比赛'
+    print('开始分析比赛')
     getOneGameODD(oneGameListHost,game)
     getOneGameHandi(oneGameListHost,game)
     getHandiProbability(oneGameListHost,game)
@@ -110,10 +110,10 @@ class TimeingThread(threading.Thread):  # 继承父类threading.Thread
         self.counter = counter
 
     def run(self):  # 把要执行的代码写到run函数里面 线程在创建后会直接运行run函数
-        print "Starting " + self.name
+        print("Starting " + self.name)
         # 定时60秒 执行一次
         timerAnalys(self.name, 60, len(AllBeginTimes))
-        print "Exiting " + self.name
+        print("Exiting " + self.name)
 
 
 def timerAnalys(threadName, delay, counter):
@@ -136,7 +136,7 @@ def timerAnalys(threadName, delay, counter):
         nowstr_offset_oneHour = now_offset_onehour.strftime('%Y-%m-%d %H:%M')
         if nowstr_offset_halfHour == '2017-10-28 13:30':
             nowstr_offset_halfHour = '2017-10-28 13:00'
-        print nowstr_offset_halfHour
+        print(nowstr_offset_halfHour)
 
         allCacluateTimeList = [nowstr_offset_threeHour,nowstr_offset_oneHour,nowstr_offset_halfHour]
 
@@ -216,7 +216,7 @@ def timerAnalys(threadName, delay, counter):
         time.sleep(delay)
         if counter == 0:
             exitflag = 0
-        print "%s: %s" % (threadName, time.ctime(time.time()))
+        print("%s: %s" % (threadName, time.ctime(time.time())))
 
 
 
@@ -224,7 +224,7 @@ def timerAnalys(threadName, delay, counter):
 #     sys.exit('\033[0;36;40m使用说明:\n1个参数:\n1:精简足球分析   2:十四场足球分析  3:竞彩分析\n事例: python TodaySoccer.pyc 1\033[0m')
 
 if __name__ == '__main__':
-    print "实时分析:main函数"
+    print("实时分析:main函数")
     # getTodaySoccer(sys.argv[1])
     getTodaySoccer(3)
     thread1 = TimeingThread(1, "实时分析", 1)

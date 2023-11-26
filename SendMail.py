@@ -41,10 +41,10 @@ class MailHelper:
 
 
 #, "wangjianlong108@vip.qq.com"  "dupei1991@vip.qq.com",  "jiqimao3528@vip.qq.com"
-mailto_list = ["wangjianlong108@vip.qq.com"]  #目标邮箱
+mailto_list = [""]  #目标邮箱
 mail_host = "smtp.163.com"
 mail_user = "18600510929@163.com"
-mail_pass = "wangge108"  #163邮箱smtp生成的密码
+mail_pass = ""  #163邮箱smtp生成的密码
 
 def send_mail(sub, content,contentType = 'plain'):
     me = "足球"+"<"+mail_user+">"

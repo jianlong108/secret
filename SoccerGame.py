@@ -70,9 +70,8 @@ class SoccerGame:
                                         company.similerMatchURL = self.url + aElement.get('href').encode('utf-8')
                                         company.getwiningpercentage()
                                         time.sleep(1.5)
-                            except ValueError , e:
-                                print e
-                                pass
+                            except ValueError as e:
+                                print(e)
 
 
                         if company.orignal_top != 0.0:
@@ -80,7 +79,7 @@ class SoccerGame:
                             handicompanylist.append(company)
 
 
-        print len(handicompanylist)
+        print(len(handicompanylist))
 
     def getodddata(self):
         instance = BEAUTIFUL_SOUP_HELPER.SoupHelper(self.oddurl)

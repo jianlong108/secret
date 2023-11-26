@@ -25,12 +25,11 @@ def main():
         date_list.append(date_str)
         begin_date += datetime.timedelta(days=1)
 
-
     for dateStr in date_list:
-        url = "http://www.310win.com/buy/JingCai.aspx?typeID=105&oddstype=2&date=" + dateStr
-        print url
+        url = "http://www.310win.com/buy/JingCai.aspx?typeID=105&oddstype=2&date=2017-08-25" + dateStr
+        print(url)
         instance = BEAUTIFUL_SOUP_HELPER.SoupHelper(url)
-        matchtable = instance.gethtmllistwithlabel('table', {'id': 'MatchTable'})
+        matchtable = instance.gethtmllistwithlabel('table', options={'id': 'MatchTable'})
         # matchtable 类型是数组类型
         table = matchtable[0]
         allGameList = []
@@ -49,9 +48,6 @@ def main():
 
                     for td in tr.descendants:
                         if BEAUTIFUL_SOUP_HELPER.isTagClass(td):
-
-
-
                             if td.get('onmouseout') == "hide('WinOdds')":
                                 # 获得比分
                                 game.soccer = td.get_text().encode("UTF-8")
@@ -63,7 +59,6 @@ def main():
                                 game.oddurl = game.url + td.get('href').encode("UTF-8")
                     allGameList.append(game)
 
-
         for game in allGameList:
             if isinstance(game, SoccerGame):
                 print(game.soccer,game.hometeam,game.guestteam,game.matchid)
@@ -71,9 +66,5 @@ def main():
                 time.sleep(1.5)
 
 
-
-
-
 if __name__ == "__main__":
     main()
-    # pass

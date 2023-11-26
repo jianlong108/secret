@@ -63,7 +63,7 @@ class GetLeagueList:
         if response.ok:
             resultStr = response.content
         else:
-            print '获取所有联赛接口失败'
+            print('获取所有联赛接口失败')
 
         if resultStr != '':
             allArray = resultStr.split('$$')

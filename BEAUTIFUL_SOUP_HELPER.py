@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 from bs4 import Tag
@@ -15,19 +15,20 @@ class SoupHelper(object):
     def download(self,url):
         try:
             self.html_content =  get_htmlcontent_with_url(url, self.html_contetn_decode)
-            # print self.html_url + "===html_content===" + self.html_content
             return self.html_content
         except EnvironmentError as e:
-            print e
+            print(e)
         except BaseException as e:
-            print e
+            print(e)
+
     def getOneTagObjWithClass(self,tagName,clsName):
         try:
             if not self.soupObj:
                 self.soupObj = BeautifulSoup(self.html_content,"html.parser")
                 # print self.soupObj
             return self.soupObj.find(tagName,{'class':clsName})
-        except:
+        except Exception as e:
+            print(e)
             return None
 
     def getOneTagObjWithId(self,identifier):
@@ -36,13 +37,12 @@ class SoupHelper(object):
                 self.soupObj = BeautifulSoup(self.html_content,"html.parser")
                 # print self.soupObj
             return self.soupObj.find(id=identifier)
-        except:
+        except Exception as e:
+            print(e)
             return None
 
-    def gethtmllistwithlabel(self, label, options = None, fromencoding = 'gb18030'):
+    def gethtmllistwithlabel(self, label, options ={}, fromencoding = 'gb18030'):
         try:
-            if options is None:
-                options = {}
             if self.html_content is None:
                 return None
             if not self.soupObj:
@@ -52,10 +52,9 @@ class SoupHelper(object):
             templist = self.soupObj.find_all(label,attrs=options)
             elementlist.extend(templist)
             return elementlist
-        except:
+        except Exception as e:
+            print(e)
             return None
-
-
 
 def isTagClass(obj):
     return isinstance(obj, Tag)
@@ -70,7 +69,7 @@ def getelementlistwithlabel(tagObj, label, options = None):
         elementlist.extend(templist)
         return elementlist
     else:
-        print '传入的值有误,不是Tag类型 不作处理:' + tagObj
+        print('传入的值有误,不是Tag类型 不作处理:' + tagObj)
         return None
 
 def gettextlistwithlabel(tagObj):
@@ -80,7 +79,7 @@ def gettextlistwithlabel(tagObj):
 
         return strlist.encode('utf-8')
     else:
-        print '传入的值有误,不是Tag类型 不作处理:' + tagObj
+        print('传入的值有误,不是Tag类型 不作处理:' + tagObj)
         return None
 
 if __name__ == "__main__":
@@ -89,7 +88,7 @@ if __name__ == "__main__":
     imgContainer = soupObj.getOneTagObjWithId("post_content")
     ele = imgContainer.find_all('img')
     for img in ele:
-        print img.get('src')
+        print(img.get('src'))
     # ele = soupObj.gethtmllistwithlabel('img')
     # for img in ele:
     #     print img.get('src')

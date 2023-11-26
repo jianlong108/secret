@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# pylint: disable=no-member
 from BEAUTIFUL_SOUP_HELPER import SoupHelper
 import json
 import os
@@ -13,6 +12,7 @@ class OneGirl:
         self.url = url
         self.pageList = [url]
         self.plsitDic = {}
+        self.imageList = []
         self.getImagePages()
 
     def getImagePages(self):
@@ -25,7 +25,6 @@ class OneGirl:
         # print self.pageList
 
     def getAllImages(self):
-        self.imageList = []
         for onePage in self.pageList:
             soupObj = SoupHelper(onePage)
             imgContainer = soupObj.getOneTagObjWithId("post_content")
@@ -43,7 +42,7 @@ class OneGirl:
             json.dump({self.name:self.imageList},f)
 
 class ChannelPageGirls:
-    def __init__(self, name, url='http://www.taotuxp.com/xinggan/page/110'):
+    def __init__(self, name, url='https://pic.netbian.com/4kmeinv/index.html'):
         self.name = name
         self.url = url
         self.pageList = []
@@ -87,7 +86,7 @@ class ChannelPageGirls:
             # print self.pageList
 
 def main():
-    channelPage = ChannelPageGirls('性感','http://www.taotuxp.com/xinggan/page/110')
+    channelPage = ChannelPageGirls('性感','https://pic.netbian.com/4kmeinv/index.html')
     # channelPage.get
 
     # girlObj = OneGirl('极品妹子周研希透视内衣若隐若现写真','http://www.taotuxp.com/252555.html')
@@ -97,18 +96,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-
-# def save_file( file_name, data):
-#     if data == None:
-#         return
-#     # os.path.abspath('.')
-#     path = os.path.join('/Users/autohome/Desktop', 'images')
-#     if not os.path.exists(path):
-#         os.mkdir(path=path)
-#
-#     if (not path.endswith("/")):
-#         path = path + "/"
-#     file = open(path + file_name, "wb")
-#     file.write(data)
-#     file.flush()
-#     file.close()

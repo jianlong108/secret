@@ -2,9 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/ImagePy/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ImagePy/biantuwang.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BEAUTIFUL_SOUP_HELPER.py" beforeDir="false" afterPath="$PROJECT_DIR$/BEAUTIFUL_SOUP_HELPER.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GET_LEAGUE_LIST.py" beforeDir="false" afterPath="$PROJECT_DIR$/GET_LEAGUE_LIST.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HandiDisunion.py" beforeDir="false" afterPath="$PROJECT_DIR$/HandiDisunion.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImagePy/biantuwang.py" beforeDir="false" afterPath="$PROJECT_DIR$/ImagePy/biantuwang.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MatchAnalyse.py" beforeDir="false" afterPath="$PROJECT_DIR$/MatchAnalyse.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NETWORKS_TOOLS.py" beforeDir="false" afterPath="$PROJECT_DIR$/NETWORKS_TOOLS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PAN_CONVERT_ODD.py" beforeDir="false" afterPath="$PROJECT_DIR$/PAN_CONVERT_ODD.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RealTimeAnalyse.py" beforeDir="false" afterPath="$PROJECT_DIR$/RealTimeAnalyse.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SendMail.py" beforeDir="false" afterPath="$PROJECT_DIR$/SendMail.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SoccerGame.py" beforeDir="false" afterPath="$PROJECT_DIR$/SoccerGame.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TODAY_SOCCER_HTML.py" beforeDir="false" afterPath="$PROJECT_DIR$/TODAY_SOCCER_HTML.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/image_scart.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/singleMatchAnalyes.py" beforeDir="false" afterPath="$PROJECT_DIR$/singleMatchAnalyes.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -220,8 +231,11 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ChangesTree.GroupingKeys" value="" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SearchEverywhereHistoryKey" value="homeWinningPercentage&#9;null&#9;null&#10;try:&#9;null&#9;null&#10;bet365odd&#9;null&#9;null&#10;bet365Handi&#9;null&#9;null" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="js.eslint.eslintPackage" value="" />
@@ -1243,23 +1257,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/RealTimeAnalyse.py</url>
-          <line>222</line>
-          <option name="timeStamp" value="304" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/TODAY_SOCCER_HTML.py</url>
-          <line>7</line>
-          <option name="timeStamp" value="431" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/RealTimeAnalyse.py</url>
-          <line>69</line>
-          <option name="timeStamp" value="476" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

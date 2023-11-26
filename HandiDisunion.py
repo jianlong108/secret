@@ -24,10 +24,9 @@ def getTodaySoccer(gameType):
     gameType = int(gameType)
     try:
         url = "http://61.143.225.85:8072/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=2.4&from=2&r="+str(int(time.time()))
-        print url
+        print(url)
     except Exception as e:
-        print '请求接口出错' + url
-        print e
+        print('请求接口出错' + url, e)
 
     if url != '':
         resultStr = get_resultstr_with_url(url)
@@ -109,10 +108,10 @@ def getYesterdaySoccer(timestr):
     try:
         url = "http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=" + timestr + '&from=1&kind=3&r=1503367511&subversion=3'
         # 'http://121.10.245.46:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=2017-08-21&from=1&kind=3&r=1503367511&subversion=3'
-        print url
+        print(url)
     except BaseException as e:
-        print e
-        pass
+        print(e)
+
     if url != '':
         resultStr = get_resultstr_with_url(url)
 
@@ -219,11 +218,11 @@ def getYesterdaySoccer(timestr):
                     onegame.bet365Handi = float(oneGameArray[15])
             except ValueError as e:
                 onegame = None
-                print  e
+                print(e)
 
-            except BaseException, e:
+            except BaseException as e:
                 onegame = None
-                print e
+                print(e)
             else:
                 AllGames.append(onegame)
                 # 比赛结果模型 添加到数组

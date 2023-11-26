@@ -18,7 +18,7 @@ sys.setdefaultencoding('utf-8')
 def getMatchSingle(matchid):
     mainurl = 'http://www.310win.com'
     URL = '%s/handicap/%s.html' % (mainurl, str(matchid))
-    print URL
+    print(URL)
 
     instance = SoupHelper(URL)
     companycontainer = instance.gethtmllistwithlabel('table', {'class': 'socai', 'width': "100%"})
@@ -55,13 +55,13 @@ def getMatchSingle(matchid):
                                         company.getwiningpercentage()
                                         time.sleep(0.5)
 
-                        except ValueError, e:
-                            print e
-                            pass
+                        except ValueError as e:
+                            print(e)
 
                     if company.orignal_top != 0.0:
                         # 过滤没有开盘的数据
                         handicompanylist.append(company)
 
 
-getMatchSingle(1197755)
+if __name__ == '__main__':
+    getMatchSingle(1197755)
