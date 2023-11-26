@@ -2,16 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Soccer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Soccer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ImagePy/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ImagePy/biantuwang.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/DBHELPER.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/DBHELPER.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/LEAGUE.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/LEAGUE.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/MySQLHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/MySQLHelper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/SOCCER_MODELS.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/SOCCER_MODELS.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SendMail.py" beforeDir="false" afterPath="$PROJECT_DIR$/SendMail.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SoccerOrignalPanTime.py" beforeDir="false" afterPath="$PROJECT_DIR$/SoccerOrignalPanTime.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/image_scart.py" beforeDir="false" afterPath="$PROJECT_DIR$/image_scart.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,7 +220,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="ChangesBrowser.SHOW_FLATTEN" value="true" />
+    <property name="ChangesTree.GroupingKeys" value="" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SearchEverywhereHistoryKey" value="homeWinningPercentage&#9;null&#9;null&#10;try:&#9;null&#9;null&#10;bet365odd&#9;null&#9;null&#10;bet365Handi&#9;null&#9;null" />
     <property name="WebServerToolWindowFactoryState" value="false" />
