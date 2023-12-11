@@ -21,10 +21,10 @@ def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
                     leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
                     leagueSubID).encode('utf-8') + "&round=" + str(gameRound).encode('utf-8') + "&apiversion=1&from=2"
 
-        print url
+        print(url)
     except BaseException as e:
-        print e
-        pass
+        print(e)
+
 
     resultStr = get_resultstr_with_url(url)
     games = []
@@ -38,7 +38,7 @@ def creatCupGameModelWithComplexStr(complexStr,leagueStr,isCup = False):
     array = complexStr.split('!')
     games = []
     for unit in array:
-        print unit.decode('utf-8')
+        print(unit.decode('utf-8'))
         if '$$' in unit:
             onegame = unit.split('$$')[1]
             model = creatCupGameModel(onegame, leagueStr,isCup)
@@ -52,7 +52,7 @@ def creatCupGameModelWithComplexStr(complexStr,leagueStr,isCup = False):
     return games
 
 def creatCupGameModel(gameStr,leagueStr,isCup = False):
-    print gameStr + isCup
+    print(gameStr + isCup)
     if isinstance(gameStr, str):
 
         try:
@@ -87,13 +87,13 @@ def creatCupGameModel(gameStr,leagueStr,isCup = False):
                     model.homeTeamLevel = int(gameArray[11])
 
                 time.sleep(1.5)
-                model.oddCompanies = getOneGameODD(model)
-                model.handiCompanies = getOneGameHandi(model)
+                model.oupeiCompanies = getOneGameODD(model)
+                model.yapanCompanies = getOneGameHandi(model)
                 return model
 
 
         except BaseException as e:
-            print e
+            print(e)
             return None
 
     else:
@@ -104,7 +104,7 @@ def creatGameModelWithComplexStr(complexStr,leagueStr):
     array = complexStr.split('!')
     games = []
     for unit in array:
-        print unit.decode('utf-8')
+        print(unit.decode('utf-8'))
         if '$$' in unit:
             onegame = unit.split('$$')[1]
             model = creatGameModel(onegame, leagueStr)
@@ -118,7 +118,7 @@ def creatGameModelWithComplexStr(complexStr,leagueStr):
     return games
 
 def creatGameModel(gameStr,leagueStr,isCup=False):
-    print gameStr
+
     if isinstance(gameStr, str):
 
         try:
@@ -163,11 +163,11 @@ def creatGameModel(gameStr,leagueStr,isCup=False):
 
 
                 time.sleep(1.5)
-                model.oddCompanies = getOneGameODD(model)
-                model.handiCompanies = getOneGameHandi(model)
+                model.oupeiCompanies = getOneGameODD(model)
+                model.yapanCompanies = getOneGameHandi(model)
                 return model
         except BaseException as e:
-            print e
+            print(e)
             return None
 
     else:
@@ -187,7 +187,7 @@ def getOneGameHandi(host, game):
 
         url = '%s/phone/Handicap.aspx?ID=%s&an=iosQiuTan&av=7.1&from=2&lang=0&subversion=1' % (host, str(game.soccerID))
     except BaseException as e:
-        print e
+        print(e)
 
     if url != '':
         resultStr = get_resultstr_with_url(url)
@@ -250,10 +250,10 @@ def getOneGameHandi(host, game):
 
 
                 except (IndexError, ValueError) as e:
-                    print e
-                    print unitArray
+                    print(e, unitArray)
+
                 except Exception as e:
-                    print e
+                    print(e)
 
 
                 if company.companyTitle == '澳门':
@@ -360,8 +360,7 @@ def getOneGameODD(host,game):
         url = '%s/phone/1x2.aspx?ID=%s&an=iosQiuTan&av=5.9&from=2&lang=0&subversion=1' % (host, str(game.soccerID))
 
     except BaseException as e:
-        print e
-        pass
+        print(e)
 
     if url != '':
         resultStr = get_resultstr_with_url(url)
@@ -392,9 +391,7 @@ def getOneGameODD(host,game):
                 company.drawOdd = float(unitArray[6])
                 company.loseOdd = float(unitArray[7])
             except IndexError as e:
-                print e
-                print unitArray
-
+                print(e, unitArray)
 
             companys.append(company)
             if company.companyTitle == '澳门':

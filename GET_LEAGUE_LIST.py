@@ -76,7 +76,7 @@ class GetLeagueList:
             self.creatLeagueModel(leagueComplexStr)
 
 if __name__ == '__main__':
-    create_database()
+    create_database_table()
     getLeagueListModel = GetLeagueList()
     getLeagueListModel.getData()
     InsertLeagueList(getLeagueListModel.leagueList)

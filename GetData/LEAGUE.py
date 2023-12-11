@@ -2,20 +2,25 @@
 # -*- coding: utf-8 -*-
 
 import time
-from DBHELPER import (insertGameList,insertNewGameList,GET_LEAGUE_DETAIL_FROM_DB,
-                      InsertLeagueJiFenALL,InsertLeagueDaXiao,InsertLeaguePanLu,get_team_history_panlu_fromdb_with_teamid)
+from DBHELPER import (insert_game_list_to_db, insertNewGameList, GET_LEAGUE_DETAIL_FROM_DB,
+                      InsertLeagueJiFenALL, InsertLeagueDaXiao, InsertLeaguePanLu,
+                      get_team_history_panlu_fromdb_with_teamid,insert_game_to_db)
 from SOCCER_ROUND import GetRound,creatCupGameModelWithComplexStr
 from NETWORKS_TOOLS import get_resultstr_with_url
 from SOCCER_MODELS import TeamPanLu,TeamPoints,League
-from EXCEL_HELPER import write_excel
+# from EXCEL_HELPER import write_excel
 # import sys
-# http://112.91.160.46:8072/phone/txt/analysisheader/cn/1/25/1253496.txt?an=iosQiuTan&av=5.9&from=2&r=1490440206
-# http://112.91.160.46:8072/phone/Handicap.aspx?ID=1252358&an=iosQiuTan&av=5.9&from=2&lang=0&r=1490449083
 
 # reload(sys)
 # sys.setdefaultencoding('utf-8')
 
 
+import blackboxprotobuf
+import json
+import requests
+import time
+from GetData.SOCCER_MODELS import FootballGame,GameParserFromProtobuf
+from TodayGameList import gethandiTime
 
 class GetCup:
     def __init__(self, model):
@@ -110,7 +115,7 @@ class GetCup:
             time.sleep(1)
 
         if len(self.allGames) > 0:
-            insertGameList(self.allGames)
+            insert_game_list_to_db(self.allGames)
             self.allGames = []
 
         time.sleep(2)
@@ -231,6 +236,7 @@ class GetLeague:
                 return -1
 
     def GetLeaguePanlu(self, season = '2017-2018'):
+        #api.letarrow.com
         resultStr = ''
         self.panLuURL = 'http://ios.win007.com/phone/Panlu.aspx?id=%s&season=%s&apiversion=1&from=2' % (str(self.leagueModel.leagueID).encode('utf-8'), season)
         print('获取联赛: %s 赛季: %s 盘路数据 url %s' % (
@@ -506,11 +512,73 @@ def GetLeagueDetailFromDB(leagueid = -1,getDataType = 0 ,isCup = False):
 
                         team_panlu_list.append(one_team_data)
 
-                write_excel(team_panlu_list)
+                # write_excel(team_panlu_list)
 
 
 
+def getSeasonGamelist(season, leagueid=36, league='英超'):
+    headers = {
+    'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
+    'cookie': 'aiappfrom=48'
+    }
+    round = 38
+    if season == '2023-2024':
+        round = 16
+    while round > 0:
+        timestr = str(int(time.time()))
+        url = f"http://api.letarrow.com/ios/Phone/FBDataBase/LeagueSchedules.aspx?lang=2&round={round}&sclassid={leagueid}&season={season}&subid=0&from=48&_t={timestr}"
+        try:
+            response = requests.get(url, headers=headers)
+            if response.ok:
+                content_type = response.headers.get('Content-Type')
+                # print(content_type)
+                if 'application/x-protobuf' == content_type:
+                    resultStr = response.content
+                    print(url, resultStr)
+                    obj = GameParserFromProtobuf(oristr=resultStr, league_id=leagueid, league_name=league)
+                    obj.parser()
+                    for game in obj.games:
+                        game.season = season
+                        gethandiTime(game)
+                        time.sleep(3)
+                    insert_game_list_to_db(obj.games)
+        except Exception as e:
+            print('获取联赛数据', url, e)
+        time.sleep(3)
+        round -= 1
 
+
+if __name__ == '__main__':
+    #英超 已完成 36
+    _league_id = 12
+    headers = {
+        'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
+        'cookie': 'aiappfrom=48'
+    }
+    timestr = str(int(time.time()))
+    url = f"http://api.letarrow.com/pcf/bfmatch/api/database/v1/leaguedetail?kind=1&lang=0&sid={_league_id}&_t={timestr}"
+    try:
+        response = requests.get(url, headers=headers)
+        if response.ok:
+            content_type = response.headers.get('Content-Type')
+            # print(content_type)
+            if 'application/x-protobuf' == content_type:
+                resultStr = response.content
+                print(url, resultStr)
+                temp_message, typedef = blackboxprotobuf.protobuf_to_json(resultStr)
+                print(temp_message)
+                leaguedic = json.loads(temp_message)
+                leagueid = int(leaguedic.get('1', '0'))
+                if leagueid != _league_id:
+                    raise ValueError("联赛id异常")
+
+                leaguename = leaguedic.get('2', '')
+                seasons = leaguedic.get('4', [])
+                for s in seasons:
+                    getSeasonGamelist(s, leagueid,'法乙')
+
+    except Exception as e:
+        print('获取联赛数据', url, e)
 
 # if sys.argv.__len__()==1:
 #     sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 144 True\033[0m')
@@ -521,8 +589,8 @@ def GetLeagueDetailFromDB(leagueid = -1,getDataType = 0 ,isCup = False):
 #     getLeagueData(leagueid,isCup)
 
 # leagueid 联赛id getDataType 0获取球赛数据,1获取盘路数据,2获取当前赢盘率并写入excel
-for leagueid in [5,8,9,11,12,16,17,23,31,33,34,40,36,37]:
-    GetLeagueDetailFromDB(leagueid=leagueid,getDataType=2,isCup=1)
+# for leagueid in [5,8,9,11,12,16,17,23,31,33,34,40,36,37]:
+#     GetLeagueDetailFromDB(leagueid=leagueid,getDataType=2,isCup=1)
 
 # GetLeagueDetailFromDB(leagueid=5,getDataType=1,isCup=1)
 

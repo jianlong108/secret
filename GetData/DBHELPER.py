@@ -9,11 +9,121 @@ from GetData.SOCCER_MODELS import (League)
 from GetData.SOCCER_ROUND import (BetCompany, FootballGame)
 
 
-
 location = os.path.expanduser('~/Desktop/Soccer.db')
-
 conn = sqlite3.connect(location)
 c = conn.cursor()
+
+def create_database_table():
+    global conn
+    global c
+    # 连接到SQLite数据库
+    # 数据库文件是test.db
+    # 如果文件不存在，会自动在当前目录创建:
+    conn = sqlite3.connect(location)
+    c = conn.cursor()
+
+    # sql = 'create table if not exists ' + 'Soccer' + \
+    #       '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,league varchar(20),soccer VARCHAR(5),gameurl VARCHAR (30),otodds VARCHAR(5) ,' \
+    #       'orignalpan VARCHAR(5),ododds VARCHAR(5),ntodds VARCHAR(5) ,nowpan VARCHAR(5),ndodds VARCHAR(5))'
+    # c.execute(sql)
+    creatGamesTabelSQL = """
+        create table if not exists Games (
+            soccerid       INTEGER PRIMARY KEY  NOT NULL,
+            leagueid       INTEGER              NOT NULL,
+            league         VARCHAR(15)          NOT NULL,
+            starttime      VARCHAR(15)          NOT NULL,
+            season         VARCHAR(15)          ,
+            round          INTEGER,
+            hometeamrank   INTEGER,
+            hometeam       VARCHAR(15)          NOT NULL,
+            awayteamrank   INTEGER,
+            awayteam       VARCHAR(15)          NOT NULL,
+            homescore      INTEGER,
+            awayscore      INTEGER,
+            homehalfscore  INTEGER,
+            awayhalfscore  INTEGER,
+            aomenoripan    REAL                NOT NULL,
+            aomennowpan    REAL                NOT NULL,
+            oriwinodds  REAL,
+            oritieodds  REAL,
+            oriloseodds REAL,
+            nowwinodds  REAL,
+            nowtieodds  REAL,
+            nowloseodds REAL)
+        """
+    c.execute(creatGamesTabelSQL)
+
+    creatHandiCompanyTabelSQL = '''
+        create table if not exists CompanyHandi (
+            soccerID INTEGER NOT NULL,
+            companyid INTEGER NOT NULL,
+            company VARCHAR(15),
+            oripantime VARCHAR(20),
+            oripantimest REAL ,
+            ishighest INTEGER,
+            islowest INTEGER,
+            isearlyest INTEGER,
+            homeoriwater REAL ,
+            oripan REAL,
+            awayoriwater REAL,
+            homenowwater REAL ,
+            nowpan REAL,
+            awaynowwater REAL,
+            hometeamid INTEGER,
+            awayteamid INTEGER,
+            PRIMARY KEY (soccerID, companyid))
+        '''
+    c.execute(creatHandiCompanyTabelSQL)
+
+    # sql2 = 'create table if not exists ' + 'CompanyOdd' + \
+    #        '(rowid INTEGER PRIMARY KEY AUTOINCREMENT, soccerID INTEGER , gameid INTEGER, result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),' \
+    #        'ori_winODD REAL ,ori_drawODD REAL,ori_loseODD REAL,'\
+    #         'winODD REAL ,drawODD REAL,loseODD REAL)'
+    # c.execute(sql2)
+    #
+    # c.execute("CREATE TABLE IF NOT EXISTS LEAGUE (leagueID INTEGER PRIMARY KEY, leagueName VARCHAR(20), briefLeagueName VARCHAR(15), country VARCHAR(20), continent VARCHAR(15), season VARCHAR(300))")
+    # c.execute("CREATE TABLE IF NOT EXISTS LEAGUEPANLU (rangking INTEGER, season VARCHAR(20), league VARCHAR(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, winPan INTEGER, drawPan INTEGER, losePan INTEGER, halfWinPan INTEGER, halfDrawPan INTEGER, halfLosePan INTEGER)")
+    # c.execute(
+    #     "CREATE TABLE IF NOT EXISTS LEAGUEDAXIAO (rangking INTEGER, season VARCHAR(20), league VARCHAR(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, winPan INTEGER, drawPan INTEGER, losePan INTEGER,winRate VARCHAR(18),drawRate VARCHAR(18),loseRate VARCHAR(18))")
+    #
+    # c.execute(
+    #     "CREATE TABLE IF NOT EXISTS LEAGUEJIFENALL (rangking INTEGER, season VARCHAR(20), league VARCHAR(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, winCount INTEGER, drawCount INTEGER, loseCount INTEGER, goals INTEGER,loseGoals INTEGER,jifen INTEGER)")
+
+    sql_creat_disorderpan_game = """
+            create table if not exists DisorderPanGames (
+                soccerid       INTEGER PRIMARY KEY  NOT NULL,
+                leagueid       INTEGER              NOT NULL,
+                league         VARCHAR(15)          NOT NULL,
+                begintime      VARCHAR(15)          NOT NULL,
+                hometeam       VARCHAR(15)          NOT NULL,
+                awayteam       VARCHAR(15)          NOT NULL,
+                homescore      INTEGER,
+                awayscore      INTEGER,
+                homehalfscore  INTEGER,
+                awayhalfscore  INTEGER,
+                aomenoripan    REAL                NOT NULL,
+                aomennowpan    REAL                NOT NULL,
+                oripans        VARCHAR(15),
+                nowpans        VARCHAR(15),
+                result         VARCHAR(15))
+            """
+    c.execute(sql_creat_disorderpan_game)
+
+    # sql_creat_disorderpan_pan = 'create table if not exists ' + 'DisorderPanCompanyHandicap' + \
+    #        '(soccerID INTEGER,result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),otodds REAL ,' \
+    #       'orignalpan REAL,ododds REAL,ntodds REAL ,nowpan REAL,ndodds REAL)'
+    # c.execute(sql_creat_disorderpan_pan)
+    #
+    # sql_creat_disorderpan_odd = 'create table if not exists ' + 'DisorderPanCompanyODD' + \
+    #        '(soccerID INTEGER, result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),' \
+    #        'ori_winODD REAL ,ori_drawODD REAL,ori_loseODD REAL,'\
+    #         'winODD REAL ,drawODD REAL,loseODD REAL)'
+    # c.execute(sql_creat_disorderpan_odd)
+
+    conn.commit()
+    c.close()
+    conn.close()
+
 
 def get_result_from_db_with_SQL_str(sql_str, parameters=()):
     global conn
@@ -24,12 +134,11 @@ def get_result_from_db_with_SQL_str(sql_str, parameters=()):
     c = conn.cursor()
     c.execute(sql_str,parameters)
     result = c.fetchall()
-
     conn.commit()
     c.close()
     conn.close()
-
     return result
+
 
 def resultWithHandiAndPercent(handi,win,draw,lose):
 
@@ -133,11 +242,13 @@ def create_result_database():
           'ori_cpy_handi VARCHAR(20),ori_handi VARCHAR(10), ori_handi_count INTEGER, p_ori_win_handi VARCHAR(10),' \
           'p_ori_draw_handi VARCHAR(10), p_ori_lose_handi VARCHAR(10),' \
           'p_ori_win VARCHAR(10), p_ori_draw VARCHAR(10), p_ori_lose VARCHAR(10), reult_ori_handi INTEGER,' \
-          'ori_cpy_odd VARCHAR(20), ori_odd_count INTEGER, p_ori_win_odd VARCHAR(10), p_ori_draw_odd VARCHAR(10), p_ori_lose_odd VARCHAR(10), reult_ori_odd INTEGER,' \
+          'ori_cpy_odd VARCHAR(20), ori_odd_count INTEGER, p_ori_win_odd VARCHAR(10), p_ori_draw_odd VARCHAR(10), \
+           p_ori_lose_odd VARCHAR(10), reult_ori_odd INTEGER,' \
           'now_cpy_handi VARCHAR(20),now_handi VARCHAR(10), now_handi_count INTEGER, p_now_win_handi VARCHAR(10),' \
           'p_now_draw_handi VARCHAR(10), p_now_lose_handi VARCHAR(10),' \
           'p_now_win VARCHAR(10), p_now_draw VARCHAR(10), p_now_lose VARCHAR(10), reult_now_handi INTEGER,' \
-          'now_cpy_odd VARCHAR(20), now_odd_count INTEGER, p_now_win_odd VARCHAR(10), p_now_draw_odd VARCHAR(10), p_now_lose_odd VARCHAR(10), reult_now_odd INTEGER)'
+          'now_cpy_odd VARCHAR(20), now_odd_count INTEGER, p_now_win_odd VARCHAR(10), p_now_draw_odd VARCHAR(10), ' \
+          'p_now_lose_odd VARCHAR(10), reult_now_odd INTEGER)'
 
     # sql0 = 'drop table ResultAnalyse'
     c.execute(sql0)
@@ -201,7 +312,7 @@ def insert_New_Game(game):
 
         c.execute("INSERT INTO NewGames VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params)
 
-        handi = game.handiCompanies
+        handi = game.yapanCompanies
         if handi is None:
             pass
         else:
@@ -216,7 +327,7 @@ def insert_New_Game(game):
 
                     c.execute("INSERT INTO NewCompanyHandicap VALUES (NULL ,? ,?,?,?,?,?,?,?,?,?,?,?,?,?)", params1)
 
-        odd = game.oddCompanies
+        odd = game.oupeiCompanies
         if odd is None:
             pass
         else:
@@ -230,7 +341,6 @@ def insert_New_Game(game):
         conn.commit()
         c.close()
         conn.close()
-
 
 def insertNewGameList(games):
     global conn
@@ -254,7 +364,7 @@ def insertNewGameList(games):
             "INSERT INTO NewGames VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             params)
 
-        handi = game.handiCompanies
+        handi = game.yapanCompanies
         if handi is None:
             pass
         else:
@@ -271,7 +381,7 @@ def insertNewGameList(games):
 
 
 
-        odd  = game.oddCompanies
+        odd  = game.oupeiCompanies
         if odd is None:
             pass
         else:
@@ -287,72 +397,8 @@ def insertNewGameList(games):
     c.close()
     conn.close()
 
-def create_database():
-    global conn
-    global c
-    # 连接到SQLite数据库
-    # 数据库文件是test.db
-    # 如果文件不存在，会自动在当前目录创建:
-    conn = sqlite3.connect(location)
-    c = conn.cursor()
 
-    # sql = 'create table if not exists ' + 'Soccer' + \
-    #       '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,league varchar(20),soccer VARCHAR(5),gameurl VARCHAR (30),otodds VARCHAR(5) ,' \
-    #       'orignalpan VARCHAR(5),ododds VARCHAR(5),ntodds VARCHAR(5) ,nowpan VARCHAR(5),ndodds VARCHAR(5))'
-    # c.execute(sql)
-
-    sql0 = 'create table if not exists ' + 'Games' + \
-          '(soccer_ID INTEGER PRIMARY KEY AUTOINCREMENT,'\
-            'soccerID INTEGER,league varchar(20),time VARCHAR(15),result INTEGER,' \
-          'homeLevel INTEGER,home VARCHAR(20),homeSoccer INTEGER,'\
-            'friendLevel INTEGER,friend VARCHAR(20) ,friendSoccer INTEGER)'
-
-    c.execute(sql0)
-
-    sql1 = 'create table if not exists ' + 'CompanyHandicap' + \
-          '(rowid INTEGER PRIMARY KEY AUTOINCREMENT, soccerID INTEGER, gameid INTEGER,result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),otodds REAL ,' \
-          'orignalpan REAL,ododds REAL,ntodds REAL ,nowpan REAL,ndodds REAL)'
-    c.execute(sql1)
-
-    sql2 = 'create table if not exists ' + 'CompanyODD' + \
-           '(rowid INTEGER PRIMARY KEY AUTOINCREMENT, soccerID INTEGER , gameid INTEGER, result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),' \
-           'ori_winODD REAL ,ori_drawODD REAL,ori_loseODD REAL,'\
-            'winODD REAL ,drawODD REAL,loseODD REAL)'
-    c.execute(sql2)
-
-    c.execute("CREATE TABLE IF NOT EXISTS LEAGUE (leagueID INTEGER PRIMARY KEY, leagueName VARCHAR(20), briefLeagueName VARCHAR(15), country VARCHAR(20), continent VARCHAR(15), season VARCHAR(300))")
-    c.execute("CREATE TABLE IF NOT EXISTS LEAGUEPANLU (rangking INTEGER, season VARCHAR(20), league VARCHAR(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, winPan INTEGER, drawPan INTEGER, losePan INTEGER, halfWinPan INTEGER, halfDrawPan INTEGER, halfLosePan INTEGER)")
-    c.execute(
-        "CREATE TABLE IF NOT EXISTS LEAGUEDAXIAO (rangking INTEGER, season VARCHAR(20), league VARCHAR(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, winPan INTEGER, drawPan INTEGER, losePan INTEGER,winRate VARCHAR(18),drawRate VARCHAR(18),loseRate VARCHAR(18))")
-
-    c.execute(
-        "CREATE TABLE IF NOT EXISTS LEAGUEJIFENALL (rangking INTEGER, season VARCHAR(20), league VARCHAR(20), teamid INTEGER, team VARCHAR(15), rounds INTEGER, winCount INTEGER, drawCount INTEGER, loseCount INTEGER, goals INTEGER,loseGoals INTEGER,jifen INTEGER)")
-
-    sql_creat_disorderpan_game = 'create table if not exists ' + 'DisorderPanGames' + \
-          '(gameID INTEGER PRIMARY KEY,'\
-            'time VARCHAR(15),result INTEGER,' \
-          'homeLevel INTEGER,home VARCHAR(20),homeSoccer INTEGER,'\
-            'friendLevel INTEGER,friend VARCHAR(20) ,friendSoccer INTEGER, league VARCHAR(20), leagueid VARCHAR(10) ,panResult VARCHAR(10))'
-
-    c.execute(sql_creat_disorderpan_game)
-
-    sql_creat_disorderpan_pan = 'create table if not exists ' + 'DisorderPanCompanyHandicap' + \
-           '(soccerID INTEGER,result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),otodds REAL ,' \
-          'orignalpan REAL,ododds REAL,ntodds REAL ,nowpan REAL,ndodds REAL)'
-    c.execute(sql_creat_disorderpan_pan)
-
-    sql_creat_disorderpan_odd = 'create table if not exists ' + 'DisorderPanCompanyODD' + \
-           '(soccerID INTEGER, result INTEGER,homeSoccer INTEGER,friendSoccer INTEGER,company VARCHAR(10),' \
-           'ori_winODD REAL ,ori_drawODD REAL,ori_loseODD REAL,'\
-            'winODD REAL ,drawODD REAL,loseODD REAL)'
-    c.execute(sql_creat_disorderpan_odd)
-
-    conn.commit()
-    c.close()
-    conn.close()
-
-
-def DB_InsertDisorderGameList(games):
+def insert_disorder_games_to_db(games):
     global conn
     global c
 
@@ -361,40 +407,30 @@ def DB_InsertDisorderGameList(games):
     c = conn.cursor()
 
     for game in games:
-        # c.execute("SELECT * FROM DisorderPanCompanyHandicap WHERE soccerID == ?",(game.soccerID,))
-        # result = c.fetchall()
-        # if len(result) > 0:
-        #     continue
-        #
-        # if isinstance(game,FootballGame):
-        #     params = (game.soccerID, game.beginTime.decode('utf-8'), game.soccer, game.homeTeamLevel,
-        #               game.homeTeam.decode('utf-8'),
-        #               game.allHome, game.friendTeamLevel, game.friendTeam.decode('utf-8'), game.allFriend,
-        #               game.leauge.decode('utf-8'), game.leaugeid, game.winhandi)
-        #     c.execute("INSERT INTO DisorderPanGames VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", params)
+        print(game.__class__.__name__, type(game))
+        params = (game.soccerID, game.leaugeid, game.leauge, game.beginTime,
+                  game.homeTeam,game.friendTeam, game.allHome, game.allFriend,
+                  game.halfHome,game.halfFriend, game.orignal_aomenHandi, game.now_aomenHandi,
+                  game.db_ori_pans,game.db_now_pans,game.winhandi)
+        c.execute("INSERT OR REPLACE INTO DisorderPanGames VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params)
 
-
-        handi = game.handiCompanies
-        if handi is None:
-            pass
-        else:
-            for company in handi:
-                print(company.__class__.__name__, type(company))
-                if isinstance(company,BetCompany):
-                # if company.__class__.__name__ == 'BetCompany':
-                    params1 = (
-                        game.soccerID, company.result, company.homeSoccer, company.friendSoccer,
-                        company.companyTitle.decode('utf-8'),
-                        company.orignal_top, company.orignal_Handicap, company.orignal_bottom, company.now_top,
-                        company.now_Handicap,
-                        company.now_bottom)
-
-                    c.execute("INSERT INTO DisorderPanCompanyHandicap VALUES (?,?,?,?,?,?,?,?,?,?,?)", params1)
+        companies = game.yapanCompanies
+        if companies is not None and len(companies) > 0:
+            for company in companies:
+                if game.soccerID != company.soccerGameId:
+                    continue
+                params1 = (
+                    company.soccerGameId, company.companyID, company.companyTitle, company.oriTimeStr,
+                    company.oriTimeStamp, company.highest, company.lowest, company.earlyest,
+                    company.orignal_top, company.orignal_Handicap, company.orignal_bottom, company.now_top,
+                    company.now_Handicap, company.now_bottom, game.homeTeamId, game.friendTeamId
+                )
+                c.execute("INSERT OR REPLACE INTO CompanyHandi VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params1)
 
 
 
 
-        # odd  = game.oddCompanies
+        # odd  = game.oupeiCompanies
         # if odd is None:
         #     pass
         # else:
@@ -409,6 +445,7 @@ def DB_InsertDisorderGameList(games):
     conn.commit()
     c.close()
     conn.close()
+    print('insert_disorder_games_to_db', '插入完成')
 
 '''
 插入一个比赛分析 数据
@@ -465,15 +502,44 @@ def InsertLeagueList(leagueList):
 '''
 插入一条 比赛 数据
 '''
-def insert_Game(game):
+def insert_game_to_db(game):
+    # if not isinstance(game, FootballGame):
+    #     return
     global conn
     global c
     conn = sqlite3.connect(location)
     c = conn.cursor()
 
-    params = (game.soccerID, game.leauge, game.beginTime, game.soccer, game.homeTeamLevel, game.homeTeam,
-              game.allHome, game.friendTeamLevel, game.friendTeam, game.allFriend)
-    c.execute("INSERT INTO Games VALUES (NULL ,?,?,?,?,?,?,?,?,?,?)", params)
+    params = (game.soccerID, game.leaugeid, game.leauge, game.beginTime,
+              game.season,game.round,game.homeTeamLevel,game.homeTeam,
+              game.friendTeamLevel, game.friendTeam, game.allHome, game.allFriend,
+              game.halfHome, game.halfFriend,game.orignal_aomenHandi,game.now_aomenHandi,
+              0.0,0.0,0.0,0.0,
+              0.0,0.0)
+    c.execute("INSERT OR REPLACE INTO Games VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params)
+    companies = game.yapanCompanies
+    if companies is not None and len(companies) > 0:
+        for company in companies:
+            if game.soccerID != company.soccerGameId:
+                continue
+            params1 = (
+                company.soccerGameId, company.companyID, company.companyTitle,company.oriTimeStr,
+                company.oriTimeStamp,company.highest,company.lowest,company.earlyest,
+                company.orignal_top,company.orignal_Handicap,company.orignal_bottom,company.now_top,
+                company.now_Handicap, company.now_bottom, game.homeTeamId, game.friendTeamId
+            )
+            c.execute("INSERT OR REPLACE INTO CompanyHandi VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params1)
+
+    oddcompanies = game.oupeiCompanies
+    if oddcompanies is not None and len(oddcompanies) > 0:
+        for company in oddcompanies:
+            pass
+            # params = (game.soccerID, company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
+            #           company.companyTitle.decode('utf-8'),
+            #           company.orignal_winOdd, company.orignal_drawOdd,
+            #           company.orignal_loseOdd, company.winOdd, company.drawOdd, company.loseOdd)
+            # c.execute("INSERT INTO CompanyODD VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?,?)", params)
+
     conn.commit()
     c.close()
     conn.close()
@@ -481,7 +547,14 @@ def insert_Game(game):
 '''
 插入比赛列表
 '''
-def insertGameList(games):
+def insert_game_list_to_db(games):
+    if len(games) < 1 :
+        print('insert_game_list_to_db','没有有效数据')
+        return
+    # if not isinstance(games[0], FootballGame):
+    onegame = games[0]
+    print(onegame.__class__.__name__)
+    #     return
     global conn
     global c
 
@@ -490,43 +563,41 @@ def insertGameList(games):
     c = conn.cursor()
 
     for game in games:
-        params = (game.soccerID, game.leauge.decode('utf-8'), game.beginTime.decode('utf-8'), game.soccer, game.homeTeamLevel, game.homeTeam.decode('utf-8'),
-                     game.allHome, game.friendTeamLevel, game.friendTeam.decode('utf-8'), game.allFriend)
-        c.execute("INSERT INTO Games VALUES (NULL ,?,?,?,?,?,?,?,?,?,?)", params)
+        params = (game.soccerID, game.leaugeid, game.leauge, game.beginTime,
+                  game.season,game.round,game.homeTeamLevel,game.homeTeam,
+                  game.friendTeamLevel, game.friendTeam, game.allHome, game.allFriend,
+                  game.halfHome, game.halfFriend,game.orignal_aomenHandi,game.now_aomenHandi,
+                  0.0,0.0,0.0,0.0,
+                  0.0,0.0)
+        c.execute("INSERT OR REPLACE INTO Games VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params)
 
-        handi = game.handiCompanies
-        if handi is None:
-            pass
-        else:
-            for company  in handi:
-                if isinstance(company, BetCompany):
-                    params1 = (
-                    game.soccerID, company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
-                    company.companyTitle.decode('utf-8'),
-                    company.orignal_top, company.orignal_Handicap, company.orignal_bottom, company.now_top, company.now_Handicap,
-                    company.now_bottom)
+        companies = game.yapanCompanies
+        if companies is not None and len(companies) > 0:
+            for company in companies:
+                if game.soccerID != company.soccerGameId:
+                    continue
+                params1 = (
+                    company.soccerGameId, company.companyID, company.companyTitle,
+                    company.oriTimeStr,
+                    company.oriTimeStamp, company.highest, company.lowest, company.earlyest,
+                    company.orignal_top, company.orignal_Handicap, company.orignal_bottom, company.now_top,
+                    company.now_Handicap, company.now_bottom, game.homeTeamId, game.friendTeamId)
+                c.execute("INSERT OR REPLACE INTO CompanyHandi VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params1)
 
-                    c.execute("INSERT INTO CompanyHandicap VALUES (NULL ,? ,?,?,?,?,?,?,?,?,?,?,?)", params1)
-
-
-
-
-        odd  = game.oddCompanies
-        if odd is None:
-            pass
-        else:
-            for company in odd:
-                params = (game.soccerID, company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
-                          company.companyTitle.decode('utf-8'),
-                          company.orignal_winOdd, company.orignal_drawOdd,
-                          company.orignal_loseOdd, company.winOdd, company.drawOdd, company.loseOdd)
-                c.execute("INSERT INTO CompanyODD VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?,?)", params)
-
+        oddcompanies  = game.oupeiCompanies
+        if oddcompanies is not None and len(oddcompanies) > 0:
+            for company in oddcompanies:
+                pass
+                # params = (game.soccerID, company.soccerGameId, company.result, company.homeSoccer, company.friendSoccer,
+                #           company.companyTitle.decode('utf-8'),
+                #           company.orignal_winOdd, company.orignal_drawOdd,
+                #           company.orignal_loseOdd, company.winOdd, company.drawOdd, company.loseOdd)
+                # c.execute("INSERT INTO CompanyODD VALUES (NULL ,?,?,?,?,?,?,?,?,?,?,?,?)", params)
 
     conn.commit()
     c.close()
     conn.close()
-
+    print('insert_game_list_to_db', '插入完成')
 '''
 插入多条亚赔数据
 '''
@@ -620,7 +691,7 @@ def getOrignalODDProbability(game, isYesterday = False, resultGame = None):
     resultTuple = None
     if isinstance(game, FootballGame):
 
-        if game.oddCompanies is None:
+        if game.oupeiCompanies is None:
             if isYesterday:
                 return resultTuple
             else:
@@ -655,7 +726,7 @@ def getOrignalODDProbability(game, isYesterday = False, resultGame = None):
         maxIndex = 0
         resultSet = []
 
-        for oneCompany in game.oddCompanies:
+        for oneCompany in game.oupeiCompanies:
             if isinstance(oneCompany ,BetCompany):
                 c.execute("SELECT * FROM Games WHERE soccerID IN "
                           "(select soccerID from CompanyODD where company == ? and ori_winODD == ? "
@@ -767,7 +838,7 @@ def getnowODDProbability(game, isYesterday = False, resultGame = None):
     if isinstance(game, FootballGame):
         contentstr = ''
         resultTuple = (0, 0, 0)
-        if game.oddCompanies is None:
+        if game.oupeiCompanies is None:
             if isYesterday:
                 return resultTuple
             else:
@@ -802,7 +873,7 @@ def getnowODDProbability(game, isYesterday = False, resultGame = None):
         maxIndex = 0
         resultSet = []
 
-        for oneCompany in game.oddCompanies:
+        for oneCompany in game.oupeiCompanies:
             if isinstance(oneCompany ,BetCompany):
                 c.execute("SELECT * FROM Games WHERE soccerID IN "
                           "(select soccerID from CompanyODD where company == ? and winODD == ? "
@@ -922,7 +993,7 @@ def getHandiProbability(game, isYesterday = False, resultGame = None):
     if isinstance(game, FootballGame):
         contentstr = ''
         resultTuple = (0,0,0)
-        if game.handiCompanies is None:
+        if game.yapanCompanies is None:
             if isYesterday:
                 return resultTuple
             else:
@@ -962,7 +1033,7 @@ def getHandiProbability(game, isYesterday = False, resultGame = None):
         unit_lose_count = 0
         maxIndex = 0
         resultSet = []
-        for oneCompany in game.handiCompanies:
+        for oneCompany in game.yapanCompanies:
             if isinstance(oneCompany ,BetCompany):
                 c.execute("SELECT * FROM Games WHERE soccerID IN "
                           "(select soccerID from CompanyHandicap where company == ? and orignalpan == ? "
@@ -1103,7 +1174,7 @@ def getnowHandiProbability(game, isYesterday = False, resultGame = None):
     contentstr = ''
     resultTuple = (0, 0, 0)
     if isinstance(game, FootballGame):
-        if game.handiCompanies is None:
+        if game.yapanCompanies is None:
             if isYesterday:
                 return resultTuple
             else:
@@ -1136,7 +1207,7 @@ def getnowHandiProbability(game, isYesterday = False, resultGame = None):
 
         maxIndex = 0
         resultSet = []
-        for oneCompany in game.handiCompanies:
+        for oneCompany in game.yapanCompanies:
             if isinstance(oneCompany ,BetCompany):
                 c.execute("SELECT * FROM Games WHERE soccerID IN "
                           "(select soccerID from CompanyHandicap where company == ? and nowpan == ? "
@@ -1314,7 +1385,7 @@ def getHandi(game, c):
     allHandiGames = []
 
     # 如果这场比赛没有亚盘数据,就返回
-    if game.handiCompanies is None:
+    if game.yapanCompanies is None:
         return (contentstr, allHandiGames)
 
 
@@ -1333,7 +1404,7 @@ def getHandi(game, c):
     handi_lose_count = 0
     lose_count = 0
 
-    for oneCompany in game.handiCompanies:
+    for oneCompany in game.yapanCompanies:
         if isinstance(oneCompany, BetCompany):
             c.execute("SELECT * FROM Games WHERE soccerID IN "
                       "(select soccerID from CompanyHandicap where company == ? and orignalpan == ? "
@@ -1406,11 +1477,11 @@ def getOdd(game, c):
     losecount = 0
     num = 0
     allOddGames = []
-    if len(game.oddCompanies) <= 0:
+    if len(game.oupeiCompanies) <= 0:
         return (contentstr, allOddGames)
 
 
-    for oneOdd in game.oddCompanies:
+    for oneOdd in game.oupeiCompanies:
         c.execute(
             "SELECT * FROM Games WHERE soccerID IN "
             "(select soccerID from CompanyODD where company == ? and ori_winODD >= ? and ori_winODD <= ? "
@@ -1526,7 +1597,7 @@ def getHandiDisunion(onegame):
             return
         aomen = None
         bet365 = None
-        handiCompanies = onegame.handiCompanies
+        handiCompanies = onegame.yapanCompanies
         for com in handiCompanies:
             if isinstance(com, BetCompany):
                 if com.companyTitle == '澳门':
@@ -1724,5 +1795,5 @@ def GetOriPanCount():
 
 # GetOriPanCount()
 
-
-create_database()
+if __name__ == '__main__':
+    create_database_table()

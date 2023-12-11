@@ -78,8 +78,8 @@ def getTodaySoccer(gameType):
                 onegame.friendTeam = oneGameArray[5].encode('utf-8')
             AllGames.append(onegame)
             # 获取欧赔,亚盘数据
-            onegame.oddCompanies = getOneGameODD(oneGameListHost,onegame)
-            onegame.handiCompanies = getOneGameHandi(oneGameListHost,onegame)
+            onegame.oupeiCompanies = getOneGameODD(oneGameListHost, onegame)
+            onegame.yapanCompanies = getOneGameHandi(oneGameListHost, onegame)
 
             titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
                      str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ', str(onegame.now_aomenHandi)])
@@ -229,8 +229,8 @@ def getYesterdaySoccer(timestr):
                 AllResultAnalyseGames.append(resultGame)
                 # 赋值结束
 
-                onegame.oddCompanies = getOneGameODD(onegame)
-                onegame.handiCompanies = getOneGameHandi(onegame)
+                onegame.oupeiCompanies = getOneGameODD(onegame)
+                onegame.yapanCompanies = getOneGameHandi(onegame)
                 getHandiDisunion(onegame)
                 # handiOffset = onegame.now_aomenHandi - onegame.orignal_aomenHandi
                 # if handiOffset == 0:
@@ -327,7 +327,7 @@ def getYesterdaySoccer(timestr):
 
             time.sleep(1.5)
 
-            # insertGameList(AllGames)
+            # insert_game_list_to_db(AllGames)
             # insert_Result_Analyse_list(AllResultAnalyseGames)
 
             # i = datetime.now()

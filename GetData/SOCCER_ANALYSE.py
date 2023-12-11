@@ -10,8 +10,6 @@ import datetime
 import calendar
 
 
-
-
 class GetURL:
     usedurl = ''
     html = ''
@@ -69,10 +67,10 @@ def main():
         begin_date += datetime.timedelta(days=1)
 
     for dateStr in date_list:
-        print dateStr
+        print(dateStr)
         url = "http://www.310win.com/buy/JingCai.aspx?typeID=105&oddstype=2&date=" + dateStr
         instance = GetURL(url)
-        # HtmlParser.create_database()
+        # HtmlParser.create_database_table()
         # imgList = instance.getHtmlListWithLabel('a')
         # newImgList = instance.filterList(imgList, '>亚<')
         gameList = instance.getHtmlListWithLabel('table', {'class': 'socai'})

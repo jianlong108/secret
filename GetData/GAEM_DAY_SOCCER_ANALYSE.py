@@ -4,10 +4,11 @@
 import os
 import datetime
 import time
-import SoccerOrignalPanTime
+import requests
+import TodayGameList
 from GetData.DBHELPER import (ResultAnalyseGame,getHandiProbability,getOrignalODDProbability,
                               getnowODDProbability,getnowHandiProbability)
-from NetWorkTools import get_resultstr_with_url
+
 from SOCCER_MODELS import FootballGame
 from GetData.SOCCER_ROUND import getOneGameODD,getOneGameHandi
 
@@ -30,12 +31,14 @@ def getYesterdaySoccer(timestr):
     try:
         url = "http://61.143.225.85:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.4&date=" + timestr + '&from=1&kind=3&r=1503367511&subversion=3'
 # http://61.143.225.85:8072/phone/scheduleByDate.aspx?an=iosQiuTan&av=6.5&date=2018-08-21&from=2&kind=0&r=1535094647&subversion=2
-        print url
+        print(url)
     except BaseException as e:
-        print e
-        pass
+        print(e)
 
-    resultStr = get_resultstr_with_url(url)
+    headers = {'User-Agent': 'Baiduspider'}
+    response = requests.get(url,headers=headers)
+    if response.ok:
+        resultStr = response.content
 
     global AllGames
     global AllBeginTimes
@@ -136,19 +139,19 @@ def getYesterdaySoccer(timestr):
                     onegame.bet365Handi = float(oneGameArray[15])
             except ValueError as e:
                 onegame = None
-                print  e
+                print(e)
 
-            except BaseException, e:
+            except BaseException as e:
                 onegame = None
-                print e
+                print(e)
             else:
                 AllGames.append(onegame)
                 # 比赛结果模型 添加到数组
                 AllResultAnalyseGames.append(resultGame)
                 # 赋值结束
 
-                onegame.oddCompanies = getOneGameODD(onegame)
-                onegame.handiCompanies = getOneGameHandi(onegame)
+                onegame.oupeiCompanies = getOneGameODD(onegame)
+                onegame.yapanCompanies = getOneGameHandi(onegame)
                 handiOffset = onegame.now_aomenHandi - onegame.orignal_aomenHandi
                 if handiOffset == 0:
                     resultGame.handiDeeper = 0
@@ -248,7 +251,7 @@ def getYesterdaySoccer(timestr):
 
             time.sleep(1.5)
 
-        # insertGameList(AllGames)
+        # insert_game_list_to_db(AllGames)
         # insert_Result_Analyse_list(AllResultAnalyseGames)
 
         # i = datetime.now()

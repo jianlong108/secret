@@ -5,7 +5,7 @@
 import datetime
 import time
 
-import SoccerOrignalPanTime
+import TodayGameList
 from GetData.DBHELPER import getHandiProbability,getnowHandiProbability,getOrignalODDProbability,getnowODDProbability
 from GetData.SOCCER_MODELS import FootballGame
 from GetData.SOCCER_ROUND import getOneGameHandi,getOneGameODD
@@ -33,10 +33,10 @@ def getTodaySoccer(gameType):
         #  url = "http://%s:8071/phone/schedule_0_%s.txt?an=iosQiuTan&av=6.2&from=2&r=%s" % (host,str(gameType),str(int(time.time())))
         # http://61.143.224.156:8071/phone/schedule_0_0.txt?an=iosQiuTan&av=7.1&from=24&r=1535452669
         url = "http://61.143.224.156:8071/phone/schedule_0_" + str(gameType) + ".txt?an=iosQiuTan&av=7.1&from=24&r="+str(int(time.time()))
-        print url
+        print(url)
     except Exception as e:
-        print '请求接口出错' + url
-        print e
+        print('请求接口出错' + url, e)
+
     if url != '':
         resultStr = get_resultstr_with_url(url)
 
@@ -97,8 +97,8 @@ def getTodaySoccer(gameType):
                 onegame.friendTeam = oneGameArray[5].encode('utf-8')
             AllGames.append(onegame)
             # 获取欧赔,亚盘数据
-            onegame.oddCompanies = getOneGameODD(host,onegame)
-            onegame.handiCompanies = getOneGameHandi(host,onegame)
+            onegame.oupeiCompanies = getOneGameODD(host, onegame)
+            onegame.yapanCompanies = getOneGameHandi(host, onegame)
 
             titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
                      str(onegame.soccerID), '澳盘: ', str(onegame.orignal_aomenHandi), ' -> ', str(onegame.now_aomenHandi)])

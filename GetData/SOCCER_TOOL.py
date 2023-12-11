@@ -68,7 +68,7 @@ def switchHandicap(Handicap):
         else:
             return 108
     except TypeError as e:
-        print e
+        print(e)
         pass
     finally:
         pass
