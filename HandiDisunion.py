@@ -78,7 +78,7 @@ def getTodaySoccer(gameType):
                 onegame.friendTeam = oneGameArray[5].encode('utf-8')
             AllGames.append(onegame)
             # 获取欧赔,亚盘数据
-            onegame.oupeiCompanies = getOneGameODD(oneGameListHost, onegame)
+            onegame.oddCompanies = getOneGameODD(oneGameListHost, onegame)
             onegame.yapanCompanies = getOneGameHandi(oneGameListHost, onegame)
 
             titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
@@ -229,7 +229,7 @@ def getYesterdaySoccer(timestr):
                 AllResultAnalyseGames.append(resultGame)
                 # 赋值结束
 
-                onegame.oupeiCompanies = getOneGameODD(onegame)
+                onegame.oddCompanies = getOneGameODD(onegame)
                 onegame.yapanCompanies = getOneGameHandi(onegame)
                 getHandiDisunion(onegame)
                 # handiOffset = onegame.now_aomenHandi - onegame.orignal_aomenHandi

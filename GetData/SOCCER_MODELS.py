@@ -139,7 +139,7 @@ class BetCompany(object):
 
     @property
     def handiChange(self):
-        if self.orignal_Handicap * self.now_Handicap < 0.0:
+        if self.orignal_Handicap * self.now_Handicap < 0:
             return '翻转'
 
         if self.orignal_Handicap >= 0:
@@ -170,7 +170,7 @@ class FootballGame(object):
         # 澳门是否开盘
         self.haveAomen = True
         # 博彩公司列表
-        self.oupeiCompanies = []
+        self.oddCompanies = []
         self.yapanCompanies = []
         # 所属联赛
         self.leauge = ''
@@ -446,7 +446,15 @@ class ContinentSoccer:
 
 class TeamPanLuDetail:
     def __init__(self):
+        # 类型：1：总盘 2：主场 3：客场 4：半场盘 5：半场主 6：半场客
         self.type = 0
+        self.season = ''
+        self.teamName = ''
+        self.teamID = ''
+        self.belongLeagueName = ''
+        self.belongLeagueID = 0
+        # 差值
+        self.offset = 0
         # 总场次
         self.numberOfGame = 0
         # 上
@@ -454,14 +462,13 @@ class TeamPanLuDetail:
         # 平
         self.drawNumberOfGame = 0
         # 下
-        self.bottomNumberOfGame = 0
+        self.downNumberOfGame = 0
         # 赢
         self.winNumberOfGame = 0
         # 走
         self.zouNumberOfGame = 0
         # 输
         self.loseNumberOfGame = 0
-        self.offset = 0
         # 胜率
         self.winRate = 0
         # 平率
@@ -475,6 +482,7 @@ class TeamPanLu:
         self.teamName = ''
         self.teamID = ''
         self.belongLeagueName = ''
+        self.belongLeagueID = 0
         self.suitableWinBet = False
         self.suitableLoseBet = False
         self.suitableHomeWinBet = False
@@ -552,7 +560,7 @@ class TeamPanLu:
         if print_all:
             return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
         else:
-            return f"赛季:{self.season} 球队id:{self.teamID}:{self.teamName}offset:{self.allDetail.offset},homeoffset:{self.homeDetail.offset}awayoffset:{self.awayDetail.offset}"
+            return f"赛季:{self.season} 球队id:{self.teamID}:{self.teamName}"
 
 
 # 球队积分模型

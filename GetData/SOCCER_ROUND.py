@@ -5,8 +5,6 @@ import time
 from NETWORKS_TOOLS import get_resultstr_with_url
 from SOCCER_MODELS import BetCompany,FootballGame
 
-
-
 def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
     resultStr = ''
 
@@ -87,7 +85,7 @@ def creatCupGameModel(gameStr,leagueStr,isCup = False):
                     model.homeTeamLevel = int(gameArray[11])
 
                 time.sleep(1.5)
-                model.oupeiCompanies = getOneGameODD(model)
+                model.oddCompanies = getOneGameODD(model)
                 model.yapanCompanies = getOneGameHandi(model)
                 return model
 
@@ -163,7 +161,7 @@ def creatGameModel(gameStr,leagueStr,isCup=False):
 
 
                 time.sleep(1.5)
-                model.oupeiCompanies = getOneGameODD(model)
+                model.oddCompanies = getOneGameODD(model)
                 model.yapanCompanies = getOneGameHandi(model)
                 return model
         except BaseException as e:

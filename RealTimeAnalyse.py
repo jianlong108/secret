@@ -154,7 +154,7 @@ def timerAnalys(threadName, delay, counter):
                     if isinstance(onegame, FootballGame):
 
                         if onegame.beginTime == timeStr:
-                            onegame.oupeiCompanies = getOneGameODD(oneGameListHost, onegame)
+                            onegame.oddCompanies = getOneGameODD(oneGameListHost, onegame)
                             onegame.yapanCompanies = getOneGameHandi(oneGameListHost, onegame)
                             titlestr = ''.join(
                                 [str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs',

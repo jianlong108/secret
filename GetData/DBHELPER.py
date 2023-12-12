@@ -327,7 +327,7 @@ def insert_New_Game(game):
 
                     c.execute("INSERT INTO NewCompanyHandicap VALUES (NULL ,? ,?,?,?,?,?,?,?,?,?,?,?,?,?)", params1)
 
-        odd = game.oupeiCompanies
+        odd = game.oddCompanies
         if odd is None:
             pass
         else:
@@ -381,7 +381,7 @@ def insertNewGameList(games):
 
 
 
-        odd  = game.oupeiCompanies
+        odd  = game.oddCompanies
         if odd is None:
             pass
         else:
@@ -430,7 +430,7 @@ def insert_disorder_games_to_db(games):
 
 
 
-        # odd  = game.oupeiCompanies
+        # odd  = game.oddCompanies
         # if odd is None:
         #     pass
         # else:
@@ -530,7 +530,7 @@ def insert_game_to_db(game):
             )
             c.execute("INSERT OR REPLACE INTO CompanyHandi VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params1)
 
-    oddcompanies = game.oupeiCompanies
+    oddcompanies = game.oddCompanies
     if oddcompanies is not None and len(oddcompanies) > 0:
         for company in oddcompanies:
             pass
@@ -584,7 +584,7 @@ def insert_game_list_to_db(games):
                     company.now_Handicap, company.now_bottom, game.homeTeamId, game.friendTeamId)
                 c.execute("INSERT OR REPLACE INTO CompanyHandi VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", params1)
 
-        oddcompanies  = game.oupeiCompanies
+        oddcompanies  = game.oddCompanies
         if oddcompanies is not None and len(oddcompanies) > 0:
             for company in oddcompanies:
                 pass
@@ -691,7 +691,7 @@ def getOrignalODDProbability(game, isYesterday = False, resultGame = None):
     resultTuple = None
     if isinstance(game, FootballGame):
 
-        if game.oupeiCompanies is None:
+        if game.oddCompanies is None:
             if isYesterday:
                 return resultTuple
             else:
@@ -726,7 +726,7 @@ def getOrignalODDProbability(game, isYesterday = False, resultGame = None):
         maxIndex = 0
         resultSet = []
 
-        for oneCompany in game.oupeiCompanies:
+        for oneCompany in game.oddCompanies:
             if isinstance(oneCompany ,BetCompany):
                 c.execute("SELECT * FROM Games WHERE soccerID IN "
                           "(select soccerID from CompanyODD where company == ? and ori_winODD == ? "
@@ -838,7 +838,7 @@ def getnowODDProbability(game, isYesterday = False, resultGame = None):
     if isinstance(game, FootballGame):
         contentstr = ''
         resultTuple = (0, 0, 0)
-        if game.oupeiCompanies is None:
+        if game.oddCompanies is None:
             if isYesterday:
                 return resultTuple
             else:
@@ -873,7 +873,7 @@ def getnowODDProbability(game, isYesterday = False, resultGame = None):
         maxIndex = 0
         resultSet = []
 
-        for oneCompany in game.oupeiCompanies:
+        for oneCompany in game.oddCompanies:
             if isinstance(oneCompany ,BetCompany):
                 c.execute("SELECT * FROM Games WHERE soccerID IN "
                           "(select soccerID from CompanyODD where company == ? and winODD == ? "
@@ -1477,11 +1477,11 @@ def getOdd(game, c):
     losecount = 0
     num = 0
     allOddGames = []
-    if len(game.oupeiCompanies) <= 0:
+    if len(game.oddCompanies) <= 0:
         return (contentstr, allOddGames)
 
 
-    for oneOdd in game.oupeiCompanies:
+    for oneOdd in game.oddCompanies:
         c.execute(
             "SELECT * FROM Games WHERE soccerID IN "
             "(select soccerID from CompanyODD where company == ? and ori_winODD >= ? and ori_winODD <= ? "

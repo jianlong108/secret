@@ -20,7 +20,8 @@ import json
 import requests
 import time
 from GetData.SOCCER_MODELS import FootballGame,GameParserFromProtobuf
-from TodayGameList import gethandiTime
+from GetData.GET_PAN_LIST import getOneGameOddList,getOneGameHandiList
+from GET_PAN_LIST import parsePanlu
 
 class GetCup:
     def __init__(self, model):
@@ -539,7 +540,9 @@ def getSeasonGamelist(season, leagueid=36, league='英超'):
                     obj.parser()
                     for game in obj.games:
                         game.season = season
-                        gethandiTime(game)
+                        getOneGameHandiList(game)
+                        time.sleep(3)
+                        getOneGameOddList(game)
                         time.sleep(3)
                     insert_game_list_to_db(obj.games)
         except Exception as e:
@@ -549,8 +552,16 @@ def getSeasonGamelist(season, leagueid=36, league='英超'):
 
 
 if __name__ == '__main__':
-    #英超 已完成 36
-    _league_id = 12
+    #英超 联赛 盘路  已完成 36
+    #英冠 盘路  已完成 37
+    #德甲 盘路  已完成 8
+    #意甲 盘路  已完成 34
+    #西甲 盘路  已完成 31
+    #法甲 盘路  已完成 11
+    #法乙 盘路 联赛  已完成 12
+    #欧冠   已完成 103
+    _league_id = 103
+    _league_name = '欧冠'
     headers = {
         'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
         'cookie': 'aiappfrom=48'
@@ -568,31 +579,20 @@ if __name__ == '__main__':
                 temp_message, typedef = blackboxprotobuf.protobuf_to_json(resultStr)
                 print(temp_message)
                 leaguedic = json.loads(temp_message)
-                leagueid = int(leaguedic.get('1', '0'))
-                if leagueid != _league_id:
+                league_id = int(leaguedic.get('1', '0'))
+                if league_id != _league_id:
                     raise ValueError("联赛id异常")
 
                 leaguename = leaguedic.get('2', '')
                 seasons = leaguedic.get('4', [])
                 for s in seasons:
-                    getSeasonGamelist(s, leagueid,'法乙')
+                    # getSeasonGamelist(s, league_id, _league_name)
+                    parsePanlu(season=s,leagueid=league_id,leaguename=_league_name)
+                    time.sleep(8)
 
     except Exception as e:
         print('获取联赛数据', url, e)
 
-# if sys.argv.__len__()==1:
-#     sys.exit('\033[0;36;40m使用说明:\n2个参数:\n1:联赛id\n2:是否是杯赛.事例: python League.pyc 144 True\033[0m')
-#
-# if __name__ == '__main__':
-#     leagueid = sys.argv[1]
-#     isCup = sys.argv[2]
-#     getLeagueData(leagueid,isCup)
-
-# leagueid 联赛id getDataType 0获取球赛数据,1获取盘路数据,2获取当前赢盘率并写入excel
-# for leagueid in [5,8,9,11,12,16,17,23,31,33,34,40,36,37]:
-#     GetLeagueDetailFromDB(leagueid=leagueid,getDataType=2,isCup=1)
-
-# GetLeagueDetailFromDB(leagueid=5,getDataType=1,isCup=1)
 
 
 

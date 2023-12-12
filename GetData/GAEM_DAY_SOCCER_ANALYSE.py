@@ -150,7 +150,7 @@ def getYesterdaySoccer(timestr):
                 AllResultAnalyseGames.append(resultGame)
                 # 赋值结束
 
-                onegame.oupeiCompanies = getOneGameODD(onegame)
+                onegame.oddCompanies = getOneGameODD(onegame)
                 onegame.yapanCompanies = getOneGameHandi(onegame)
                 handiOffset = onegame.now_aomenHandi - onegame.orignal_aomenHandi
                 if handiOffset == 0:

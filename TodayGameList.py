@@ -5,10 +5,9 @@
 from GetData.SOCCER_MODELS import FootballGame,BetCompany
 from colorama import Fore,init
 import requests
-from lxml import etree
 import time
 from numpy import *
-import math
+from GetData.GET_PAN_LIST import getOneGameHandiList,getOneGameOddList
 '''
 找出今天澳*最早开盘的比赛
 response.text：
@@ -43,135 +42,6 @@ $$2464791^192^0^20231128180000^^仁川联队^横滨水手^0^0^^^0^0^0^0^0^^^0^6^
 '''
 
 init(autoreset=True)
-
-# result1=html.xpath('//li[@class="item-1"]//text()') #获取li下所有子孙节点的内容
-# result=html.xpath('//li/a/@href')  #获取a的href属性
-def gethandiTime(gameObj):
-    if not isinstance(gameObj, FootballGame):
-        print("传参不正确", gameObj.__class__.__name__)
-        return
-    # url = 'http://www.310win.com/info/1x2exchange.aspx?id=' + str(soccerid) + '&cids=,' + str(companyid) + ',&type=3'
-    # url = 'http://www.310win.com/handicap/' + str(soccerid) + '.html'
-    # http://www.310win.com/handicap/2478509.html
-    url = f"https://vip.titan007.com/AsianOdds_n.aspx?id={gameObj.soccerID}"
-    HEADERS = {
-        'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8'
-    }
-    webpage = requests.get(url, headers=HEADERS)
-    webpage.encoding = 'utf-8'
-    # soup = BeautifulSoup(webpage.content, "html.parser")
-    dom = etree.HTML(webpage.text)
-    table_dom = dom.xpath('//table[@id="odds"]')[0]
-    # print(type(table_dom), table_dom)
-    tr_list = table_dom.xpath('//tr')
-    companies = []
-    earlyest_timestamp = 0
-    earlyest_company = None
-    ori_pan_list = []
-    now_pan_list = []
-    max_handi = 0.0
-    max_company = None
-
-    min_handi = 0.0
-    min_company = None
-
-    #一般第一个公司就是澳门，判断如果第一个不是澳门 代表澳门没有开盘
-    firstCompany = None
-    for tr_dom in tr_list:
-        #真TMB坑，需要加个点 https://blog.csdn.net/weixin_44749897/article/details/93637740
-        span_dom_right = tr_dom.xpath('.//td[2]/span/@companyid')
-        if span_dom_right is not None and len(span_dom_right) > 0:
-            # print(type(span_dom_right), span_dom_right)
-            name = tr_dom.xpath('.//td[1]//text()')[0]
-            # name = [str(s) for s in name]
-            name = ''.join([str(s) for s in name])
-            companyid = tr_dom.xpath('.//td[2]/span/@companyid')[0]
-            companyid = ''.join([str(s) for s in companyid])
-
-            oriTime = tr_dom.xpath('.//td[3]/@title')[0]
-            oriTime = ''.join([str(s) for s in oriTime])
-
-            orihomeshui = tr_dom.xpath('.//td[3]//text()')[0]
-            orihomeshui = ''.join([str(s) for s in orihomeshui])
-
-            oripan = tr_dom.xpath('.//td[4]/@goals')[0]
-            oripan = ''.join([str(s) for s in oripan])
-
-            oriawayshui = tr_dom.xpath('.//td[5]//text()')[0]
-            oriawayshui = ''.join([str(s) for s in oriawayshui])
-
-
-            nowhomeshui = tr_dom.xpath('.//td[6]//text()')[0]
-            nowhomeshui = ''.join([str(s) for s in nowhomeshui])
-
-            nowpan = tr_dom.xpath('.//td[7]/@goals')[0]
-            nowpan = ''.join([str(s) for s in nowpan])
-
-            nowawayshui = tr_dom.xpath('.//td[8]//text()')[0]
-            nowawayshui = ''.join([str(s) for s in nowawayshui])
-            company = BetCompany(p_gameid=gameObj.soccerID, p_companyid=companyid)
-            if firstCompany is None:
-                firstCompany = company
-                if companyid != '1':
-                    gameObj.haveAomen = False
-                    return
-            company.companyTitle = name
-            time_s = time.strptime(oriTime, '%Y-%m-%d %H:%M')
-            company.oriTimeStr = oriTime
-            company.oriTimeStamp = time.mktime(time_s)
-            if earlyest_company is None:
-                earlyest_company = company
-                earlyest_timestamp = company.oriTimeStamp
-
-            if earlyest_company is not None and company.oriTimeStamp < earlyest_timestamp:
-                earlyest_timestamp = company.oriTimeStamp
-                earlyest_company = company
-
-            company.orignal_Handicap = float(oripan)
-            company.orignal_top = orihomeshui
-            company.orignal_bottom = oriawayshui
-            company.now_Handicap = float(nowpan)
-            if max_company is None:
-                max_company = company
-                max_handi = float(oripan)
-            if max_company is not None and math.fabs(float(oripan)) > math.fabs(max_handi):
-                max_handi = float(oripan)
-                max_company = company
-
-            if min_company is None:
-                min_company = company
-                min_handi = float(oripan)
-            if min_company is not None and math.fabs(float(oripan)) < math.fabs(min_handi):
-                min_handi = float(oripan)
-                min_company = company
-
-            if float(oripan) not in ori_pan_list:
-                ori_pan_list.append(float(oripan))
-
-            if float(nowpan) not in now_pan_list:
-                now_pan_list.append(float(nowpan))
-            company.flip = (float(nowpan) * float(oripan)) < 0
-            company.now_top = nowhomeshui
-            company.now_bottom = nowawayshui
-            company.similerMatchURL = f"https://vip.titan007.com/history/SearchSameAsian.aspx?id={gameObj.soccerID}&companyid={companyid}&l=0&goal={oripan}"
-            company.allSamePanURL = f"https://vip.titan007.com/count/goalCount.aspx?t=1&sid={gameObj.soccerID}&cid=1&l=0"
-            company.trendURL = f"https://vip.titan007.com/changeDetail/handicap.aspx?id={gameObj.soccerID}&companyID={companyid}&l=0"
-            company.homeSamePanURL = f"https://vip.titan007.com/history/SearchAsianByTeamID.aspx?id={gameObj.soccerID}&companyid={companyid}&l=0&teamid={gameObj.homeTeamId}"
-            company.similerMatchURL = f"https://vip.titan007.com/history/SearchAsianByTeamID.aspx?id={gameObj.soccerID}&companyid={companyid}&l=0&teamid={gameObj.friendTeamId}"
-            companies.append(company)
-            # print(name, type(name),companyid, type(companyid), oriTime, type(oriTime), orihomeshui, type(orihomeshui), oripan, type(oripan),oriawayshui, type(oriawayshui),nowhomeshui, type(nowhomeshui),nowpan, type(nowpan),nowawayshui,type(nowawayshui))
-            # company.print_self()
-    if earlyest_company:
-        earlyest_company.earlyest = True
-        gameObj.earlyestCompany = earlyest_company
-    gameObj.yapanCompanies = companies
-    gameObj.orignalHandiList = ori_pan_list
-    gameObj.nowHandiList = now_pan_list
-    gameObj.maxHandi = max_handi
-    gameObj.maxHandiCompany = max_company
-    gameObj.minHandi = min_handi
-    gameObj.minHandiCompany = min_company
 
 
 def getTodaySoccer(soccer_type = 0):
@@ -257,7 +127,7 @@ def getTodaySoccer(soccer_type = 0):
                 gameobj.friendTeam = oneGameArray[5]
 
             # print(f"ID:{gameObj.soccerID} 时间:{gameObj.beginTime} 联赛:{gameObj.leauge} 主队:id:{gameObj.homeTeamId} {gameObj.homeTeam} 客队:id:{gameObj.friendTeamId} {gameObj.friendTeam}")
-            gethandiTime(gameobj)
+            getOneGameHandiList(gameobj)
             if not gameobj.haveAomen:
                 continue
             can_insert_db = False
@@ -281,9 +151,10 @@ def getTodaySoccer(soccer_type = 0):
                     can_insert_db = True
             if can_insert_db:
                 if gameobj.now_aomenHandi > 0 and gameobj.now_aomenHandi > gameobj.orignal_aomenHandi:
-                    print(Fore.RED + gameobj)
-            time.sleep(5)
-
+                    print(Fore.RED + f"{gameobj}")
+            time.sleep(3)
+            getOneGameOddList(gameobj)
+            time.sleep(3)
 
 if __name__ == '__main__':
     getTodaySoccer(1)

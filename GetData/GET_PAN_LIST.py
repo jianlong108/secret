@@ -18,8 +18,27 @@ import js2py
 from colorama import Fore,init
 import re
 import ast
-
+from GetData.MySQLHelper import mysql_insert_game_to_seasonpanlu
 import random
+import traceback
+
+companydic = {
+    "ids": [281,80,1129,82,81,90,104,16,370,110,499,474,432,517],
+    "281":["365","英国"],
+    "80":["澳门","澳门"],
+    "81":["伟德","直布罗陀"],
+    "82":["立博","英国"],
+    "1129":["竞彩","中国"],
+    "90":["易胜博","安提瓜和巴布达"],
+    "104":["Interwetten","塞浦路斯"],
+    "16":["10BET","英国"],
+    "370":["Oddset","德国"],
+    "110":["SNAI","意大利"],
+    "499":["188bet","马恩岛"],
+    "474":["Sbobet","英国"],
+    "432":["香港马会","香港"],
+    "517":["明盛博","菲律宾"]
+}
 
 # result1=html.xpath('//li[@class="item-1"]//text()') #获取li下所有子孙节点的内容
 # result=html.xpath('//li/a/@href')  #获取a的href属性
@@ -165,6 +184,106 @@ def getOneGameHandiList(gameObj):
         gameObj.minHandiCompany = min_company
     except BaseException as e:
         print(e, url, webpage.text)
+        traceback.print_exc()
+
+def getOneGameOddList(gameObj):
+    try:
+        if not isinstance(gameObj, FootballGame):
+            print("传参不正确", gameObj.__class__.__name__)
+            return
+        # https://1x2.titan007.com/oddslist/1877964.htm
+        # https://op1.titan007.com/oddslist/2467964.htm
+        # url = f"https://1x2.titan007.com/oddslist/{gameObj.soccerID}.htm"
+        # 生成随机数列表
+        random_numbers = [str(random.randint(0, 9)) for _ in range(21)]
+
+        # 将列表转换为字符串
+        random_string = ''.join(random_numbers)
+        print(Fore.GREEN + f"正在进行 {random_string}")
+
+        companyies = [281, 80, 1129, 82, 81, 90, 104, 16, 370, 110, 499, 474, 432, 517]
+        url = f"https://1x2d.titan007.com/{gameObj.soccerID}.js?r={random_string}"
+        HEADERS = {
+            'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'Referer':f'https://op1.titan007.com/oddslist/{gameObj.soccerID}.htm',
+            'Content-type':'application/javascript'
+        }
+        response = requests.get(url, headers=HEADERS, timeout=7)
+        if response.status_code == 200:
+            js_code = response.text
+            # print('数据：', js_code)
+            # result = js2py.eval_js(js_code)
+            # # 在这里处理执行后的结果
+            # print(result)
+
+            # 使用正则表达式提取变量值
+            pattern = re.compile(r'var (\w+)\s*=\s*(.*?);', re.DOTALL)
+            matches = pattern.findall(js_code)
+
+            # 创建一个字典，用于存储变量名和对应的值
+            variables = {}
+
+            # 将提取的变量值转化为 Python 对象
+            for match in matches:
+                var_name, var_value = match
+                try:
+                    # 尝试使用 ast 模块将字符串转化为 Python 对象
+                    var_value = ast.literal_eval(var_value)
+                    variables[var_name] = var_value
+                except (ValueError, SyntaxError):
+                    # 转化失败时，将值保持为字符串
+                    variables[var_name] = var_value
+            oddstr = variables.get('game',[])
+            start_index = oddstr.find('"') + 1
+            end_index = oddstr.rfind('"')
+            sub_strings = oddstr[start_index:end_index].split('","')
+
+            jingcai = None
+            oddset = None
+            oddcompanyObjlist = []
+            for oneoddstr in sub_strings:
+                onecompanyList = oneoddstr.split('|')
+                cid = int(onecompanyList[0])
+                if cid not in companyies:
+                    continue
+
+                company = BetCompany(p_gameid=gameObj.soccerID, p_companyid=cid)
+                company.companyTitle = companydic.get(onecompanyList[0], onecompanyList[2])
+                company.orignal_winOdd = float(onecompanyList[3])
+                company.orignal_drawOdd = float(onecompanyList[4])
+                company.orignal_loseOdd = float(onecompanyList[5])
+                company.winOdd = float(onecompanyList[10])
+                company.drawOdd = float(onecompanyList[11])
+                company.loseOdd = float(onecompanyList[12])
+                oddcompanyObjlist.append(company)
+                if cid == 1129:
+                    jingcai = company
+                if cid == 370:
+                    oddset = company
+                # time_s = time.strptime(oriTime, '%Y-%m-%d %H:%M')
+                # company.oriTimeStr = oriTime
+                # company.oriTimeStamp = time.mktime(time_s)
+                # if earlyest_company is None:
+                #     earlyest_company = company
+                #     earlyest_timestamp = company.oriTimeStamp
+
+                # if earlyest_company is not None and company.oriTimeStamp < earlyest_timestamp:
+                #     earlyest_timestamp = company.oriTimeStamp
+                #     earlyest_company = company
+            gameObj.oddCompanies = oddcompanyObjlist
+            if jingcai is not None and oddset is not None:
+                ishome = jingcai.orignal_winOdd > jingcai.orignal_loseOdd
+                if ishome:
+                    if oddset.orignal_winOdd > jingcai.orignal_winOdd:
+                        print(Fore.RED + f"oddset高于竞彩{gameObj}")
+                else:
+                    if oddset.orignal_loseOdd > jingcai.orignal_loseOdd:
+                        print(Fore.RED + f"oddset高于竞彩{gameObj}")
+
+    except BaseException as e:
+        print(e, url, js_code)
+        traceback.print_exc()
 
 
 def verify_datetime(datetime_str):
@@ -287,24 +406,24 @@ def qiutan_get_history_games(daystr="20231125"):
         return 0, gameobj_list
     except BaseException as e:
         print(e)
+        traceback.print_exc()
         return 300, []
 
-
-
-
-def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲'):
+# 欧冠小组赛6场
+def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
     random_number = random.random()
-    print(random_number)
+    print(Fore.GREEN + f"正在进行{season} {random_number}")
     url = f'https://zq.titan007.com/jsData/letGoal/{season}/l{leagueid}.js?flesh={random_number}'
     HEADERS = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
         'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
         'Content-type':'application/javascript',
-        'referer':'https://zq.titan007.com/cn/League/8.html'
+        'referer':f'https://zq.titan007.com/cn/League/{leagueid}.html'
     }
-    response = requests.get(url, headers=HEADERS)
+    response = requests.get(url, headers=HEADERS, timeout=7)
     if response.status_code == 200:
         js_code = response.text
+        print('数据：',js_code)
         # result = js2py.eval_js(js_code)
         # # 在这里处理执行后的结果
         # print(result)
@@ -330,6 +449,7 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲'):
         totoalPanluArr = variables.get('TotalPanLu', [])
         HomePanLuArr = variables.get('HomePanLu', [])
         awayPanLuArr = variables.get('GuestPanLu', [])
+        TotalHalfPanLuArr = variables.get('TotalHalfPanLu', [])
         HomeHalfPanLuArr = variables.get('HomeHalfPanLu', [])
         GuestHalfPanLuArr = variables.get('GuestHalfPanLu', [])
         addUpArr = variables.get('addUp', [])
@@ -345,6 +465,7 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲'):
             team = TeamPanLu()
             team.season = season
             team.belongLeagueName = leaguename
+            team.belongLeagueID = leagueid
             team.teamID = t[0]
             team.teamName = t[1]
             teamlist.append(team)
@@ -354,10 +475,16 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲'):
             if team:
                 team.ranking = p[0]
                 detail = TeamPanLuDetail()
+                detail.season = team.season
+                detail.belongLeagueName = team.belongLeagueName
+                detail.belongLeagueID = team.belongLeagueID
+                detail.teamID = team.teamID
+                detail.teamName = team.teamName
+                detail.type = 1
                 detail.numberOfGame = p[2]
                 detail.upNumberOfGame = p[3]
                 detail.drawNumberOfGame = p[4]
-                detail.loseNumberOfGame = p[5]
+                detail.downNumberOfGame = p[5]
                 detail.winNumberOfGame = p[6]
                 detail.zouNumberOfGame = p[7]
                 detail.loseNumberOfGame = p[8]
@@ -366,16 +493,23 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲'):
                 detail.winRate = p[10]
                 detail.drawRate = p[11]
                 detail.loseRate = p[12]
+                team.rounds = detail.numberOfGame
                 team.allDetail = detail
         for p in HomePanLuArr:
             team = next((team for team in teamlist if team.teamID == p[1]), None)
             if team:
                 team.ranking = p[0]
                 detail = TeamPanLuDetail()
+                detail.season = team.season
+                detail.belongLeagueName = team.belongLeagueName
+                detail.belongLeagueID = team.belongLeagueID
+                detail.teamID = team.teamID
+                detail.teamName = team.teamName
+                detail.type = 2
                 detail.numberOfGame = p[2]
                 detail.upNumberOfGame = p[3]
                 detail.drawNumberOfGame = p[4]
-                detail.loseNumberOfGame = p[5]
+                detail.downNumberOfGame = p[5]
                 detail.winNumberOfGame = p[6]
                 detail.zouNumberOfGame = p[7]
                 detail.loseNumberOfGame = p[8]
@@ -391,10 +525,16 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲'):
             if team:
                 team.ranking = p[0]
                 detail = TeamPanLuDetail()
+                detail.season = team.season
+                detail.belongLeagueName = team.belongLeagueName
+                detail.belongLeagueID = team.belongLeagueID
+                detail.teamID = team.teamID
+                detail.teamName = team.teamName
+                detail.type = 3
                 detail.numberOfGame = p[2]
                 detail.upNumberOfGame = p[3]
                 detail.drawNumberOfGame = p[4]
-                detail.loseNumberOfGame = p[5]
+                detail.downNumberOfGame = p[5]
                 detail.winNumberOfGame = p[6]
                 detail.zouNumberOfGame = p[7]
                 detail.loseNumberOfGame = p[8]
@@ -404,15 +544,45 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲'):
                 detail.drawRate = p[11]
                 detail.loseRate = p[12]
                 team.awayDetail = detail
+        for p in TotalHalfPanLuArr:
+            team = next((team for team in teamlist if team.teamID == p[1]), None)
+            if team:
+                team.ranking = p[0]
+                detail = TeamPanLuDetail()
+                detail.season = team.season
+                detail.belongLeagueName = team.belongLeagueName
+                detail.belongLeagueID = team.belongLeagueID
+                detail.teamID = team.teamID
+                detail.teamName = team.teamName
+                detail.type = 4
+                detail.numberOfGame = p[2]
+                detail.upNumberOfGame = p[3]
+                detail.drawNumberOfGame = p[4]
+                detail.downNumberOfGame = p[5]
+                detail.winNumberOfGame = p[6]
+                detail.zouNumberOfGame = p[7]
+                detail.loseNumberOfGame = p[8]
+                # [9]是净值
+                detail.offset = p[9]
+                detail.winRate = p[10]
+                detail.drawRate = p[11]
+                detail.loseRate = p[12]
+                team.halfAllDetail = detail
         for p in HomeHalfPanLuArr:
             team = next((team for team in teamlist if team.teamID == p[1]), None)
             if team:
                 team.ranking = p[0]
                 detail = TeamPanLuDetail()
+                detail.season = team.season
+                detail.belongLeagueName = team.belongLeagueName
+                detail.belongLeagueID = team.belongLeagueID
+                detail.teamID = team.teamID
+                detail.teamName = team.teamName
+                detail.type = 5
                 detail.numberOfGame = p[2]
                 detail.upNumberOfGame = p[3]
                 detail.drawNumberOfGame = p[4]
-                detail.loseNumberOfGame = p[5]
+                detail.downNumberOfGame = p[5]
                 detail.winNumberOfGame = p[6]
                 detail.zouNumberOfGame = p[7]
                 detail.loseNumberOfGame = p[8]
@@ -427,10 +597,16 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲'):
             if team:
                 team.ranking = p[0]
                 detail = TeamPanLuDetail()
+                detail.season = team.season
+                detail.belongLeagueName = team.belongLeagueName
+                detail.belongLeagueID = team.belongLeagueID
+                detail.teamID = team.teamID
+                detail.teamName = team.teamName
+                detail.type = 6
                 detail.numberOfGame = p[2]
                 detail.upNumberOfGame = p[3]
                 detail.drawNumberOfGame = p[4]
-                detail.loseNumberOfGame = p[5]
+                detail.downNumberOfGame = p[5]
                 detail.winNumberOfGame = p[6]
                 detail.zouNumberOfGame = p[7]
                 detail.loseNumberOfGame = p[8]
@@ -439,7 +615,7 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲'):
                 detail.winRate = p[10]
                 detail.drawRate = p[11]
                 detail.loseRate = p[12]
-                team.halfAllDetail = detail
+                team.halfAwayDetail = detail
         winsutibetlist = addUpArr[6]
         for i in range(len(winsutibetlist)-1):
             team = next((team for team in teamlist if team.teamID == winsutibetlist[i+1]), None)
@@ -475,18 +651,25 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲'):
             team = next((team for team in teamlist if team.teamID == awaylosesutibetlist[i+1]), None)
             if team:
                 team.suitableAwayLoseBet = True
+        if len(teamlist) == 0:
+            print(Fore.RED + '没有数据 结束')
+            return
         for t in teamlist:
             print(t)
+            if t.allDetail is not None and t.allDetail.numberOfGame >= minCount:
+                mysql_insert_game_to_seasonpanlu(t)
+            else:
+                print(Fore.RED + '该队伍参赛比赛太少，没有价值')
+                continue
 
     else:
         print(Fore.RED + f'parsePanlu出错:{url}')
-        pass
-
-
+        traceback.print_exc()
 
 
 if __name__ == '__main__':
-    # game = FootballGame(1395444)
-    # getOneGameHandiList(game)
+    game = FootballGame(2464818)
+    getOneGameHandiList(game)
     # qiutan_get_history_games()
-    parsePanlu()
+    # parsePanlu(season="2003-2004",leagueid=103,leaguename='欧冠')
+    # getOneGameOddList(game)

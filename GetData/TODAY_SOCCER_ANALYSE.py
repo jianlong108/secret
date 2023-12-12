@@ -97,7 +97,7 @@ def getTodaySoccer(gameType):
                 onegame.friendTeam = oneGameArray[5].encode('utf-8')
             AllGames.append(onegame)
             # 获取欧赔,亚盘数据
-            onegame.oupeiCompanies = getOneGameODD(host, onegame)
+            onegame.oddCompanies = getOneGameODD(host, onegame)
             onegame.yapanCompanies = getOneGameHandi(host, onegame)
 
             titlestr = ''.join([str(onegame.beginTime), ':', onegame.leauge, ':', onegame.homeTeam, 'vs', onegame.friendTeam, ' id: ',
