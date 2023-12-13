@@ -249,6 +249,7 @@ def getOneGameOddList(gameObj):
                     continue
 
                 company = BetCompany(p_gameid=gameObj.soccerID, p_companyid=cid)
+                company.isOdd = True
                 company.companyTitle = companydic.get(onecompanyList[0], onecompanyList[2])
                 company.orignal_winOdd = float(onecompanyList[3])
                 company.orignal_drawOdd = float(onecompanyList[4])
@@ -273,7 +274,7 @@ def getOneGameOddList(gameObj):
                 #     earlyest_company = company
             gameObj.oddCompanies = oddcompanyObjlist
             if jingcai is not None and oddset is not None:
-                ishome = jingcai.orignal_winOdd > jingcai.orignal_loseOdd
+                ishome = jingcai.orignal_winOdd < jingcai.orignal_loseOdd
                 if ishome:
                     if oddset.orignal_winOdd > jingcai.orignal_winOdd:
                         print(Fore.RED + f"oddset高于竞彩{gameObj}")

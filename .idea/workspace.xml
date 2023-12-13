@@ -2,19 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="积分数据获取">
-      <change afterPath="$PROJECT_DIR$/GetData/companies.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/DBHELPER.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/DBHELPER.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/GAEM_DAY_SOCCER_ANALYSE.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/GAEM_DAY_SOCCER_ANALYSE.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GetData/GET_PAN_LIST.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/GET_PAN_LIST.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/LEAGUE.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/LEAGUE.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/MySQLHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/MySQLHelper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GetData/SOCCER_MODELS.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/SOCCER_MODELS.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/SOCCER_ROUND.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/SOCCER_ROUND.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/TODAY_SOCCER_ANALYSE.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/TODAY_SOCCER_ANALYSE.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HandiDisunion.py" beforeDir="false" afterPath="$PROJECT_DIR$/HandiDisunion.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RealTimeAnalyse.py" beforeDir="false" afterPath="$PROJECT_DIR$/RealTimeAnalyse.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TodayGameList.py" beforeDir="false" afterPath="$PROJECT_DIR$/TodayGameList.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -256,7 +246,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.TEST_GET_PAN_LIST">
+  <component name="RunManager" selected="Python.GET_TODAY_PAN_DISORDER">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -1388,7 +1378,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/GetData/GET_PAN_LIST.py</url>
-          <line>407</line>
+          <line>408</line>
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -1400,11 +1390,6 @@
           <url>file://$PROJECT_DIR$/GetData/LEAGUE.py</url>
           <line>241</line>
           <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/GetData/GET_PAN_LIST.py</url>
-          <line>247</line>
-          <option name="timeStamp" value="46" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

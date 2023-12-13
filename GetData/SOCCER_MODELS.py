@@ -10,6 +10,7 @@ import json
 '''
 class BetCompany(object):
     def __init__(self,title = '', p_gameid = 0, p_companyid = '0'):
+        self.isOdd = True
         # 公司id
         self.companyID = p_companyid
         # 公司名称
@@ -98,9 +99,14 @@ class BetCompany(object):
         if print_all:
             return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
         else:
-            return f"[公司]id:{self.soccerGameId} id:{self.companyID} 名称:{self.companyTitle} 初盘时间:{self.oriTimeStr} " \
-                   f"时间戳:{self.oriTimeStamp}高:{self.highest} 低:{self.lowest} 早:{self.earlyest} 初上:{self.orignal_top} " \
-                   f"初盘:{self.orignal_Handicap} 初下:{self.orignal_bottom} 终上:{self.now_top} 目前盘:{self.now_Handicap} 终下:{self.now_bottom}"
+            if self.isOdd:
+                return f"欧赔[公司]id:{self.soccerGameId} id:{self.companyID} 名称:{self.companyTitle} " \
+                       f"初主:{self.orignal_winOdd}初平:{self.orignal_drawOdd} 初客:{self.orignal_loseOdd} 主:{self.winOdd} 平:{self.drawOdd} 客:{self.loseOdd}"
+            else:
+                return f"亚盘[公司]id:{self.soccerGameId} id:{self.companyID} 名称:{self.companyTitle} 初盘时间:{self.oriTimeStr} " \
+                       f"时间戳:{self.oriTimeStamp}高:{self.highest} 低:{self.lowest} 早:{self.earlyest} 初上:{self.orignal_top} " \
+                       f"初盘:{self.orignal_Handicap} 初下:{self.orignal_bottom} 终上:{self.now_top} 目前盘:{self.now_Handicap} 终下:{self.now_bottom}"
+
 
     @property
     def resultStr(self):
