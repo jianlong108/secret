@@ -19,9 +19,8 @@ import blackboxprotobuf
 import json
 import requests
 import time
-from GetData.SOCCER_MODELS import FootballGame,GameParserFromProtobuf
-from GetData.GET_PAN_LIST import getOneGameOddList,getOneGameHandiList
-from GET_PAN_LIST import parsePanlu
+from GetData.SOCCER_MODELS import *
+from GetData.GET_GAME_PAN_ODD_DATA import *
 
 class GetCup:
     def __init__(self, model):
@@ -192,6 +191,7 @@ class GetLeague:
     # pointskind = 0总积分 1.半场积分2.主场积分3.客场积分
     def GetLeagueJiFen(self,pointskind = '0',season = '2017-2018'):
         resultStr = ''
+        # url = f"http://api.letarrow.com/ios/Phone/FBDataBase/LeaguePoints.aspx?lang=0&pointsKind=0&sclassid=36&season=2023-2024&subid=0&from=48&_t=1702645393"
         self.jifenURL = 'http://%s:8072/phone/Jifen2.aspx?an=iosQiuTan&av=6.5&from=2&pointsKind=%s&r=1532144326&sclassid=%s&season=%s&subVersion=2&subid=0' % (self.httpHost,pointskind,str(self.leagueModel.leagueID).encode('utf-8'), self.currentSeason)
         print('获取联赛: %s 赛季: %s 积分数据 url %s' % (str(self.leagueModel.leagueID).encode('utf-8'), season, self.jifenURL))
 
@@ -552,16 +552,23 @@ def getSeasonGamelist(season, leagueid=36, league='英超'):
 
 
 if __name__ == '__main__':
-    #英超 联赛 盘路  已完成 36
+    #英超 联赛 盘路 积分 已完成 36
     #英冠 盘路  已完成 37
     #德甲 盘路  已完成 8
+    #德乙 盘路  已完成 9
     #意甲 盘路  已完成 34
     #西甲 盘路  已完成 31
     #法甲 盘路  已完成 11
     #法乙 盘路 联赛  已完成 12
     #欧冠   已完成 103
-    _league_id = 103
-    _league_name = '欧冠'
+    #意乙 盘路 已完成 40
+    #西乙 盘路 已完成 33
+    #葡超 盘路 已完成 23
+    #荷甲 盘路 已完成 16
+    #荷乙 盘路 积分 已完成 17/94
+    _league_id = 17
+    _sub_league_id = 94
+    _league_name = '荷乙'
     headers = {
         'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
         'cookie': 'aiappfrom=48'
@@ -587,7 +594,8 @@ if __name__ == '__main__':
                 seasons = leaguedic.get('4', [])
                 for s in seasons:
                     # getSeasonGamelist(s, league_id, _league_name)
-                    parsePanlu(season=s,leagueid=league_id,leaguename=_league_name)
+                    # parsePanlu(season=s,leagueid=league_id,leaguename=_league_name)
+                    parseJifen(season=s,leagueid=league_id,leaguename=_league_name,subleagueid=_sub_league_id)
                     time.sleep(8)
 
     except Exception as e:

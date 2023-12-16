@@ -36,13 +36,16 @@
         <condition column="aomennowpan" operator="&lt;=" value="0.0" active="true" />
       </filter>
       <filter id="e0383f88-6c12-45eb-8861-6cc9e1cf8236" name="赢盘: 澳门盘口一直是&lt;=0 且相等" temporary="false" custom-name="false" type="custom">
-        <condition><![CDATA[aomenoripan == aomennowpan and<br>aomenoripan = 0.25]]></condition>
+        <condition>aomenoripan == aomennowpan and&lt;br&gt;aomenoripan = 0.25</condition>
       </filter>
       <filter id="f50ff365-94b1-4444-a37a-a43268044df4" name="赢" temporary="false" custom-name="false" type="basic" join-type="AND">
         <condition column="result" operator="=" value="赢" active="true" />
       </filter>
     </filter-actions>
     <filter-actions connection-id="fd07ae43-43e5-431d-94cb-721d7882a776" dataset="main.Games" active-filter-id="" />
+  </component>
+  <component name="DBNavigator.Project.ExecutionManager">
+    <retain-sticky-names value="false" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />

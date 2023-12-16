@@ -7,7 +7,7 @@ from colorama import Fore,init
 import requests
 import time
 from numpy import *
-from GetData.GET_PAN_LIST import getOneGameHandiList,getOneGameOddList
+from GetData.GET_GAME_PAN_ODD_DATA import getOneGameHandiList,getOneGameOddList
 '''
 找出今天澳*最早开盘的比赛
 response.text：

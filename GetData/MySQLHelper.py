@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import pymysql
-from GetData.SOCCER_MODELS import BetCompany, FootballGame, TeamPanLu, TeamPanLuDetail
+from GetData.SOCCER_MODELS import *
 
+import traceback
 # 替换以下变量为你的数据库信息
 host = 'localhost'
 user = 'root'
@@ -188,6 +189,56 @@ def creatTable():
             PRIMARY KEY (teamid, leagueid, season))
         """
     cursor.execute(creatPanLuTabelSQL)
+
+    creatJifenDetailTabelSQL = """
+            CREATE TABLE IF NOT EXISTS SeasonJifenDetail (
+                teamid         INT                  NOT NULL,
+                teamname       VARCHAR(15)          NOT NULL,
+                leagueid       INT                  NOT NULL,
+                league         VARCHAR(15)          NOT NULL,
+                season         VARCHAR(15),
+                ranking        INT,
+                type           INT,
+                games          INT,
+                wincount        INT,
+                drawcount      INT,
+                losecount      INT,
+                goalcount        INT,
+                losegoalcount        INT,
+                goaloffset       INT,
+                winrate        FLOAT,
+                drawrate        FLOAT,
+                loserate       FLOAT,
+                avggoal        FLOAT,
+                avglosegoal        FLOAT,
+                points       INT,
+                PRIMARY KEY (teamid, leagueid, season, type))
+            """
+    cursor.execute(creatJifenDetailTabelSQL)
+    creatJifenTabelSQL = """
+        CREATE TABLE IF NOT EXISTS SeasonJifen (
+                teamid         INT                  NOT NULL,
+                teamname       VARCHAR(15)          NOT NULL,
+                leagueid       INT                  NOT NULL,
+                league         VARCHAR(15)          NOT NULL,
+                season         VARCHAR(15),
+                ranking        INT,
+                games          INT,
+                wincount        INT,
+                drawcount      INT,
+                losecount      INT,
+                goalcount        INT,
+                losegoalcount        INT,
+                goaloffset       INT,
+                winrate        FLOAT,
+                drawrate        FLOAT,
+                loserate       FLOAT,
+                avggoal        FLOAT,
+                avglosegoal        FLOAT,
+                points       INT,
+            PRIMARY KEY (teamid, leagueid, season))
+        """
+    cursor.execute(creatJifenTabelSQL)
     # 关闭连接
     cursor.close()
     conn.close()
@@ -289,11 +340,29 @@ def mysql_insert_game_to_seasonpanlu(teamPanlu):
             0 if teamPanlu.awayDetail is None else teamPanlu.awayDetail.winRate, 0 if teamPanlu.awayDetail is None else teamPanlu.awayDetail.loseRate,
             0 if teamPanlu.halfAllDetail is None else teamPanlu.halfAllDetail.winRate, 0 if teamPanlu.halfAllDetail is None else teamPanlu.halfAllDetail.loseRate,
             0 if teamPanlu.halfHomeDetail is None else teamPanlu.halfHomeDetail.winRate, 0 if teamPanlu.halfHomeDetail is None else teamPanlu.halfHomeDetail.loseRate,
-            0 if teamPanlu.halfAwayDetail is None else teamPanlu.halfAwayDetail.winRate, 0 if teamPanlu.halfAwayDetail is None else teamPanlu.halfAwayDetail.loseRate
+            0 if teamPanlu.halfAwayDetail is None else teamPanlu.halfAwayDetail.winRate, 0 if teamPanlu.halfAwayDetail is None else teamPanlu.halfAwayDetail.loseRate,
+            teamPanlu.rounds, 0 if teamPanlu.allDetail is None else teamPanlu.allDetail.offset,
+            0 if teamPanlu.homeDetail is None else teamPanlu.homeDetail.offset,
+            0 if teamPanlu.awayDetail is None else teamPanlu.awayDetail.offset,
+            0 if teamPanlu.halfAllDetail is None else teamPanlu.halfAllDetail.offset,
+            0 if teamPanlu.halfHomeDetail is None else teamPanlu.halfHomeDetail.offset,
+            0 if teamPanlu.halfAllDetail is None else teamPanlu.halfAwayDetail.offset,
+            0 if teamPanlu.allDetail is None else teamPanlu.allDetail.winRate,
+            0 if teamPanlu.allDetail is None else teamPanlu.allDetail.loseRate,
+            0 if teamPanlu.homeDetail is None else teamPanlu.homeDetail.winRate,
+            0 if teamPanlu.homeDetail is None else teamPanlu.homeDetail.loseRate,
+            0 if teamPanlu.awayDetail is None else teamPanlu.awayDetail.winRate,
+            0 if teamPanlu.awayDetail is None else teamPanlu.awayDetail.loseRate,
+            0 if teamPanlu.halfAllDetail is None else teamPanlu.halfAllDetail.winRate,
+            0 if teamPanlu.halfAllDetail is None else teamPanlu.halfAllDetail.loseRate,
+            0 if teamPanlu.halfHomeDetail is None else teamPanlu.halfHomeDetail.winRate,
+            0 if teamPanlu.halfHomeDetail is None else teamPanlu.halfHomeDetail.loseRate,
+            0 if teamPanlu.halfAwayDetail is None else teamPanlu.halfAwayDetail.winRate,
+            0 if teamPanlu.halfAwayDetail is None else teamPanlu.halfAwayDetail.loseRate
         )
         # 插入或更新数据
         insert_query = """
-        INSERT IGNORE INTO SeasonPanlu (teamid, teamname, leagueid, league, 
+        INSERT INTO SeasonPanlu (teamid, teamname, leagueid, league, 
                                         season, rounds, allnetwins, homenetwins,
                                         awaynetwins, halfnetwins, halfhomenetwins, halfawaynetwins, 
                                         winrate, loserate, homewinrate, homeloserate, 
@@ -302,6 +371,12 @@ def mysql_insert_game_to_seasonpanlu(teamPanlu):
         VALUES (%s, %s, %s, %s, %s, %s, %s,%s, 
                 %s, %s, %s, %s, %s, %s, %s, %s,
                 %s, %s, %s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE 
+            rounds = %s, allnetwins = %s, homenetwins = %s, awaynetwins = %s, 
+            halfnetwins = %s, halfhomenetwins = %s, halfawaynetwins = %s, winrate = %s, 
+            loserate = %s, homewinrate = %s, homeloserate = %s, awaywinrate = %s, 
+            awayloserate = %s, halfwinrate = %s, halfloserate = %s, halfhomewinrate = %s, 
+            halfhomeloserate = %s, halfawaywinrate = %s, halfawayloserate = %s;
         """
 
         cursor.execute(insert_query, data)
@@ -313,16 +388,22 @@ def mysql_insert_game_to_seasonpanlu(teamPanlu):
                 detail.teamID, detail.teamName, detail.belongLeagueID, detail.belongLeagueName,
                 detail.season, detail.type, detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
                 detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
+                detail.offset, detail.winRate, detail.drawRate, detail.loseRate,detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
+                detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
                 detail.offset, detail.winRate, detail.drawRate, detail.loseRate
             )
             # 插入数据
             insert_detail_query = """
-                INSERT IGNORE INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
+                INSERT INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
                                                       season, type, games, upgames, drawgames,
                                                       downgames, winpans, zoupans, losepans,
                                                       netwins, winrate, zourate, loserate)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE 
+                games = %s, upgames = %s, drawgames = %s, downgames = %s, 
+                winpans = %s, zoupans = %s, losepans = %s, netwins = %s, 
+                winrate = %s, zourate = %s, loserate = %s
                 """
             cursor.execute(insert_detail_query, data_detail)
 
@@ -333,16 +414,22 @@ def mysql_insert_game_to_seasonpanlu(teamPanlu):
                 detail.teamID, detail.teamName, detail.belongLeagueID, detail.belongLeagueName,
                 detail.season, detail.type, detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
                 detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
+                detail.offset, detail.winRate, detail.drawRate, detail.loseRate,detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
+                detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
                 detail.offset, detail.winRate, detail.drawRate, detail.loseRate
             )
             # 插入数据
             insert_detail_query = """
-                INSERT IGNORE INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
+                INSERT INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
                                                       season, type, games, upgames, drawgames,
                                                       downgames, winpans, zoupans, losepans,
                                                       netwins, winrate, zourate, loserate)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE 
+                games = %s, upgames = %s, drawgames = %s, downgames = %s, 
+                winpans = %s, zoupans = %s, losepans = %s, netwins = %s, 
+                winrate = %s, zourate = %s, loserate = %s
                 """
             cursor.execute(insert_detail_query, data_detail)
 
@@ -353,16 +440,22 @@ def mysql_insert_game_to_seasonpanlu(teamPanlu):
                 detail.teamID, detail.teamName, detail.belongLeagueID, detail.belongLeagueName,
                 detail.season, detail.type, detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
                 detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
+                detail.offset, detail.winRate, detail.drawRate, detail.loseRate,detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
+                detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
                 detail.offset, detail.winRate, detail.drawRate, detail.loseRate
             )
             # 插入数据
             insert_detail_query = """
-                INSERT IGNORE INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
+                INSERT INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
                                                       season, type, games, upgames, drawgames,
                                                       downgames, winpans, zoupans, losepans,
                                                       netwins, winrate, zourate, loserate)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE 
+                games = %s, upgames = %s, drawgames = %s, downgames = %s, 
+                winpans = %s, zoupans = %s, losepans = %s, netwins = %s, 
+                winrate = %s, zourate = %s, loserate = %s
                 """
             cursor.execute(insert_detail_query, data_detail)
 
@@ -373,16 +466,22 @@ def mysql_insert_game_to_seasonpanlu(teamPanlu):
                 detail.teamID, detail.teamName, detail.belongLeagueID, detail.belongLeagueName,
                 detail.season, detail.type, detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
                 detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
+                detail.offset, detail.winRate, detail.drawRate, detail.loseRate,detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
+                detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
                 detail.offset, detail.winRate, detail.drawRate, detail.loseRate
             )
             # 插入数据
             insert_detail_query = """
-                INSERT IGNORE INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
+                INSERT INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
                                                       season, type, games, upgames, drawgames,
                                                       downgames, winpans, zoupans, losepans,
                                                       netwins, winrate, zourate, loserate)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE 
+                games = %s, upgames = %s, drawgames = %s, downgames = %s, 
+                winpans = %s, zoupans = %s, losepans = %s, netwins = %s, 
+                winrate = %s, zourate = %s, loserate = %s
                 """
             cursor.execute(insert_detail_query, data_detail)
 
@@ -393,16 +492,22 @@ def mysql_insert_game_to_seasonpanlu(teamPanlu):
                 detail.teamID, detail.teamName, detail.belongLeagueID, detail.belongLeagueName,
                 detail.season, detail.type, detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
                 detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
+                detail.offset, detail.winRate, detail.drawRate, detail.loseRate,detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
+                detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
                 detail.offset, detail.winRate, detail.drawRate, detail.loseRate
             )
             # 插入数据
             insert_detail_query = """
-                INSERT IGNORE INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
+                INSERT INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
                                                       season, type, games, upgames, drawgames,
                                                       downgames, winpans, zoupans, losepans,
                                                       netwins, winrate, zourate, loserate)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE 
+                games = %s, upgames = %s, drawgames = %s, downgames = %s, 
+                winpans = %s, zoupans = %s, losepans = %s, netwins = %s, 
+                winrate = %s, zourate = %s, loserate = %s
                 """
             cursor.execute(insert_detail_query, data_detail)
         detail = teamPanlu.halfAwayDetail
@@ -412,16 +517,22 @@ def mysql_insert_game_to_seasonpanlu(teamPanlu):
                 detail.teamID, detail.teamName, detail.belongLeagueID, detail.belongLeagueName,
                 detail.season, detail.type, detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
                 detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
+                detail.offset, detail.winRate, detail.drawRate, detail.loseRate,detail.numberOfGame, detail.upNumberOfGame, detail.drawNumberOfGame,
+                detail.downNumberOfGame, detail.winNumberOfGame, detail.zouNumberOfGame, detail.loseNumberOfGame,
                 detail.offset, detail.winRate, detail.drawRate, detail.loseRate
             )
             # 插入数据
             insert_detail_query = """
-                INSERT IGNORE INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
+                INSERT INTO SeasonPanluDetail (teamid, teamname, leagueid, league, 
                                                       season, type, games, upgames, drawgames,
                                                       downgames, winpans, zoupans, losepans,
                                                       netwins, winrate, zourate, loserate)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE 
+                games = %s, upgames = %s, drawgames = %s, downgames = %s, 
+                winpans = %s, zoupans = %s, losepans = %s, netwins = %s, 
+                winrate = %s, zourate = %s, loserate = %s
                 """
             cursor.execute(insert_detail_query, data_detail)
 
@@ -436,6 +547,225 @@ def mysql_insert_game_to_seasonpanlu(teamPanlu):
         cursor.close()
         conn.close()
 
+def mysql_insert_game_to_seasonjifen(teamPoints):
+    if teamPoints is None:
+        print('mysql_insert_game_to_seasonjifen 没有合法数据')
+        return
+    try:
+        global conn
+        global cursor
+
+        conn = pymysql.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database_name
+        )
+        cursor = conn.cursor()
+        # 数据
+        data = (
+            teamPoints.teamID,    teamPoints.teamName,     teamPoints.leagueid,  teamPoints.league,
+            teamPoints.season,    teamPoints.ranking,      teamPoints.gamecount, teamPoints.winCount,
+            teamPoints.drawCount, teamPoints.loseCount,    teamPoints.goalcount, teamPoints.losegoalcount,
+            teamPoints.goaloffset,teamPoints.winRate,      teamPoints.drawRate,  teamPoints.loseRate,
+            teamPoints.avgGoal,   teamPoints.avgLostGoal,  teamPoints.points,    teamPoints.ranking,
+            teamPoints.gamecount, teamPoints.winCount,     teamPoints.drawCount, teamPoints.loseCount,
+            teamPoints.goalcount, teamPoints.losegoalcount,teamPoints.goaloffset,teamPoints.winRate,
+            teamPoints.drawRate,  teamPoints.loseRate,     teamPoints.avgGoal,   teamPoints.avgLostGoal,
+            teamPoints.points
+        )
+        # 插入或更新数据
+
+
+        insert_query = """
+        INSERT INTO SeasonJifen (teamid, teamname, leagueid, league,
+                                season, ranking, games, wincount,
+                                drawcount, losecount, goalcount, losegoalcount,
+                                goaloffset, winrate, drawrate, loserate,
+                                avggoal, avglosegoal, points)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 
+                %s, %s, %s, %s, %s, %s, %s, %s,
+                %s, %s, %s)
+        ON DUPLICATE KEY UPDATE 
+            ranking = %s, games = %s, wincount = %s, drawcount = %s, 
+            losecount = %s, goalcount = %s, losegoalcount = %s, goaloffset = %s,
+            winrate = %s, drawrate = %s, loserate = %s, avggoal = %s,
+            avglosegoal = %s, points = %s
+        """
+
+        cursor.execute(insert_query, data)
+
+        detail = teamPoints.homePoints
+        if detail is not None:
+            # 数据
+            data_detail = (
+                detail.teamID, detail.teamName, detail.leagueid, detail.league,
+                detail.season, detail.ranking, detail.gamecount, detail.type,
+                detail.winCount, detail.drawCount, detail.loseCount, detail.goalcount,
+                detail.losegoalcount, detail.goaloffset, detail.winRate, detail.drawRate,
+                detail.loseRate, detail.avgGoal, detail.avgLostGoal, detail.points,
+                detail.ranking, detail.gamecount, detail.winCount, detail.drawCount,
+                detail.loseCount, detail.goalcount, detail.losegoalcount, detail.goaloffset,
+                detail.winRate, detail.drawRate, detail.loseRate, detail.avgGoal,
+                detail.avgLostGoal, detail.points
+            )
+            # 插入数据
+            insert_detail_query = """
+                INSERT INTO SeasonJifenDetail (teamid, teamname, leagueid, league,
+                                                season, ranking, games, type,
+                                                wincount, drawcount, losecount, goalcount, 
+                                                losegoalcount, goaloffset, winrate, drawrate, 
+                                                loserate, avggoal, avglosegoal, points)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE
+                    ranking = %s, games = %s, wincount = %s, drawcount = %s,
+                    losecount = %s, goalcount = %s, losegoalcount = %s, goaloffset = %s, 
+                    winrate = %s, drawrate = %s, loserate = %s, avggoal = %s, 
+                    avglosegoal = %s, points = %s
+                """
+            cursor.execute(insert_detail_query, data_detail)
+
+        detail = teamPoints.awayPoints
+        if detail is not None:
+            # 数据
+            data_detail = (
+                detail.teamID, detail.teamName, detail.leagueid, detail.league,
+                detail.season, detail.ranking, detail.gamecount, detail.type,
+                detail.winCount, detail.drawCount, detail.loseCount, detail.goalcount,
+                detail.losegoalcount, detail.goaloffset, detail.winRate, detail.drawRate,
+                detail.loseRate, detail.avgGoal, detail.avgLostGoal, detail.points,
+                detail.ranking, detail.gamecount, detail.winCount, detail.drawCount,
+                detail.loseCount, detail.goalcount, detail.losegoalcount, detail.goaloffset,
+                detail.winRate, detail.drawRate, detail.loseRate, detail.avgGoal,
+                detail.avgLostGoal, detail.points
+            )
+            # 插入数据
+            insert_detail_query = """
+                INSERT INTO SeasonJifenDetail (teamid, teamname, leagueid, league,
+                                                season, ranking, games, type,
+                                                wincount, drawcount, losecount, goalcount, 
+                                                losegoalcount, goaloffset, winrate, drawrate, 
+                                                loserate, avggoal, avglosegoal, points)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE
+                    ranking = %s, games = %s, wincount = %s, drawcount = %s,
+                    losecount = %s, goalcount = %s, losegoalcount = %s, goaloffset = %s, 
+                    winrate = %s, drawrate = %s, loserate = %s, avggoal = %s, 
+                    avglosegoal = %s, points = %s
+                """
+            cursor.execute(insert_detail_query, data_detail)
+
+        detail = teamPoints.halfPoints
+        if detail is not None:
+            # 数据
+            data_detail = (
+                detail.teamID, detail.teamName, detail.leagueid, detail.league,
+                detail.season, detail.ranking, detail.gamecount, detail.type,
+                detail.winCount, detail.drawCount, detail.loseCount, detail.goalcount,
+                detail.losegoalcount, detail.goaloffset, detail.winRate, detail.drawRate,
+                detail.loseRate, detail.avgGoal, detail.avgLostGoal, detail.points,
+                detail.ranking, detail.gamecount, detail.winCount, detail.drawCount,
+                detail.loseCount, detail.goalcount, detail.losegoalcount, detail.goaloffset,
+                detail.winRate, detail.drawRate, detail.loseRate, detail.avgGoal,
+                detail.avgLostGoal, detail.points
+            )
+            # 插入数据
+            insert_detail_query = """
+                INSERT INTO SeasonJifenDetail (teamid, teamname, leagueid, league,
+                                                season, ranking, games, type,
+                                                wincount, drawcount, losecount, goalcount, 
+                                                losegoalcount, goaloffset, winrate, drawrate, 
+                                                loserate, avggoal, avglosegoal, points)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE
+                    ranking = %s, games = %s, wincount = %s, drawcount = %s,
+                    losecount = %s, goalcount = %s, losegoalcount = %s, goaloffset = %s, 
+                    winrate = %s, drawrate = %s, loserate = %s, avggoal = %s, 
+                    avglosegoal = %s, points = %s
+                """
+            cursor.execute(insert_detail_query, data_detail)
+
+        detail = teamPoints.halfHomePoints
+        if detail is not None:
+            # 数据
+            data_detail = (
+                detail.teamID, detail.teamName, detail.leagueid, detail.league,
+                detail.season, detail.ranking, detail.gamecount, detail.type,
+                detail.winCount, detail.drawCount, detail.loseCount, detail.goalcount,
+                detail.losegoalcount, detail.goaloffset, detail.winRate, detail.drawRate,
+                detail.loseRate, detail.avgGoal, detail.avgLostGoal, detail.points,
+                detail.ranking, detail.gamecount, detail.winCount, detail.drawCount,
+                detail.loseCount, detail.goalcount, detail.losegoalcount, detail.goaloffset,
+                detail.winRate, detail.drawRate, detail.loseRate, detail.avgGoal,
+                detail.avgLostGoal, detail.points
+            )
+            # 插入数据
+            insert_detail_query = """
+                INSERT INTO SeasonJifenDetail (teamid, teamname, leagueid, league,
+                                                season, ranking, games, type,
+                                                wincount, drawcount, losecount, goalcount, 
+                                                losegoalcount, goaloffset, winrate, drawrate, 
+                                                loserate, avggoal, avglosegoal, points)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE
+                    ranking = %s, games = %s, wincount = %s, drawcount = %s,
+                    losecount = %s, goalcount = %s, losegoalcount = %s, goaloffset = %s, 
+                    winrate = %s, drawrate = %s, loserate = %s, avggoal = %s, 
+                    avglosegoal = %s, points = %s
+                """
+            cursor.execute(insert_detail_query, data_detail)
+
+        detail = teamPoints.halfAwayPoints
+        if detail is not None:
+            # 数据
+            data_detail = (
+                detail.teamID, detail.teamName, detail.leagueid, detail.league,
+                detail.season, detail.ranking, detail.gamecount, detail.type,
+                detail.winCount, detail.drawCount, detail.loseCount, detail.goalcount,
+                detail.losegoalcount, detail.goaloffset, detail.winRate, detail.drawRate,
+                detail.loseRate, detail.avgGoal, detail.avgLostGoal, detail.points,
+                detail.ranking, detail.gamecount, detail.winCount, detail.drawCount,
+                detail.loseCount, detail.goalcount, detail.losegoalcount, detail.goaloffset,
+                detail.winRate, detail.drawRate, detail.loseRate, detail.avgGoal,
+                detail.avgLostGoal, detail.points
+            )
+            # 插入数据
+            insert_detail_query = """
+                INSERT INTO SeasonJifenDetail (teamid, teamname, leagueid, league,
+                                                season, ranking, games, type,
+                                                wincount, drawcount, losecount, goalcount, 
+                                                losegoalcount, goaloffset, winrate, drawrate, 
+                                                loserate, avggoal, avglosegoal, points)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE
+                    ranking = %s, games = %s, wincount = %s, drawcount = %s,
+                    losecount = %s, goalcount = %s, losegoalcount = %s, goaloffset = %s, 
+                    winrate = %s, drawrate = %s, loserate = %s, avggoal = %s, 
+                    avglosegoal = %s, points = %s
+                """
+            cursor.execute(insert_detail_query, data_detail)
+
+        conn.commit()
+
+        print("插入成功")
+    except Exception as e:
+        print(e)
+        conn.rollback()
+        traceback.print_exc()
+    finally:
+        # 关闭连接
+        cursor.close()
+        conn.close()
 
 if __name__ == '__main__':
     # creatDataBase()

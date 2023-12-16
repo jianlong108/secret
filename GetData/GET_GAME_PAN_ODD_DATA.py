@@ -2,23 +2,24 @@
 # -*- coding:utf-8 _*-
 """ 
 @author:wangjianlong
-@file: GET_PAN_LIST.py 
+@file: GET_GAME_PAN_ODD_DATA.py
 @time: 2023/12/02
 @contact: jlwang108@gmail.com
 @site:  
 @software: PyCharm 
 """
 
-from GetData.SOCCER_MODELS import FootballGame,BetCompany,TeamPanLu,TeamPanLuDetail
+from GetData.SOCCER_MODELS import *
 import math
 import requests
 from lxml import etree
 import time
+from GetData.TIME_TOOL import get_current_timestr_YMDH
 import js2py
 from colorama import Fore,init
 import re
 import ast
-from GetData.MySQLHelper import mysql_insert_game_to_seasonpanlu
+from GetData.MySQLHelper import *
 import random
 import traceback
 
@@ -410,6 +411,229 @@ def qiutan_get_history_games(daystr="20231125"):
         traceback.print_exc()
         return 300, []
 
+
+def parseJifen(season='2023-2024', leagueid=36,leaguename='英超', minCount=6,subleagueid=None):
+    # url = f"http://api.letarrow.com/ios/Phone/FBDataBase/LeaguePoints.aspx?lang=0&pointsKind=0&sclassid=36&season=2023-2024&subid=0&from=48&_t=1702645393"
+    timestr = get_current_timestr_YMDH()
+    print(Fore.GREEN + f"正在进行{season} {timestr}")
+    # https://zq.titan007.com/jsData/matchResult/2023-2024/s16_98.js?version=2023121517
+    if subleagueid is not None:
+        url = f'https://zq.titan007.com/jsData/matchResult/{season}/s{leagueid}_{subleagueid}.js?version={timestr}'
+    else:
+        url = f'https://zq.titan007.com/jsData/matchResult/{season}/s{leagueid}.js?version={timestr}'
+    HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'Content-type':'application/javascript',
+        'referer':f'https://zq.titan007.com/cn/League.aspx?/SclassID={leagueid}'
+    }
+    response = requests.get(url, headers=HEADERS, timeout=7)
+    if response.status_code == 200:
+        js_code = response.text
+        print('数据：',js_code)
+        # 使用正则表达式提取变量值
+        pattern = re.compile(r'var (\w+)\s*=\s*(.*?);', re.DOTALL)
+        matches = pattern.findall(js_code)
+
+        # 创建一个字典，用于存储变量名和对应的值
+        variables = {}
+
+        # 将提取的变量值转化为 Python 对象
+        for match in matches:
+            var_name, var_value = match
+            try:
+                # 尝试使用 ast 模块将字符串转化为 Python 对象
+                var_value = ast.literal_eval(var_value)
+                variables[var_name] = var_value
+            except (ValueError, SyntaxError):
+                # 转化失败时，将值保持为字符串
+                variables[var_name] = var_value
+        teamArr = variables.get('arrTeam', [])
+        totoalJifenArr = variables.get('totalScore', [])
+        HomeJifenArr = variables.get('homeScore', [])
+        guestJifenArr = variables.get('guestScore', [])
+        halfScoreArr = variables.get('halfScore', [])
+        halfHomeScoreArr = variables.get('homeHalfScore', [])
+        halfGuestScoreArr = variables.get('guestHalfScore', [])
+
+
+        if len(teamArr) == 0:
+            for var_name, var_value in variables.items():
+                print(f"数据出现异常 {var_name}: {var_value}")
+            return
+        teamlist = []
+        for one in teamArr:
+            team = TeamPoints()
+            team.season = season
+            team.league = leaguename
+            team.leagueid = leagueid
+            team.teamID = one[0]
+            team.teamName = one[1]
+            teamlist.append(team)
+
+        for p in totoalJifenArr:
+            team = next((team for team in teamlist if team.teamID == p[2]), None)
+            if team:
+                team.ranking = p[1]
+                team.gamecount = p[4]
+                team.winCount = p[5]
+                team.drawCount = p[6]
+                team.loseCount = p[7]
+                team.goalcount = p[8]
+                team.losegoalcount = p[9]
+                team.goaloffset = p[10]
+                team.winRate = float(p[11])
+                team.drawRate = float(p[12])
+                team.loseRate = float(p[13])
+                team.avgGoal = p[14]
+                team.avgLostGoal = p[15]
+                team.points = p[16]
+
+        for p in HomeJifenArr:
+            team = next((team for team in teamlist if team.teamID == p[1]), None)
+            if team:
+                obj = TeamPointsUnit()
+                obj.type = 1
+                obj.league = team.league
+                obj.leagueid = team.leagueid
+                obj.season = team.season
+                obj.teamName = team.teamName
+                obj.teamID = team.teamID
+                obj.ranking = p[0]
+                obj.gamecount = p[2]
+                obj.winCount = p[3]
+                obj.drawCount = p[4]
+                obj.loseCount = p[5]
+                obj.goalcount = p[6]
+                obj.losegoalcount = p[7]
+                obj.goaloffset = p[8]
+                obj.winRate = float(p[9])
+                obj.drawRate = float(p[10])
+                obj.loseRate = float(p[11])
+                obj.avgGoal = p[12]
+                obj.avgLostGoal = p[13]
+                obj.points = p[14]
+                team.homePoints = obj
+
+        for p in guestJifenArr:
+            team = next((team for team in teamlist if team.teamID == p[1]), None)
+            if team:
+                obj = TeamPointsUnit()
+                obj.type = 2
+                obj.league = team.league
+                obj.leagueid = team.leagueid
+                obj.season = team.season
+                obj.teamName = team.teamName
+                obj.teamID = team.teamID
+                obj.ranking = p[0]
+                obj.gamecount = p[2]
+                obj.winCount = p[3]
+                obj.drawCount = p[4]
+                obj.loseCount = p[5]
+                obj.goalcount = p[6]
+                obj.losegoalcount = p[7]
+                obj.goaloffset = p[8]
+                obj.winRate = float(p[9])
+                obj.drawRate = float(p[10])
+                obj.loseRate = float(p[11])
+                obj.avgGoal = p[12]
+                obj.avgLostGoal = p[13]
+                obj.points = p[14]
+                team.awayPoints = obj
+
+        for p in halfScoreArr:
+            team = next((team for team in teamlist if team.teamID == p[1]), None)
+            if team:
+                obj = TeamPointsUnit()
+                obj.type = 3
+                obj.league = team.league
+                obj.leagueid = team.leagueid
+                obj.season = team.season
+                obj.teamName = team.teamName
+                obj.teamID = team.teamID
+                obj.ranking = p[0]
+                obj.gamecount = p[2]
+                obj.winCount = p[3]
+                obj.drawCount = p[4]
+                obj.loseCount = p[5]
+                obj.goalcount = p[6]
+                obj.losegoalcount = p[7]
+                obj.goaloffset = p[8]
+                obj.winRate = float(p[9])
+                obj.drawRate = float(p[10])
+                obj.loseRate = float(p[11])
+                obj.avgGoal = p[12]
+                obj.avgLostGoal = p[13]
+                obj.points = p[14]
+                team.halfPoints = obj
+
+        for p in halfHomeScoreArr:
+            team = next((team for team in teamlist if team.teamID == p[1]), None)
+            if team:
+                obj = TeamPointsUnit()
+                obj.type = 4
+                obj.league = team.league
+                obj.leagueid = team.leagueid
+                obj.season = team.season
+                obj.teamName = team.teamName
+                obj.teamID = team.teamID
+                obj.ranking = p[0]
+                obj.gamecount = p[2]
+                obj.winCount = p[3]
+                obj.drawCount = p[4]
+                obj.loseCount = p[5]
+                obj.goalcount = p[6]
+                obj.losegoalcount = p[7]
+                obj.goaloffset = p[8]
+                obj.winRate = float(p[9])
+                obj.drawRate = float(p[10])
+                obj.loseRate = float(p[11])
+                obj.avgGoal = p[12]
+                obj.avgLostGoal = p[13]
+                obj.points = p[14]
+                team.halfHomePoints = obj
+        for p in halfGuestScoreArr:
+            team = next((team for team in teamlist if team.teamID == p[1]), None)
+            if team:
+                obj = TeamPointsUnit()
+                obj.type = 5
+                obj.league = team.league
+                obj.leagueid = team.leagueid
+                obj.season = team.season
+                obj.teamName = team.teamName
+                obj.teamID = team.teamID
+                obj.ranking = p[0]
+                obj.gamecount = p[2]
+                obj.winCount = p[3]
+                obj.drawCount = p[4]
+                obj.loseCount = p[5]
+                obj.goalcount = p[6]
+                obj.losegoalcount = p[7]
+                obj.goaloffset = p[8]
+                obj.winRate = float(p[9])
+                obj.drawRate = float(p[10])
+                obj.loseRate = float(p[11])
+                obj.avgGoal = p[12]
+                obj.avgLostGoal = p[13]
+                obj.points = p[14]
+                team.halfAwayPoints = obj
+
+        if len(teamlist) == 0:
+            print(Fore.RED + '没有数据 结束')
+            return
+        for t in teamlist:
+            print(t,t.homePoints,t.awayPoints,t.halfPoints,t.halfHomePoints,t.halfAwayPoints)
+            if t.homePoints is not None and t.homePoints.gamecount >= minCount:
+                mysql_insert_game_to_seasonjifen(t)
+                pass
+            else:
+                print(Fore.RED + '该队伍参赛比赛太少，没有价值')
+                continue
+    else:
+        print(Fore.RED + f'parsePanlu出错:{url}')
+        traceback.print_exc()
+
+
 # 欧冠小组赛6场
 def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
     random_number = random.random()
@@ -667,10 +891,87 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
         print(Fore.RED + f'parsePanlu出错:{url}')
         traceback.print_exc()
 
+# 获取一个队伍的盘路历史
+# type :0全场盘路 1主场盘路 2客场盘路 3半场盘路 4半场主场盘路 5半场客场盘路
+def getOneTeamPanlu(season='2022-2023', teamid=46, leagueid=37, lutype=0):
+    url = f"https://zq.titan007.com/cn/Team/HandicapDetail.aspx?sclassid={leagueid}&teamid={teamid}&matchseason={season}&halfOrAll={lutype}"
+    HEADERS = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'Content-type':'text/html; charset=utf-8',
+        'Referer': f'https://zq.titan007.com/cn/SubLeague/{season}/{leagueid}_87.html'
+    }
+    print(url)
+    webpage = requests.get(url, headers=HEADERS)
+    webpage.encoding = 'utf-8'
+    # webpage.encoding = 'gb2312'
+    dom = etree.HTML(webpage.text)
+
+    script_text = dom.xpath("//script[last()]/text()")[0]
+    pattern = re.compile(r'var (\w+)\s*=\s*(.*?);', re.DOTALL)
+    matches = pattern.findall(script_text)
+
+    # 创建一个字典，用于存储变量名和对应的值
+    variables = {}
+
+    # 将提取的变量值转化为 Python 对象
+    for match in matches:
+        var_name, var_value = match
+        try:
+            # 尝试使用 ast 模块将字符串转化为 Python 对象
+            var_value = ast.literal_eval(var_value)
+            variables[var_name] = var_value
+        except (ValueError, SyntaxError):
+            # 转化失败时，将值保持为字符串
+            variables[var_name] = var_value
+    gamelist = variables.get("handicapDetail", [])
+    gameobjlist = []
+    wincount = 0
+    losecount = 0
+    if gamelist is None or len(gamelist) == 0:
+        return
+    for game in gamelist:
+        # [2225177, 37, '#cc3300', '2023/05/08 22:00', 46, 64, '3-0', '2-0', '英冠', '英冠', 'ENG LCH', '伯恩利', '般尼', 'Burnley','卡迪夫城', '卡迪夫城', 'Cardiff City', '赢', '一球/球半|1/1.5', 'เบิร์นลี่ย์', 'คาร์ดิฟฟ์ซิตี้']
+        gameobj = BaseFootballGame(gameid=game[0])
+        gameobj.leaugeid = game[1]
+        gameobj.beginTime = game[3]
+        gameobj.homeTeamId = game[4]
+        gameobj.friendTeamId = game[5]
+        gameobj.allHome = int(game[6].split('-')[0])
+        gameobj.allFriend = int(game[6].split('-')[1])
+        gameobj.halfHome = int(game[7].split('-')[0])
+        gameobj.halfFriend = int(game[7].split('-')[1])
+        gameobj.homeTeam = game[11]
+        gameobj.friendTeam = game[14]
+        gameobj.panResult = game[17]
+        gameobjlist.append(gameobj)
+
+    count = 0
+    gameobjlist.reverse()
+    for gameobj in gameobjlist:
+        if lutype == 1 or lutype == 4:
+            if gameobj.homeTeamId != teamid:
+                continue
+        elif lutype == 2 or lutype == 5:
+            if gameobj.friendTeamId != teamid:
+                continue
+        else:
+            pass
+        count += 1
+        if gameobj.panResult == '赢':
+            wincount += 1
+        elif gameobj.panResult == '输':
+            losecount += 1
+        else:
+            pass
+        print(f"{gameobj.panResult}/{wincount}/{losecount} 净胜{wincount-losecount} 胜率:{round(wincount/count,2)} 输率:{round(losecount/count,2)}")
+
 
 if __name__ == '__main__':
-    game = FootballGame(2464818)
-    getOneGameHandiList(game)
+    # game = FootballGame(2464818)
+    # getOneGameHandiList(game)
     # qiutan_get_history_games()
-    # parsePanlu(season="2003-2004",leagueid=103,leaguename='欧冠')
+    # parsePanlu(season="2023-2024",leagueid=16,leaguename='荷甲')
     # getOneGameOddList(game)
+    getOneTeamPanlu(season='2020-2021', teamid=243, leagueid=17, lutype=1)
+    # parseJifen(season="2021-2022",leagueid=17,leaguename='荷乙',subleagueid=94)

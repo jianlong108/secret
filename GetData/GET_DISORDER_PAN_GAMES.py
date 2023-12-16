@@ -9,7 +9,7 @@ import blackboxprotobuf
 import json
 from colorama import Fore,init
 from MySQLHelper import mysql_insert_game_to_disorder
-from GetData.GET_PAN_LIST import getOneGameHandiList,qiutan_get_history_games
+from GetData.GET_GAME_PAN_ODD_DATA import getOneGameHandiList,qiutan_get_history_games
 from datetime import datetime, timedelta
 
 

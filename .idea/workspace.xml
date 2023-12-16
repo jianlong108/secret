@@ -2,9 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="积分数据获取">
+      <change afterPath="$PROJECT_DIR$/GetData/TIME_TOOL.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/GET_PAN_LIST.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/GET_PAN_LIST.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GetData/GET_DISORDER_PAN_GAMES.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/GET_DISORDER_PAN_GAMES.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GetData/GET_PAN_LIST.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/GET_GAME_PAN_ODD_DATA.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GetData/LEAGUE.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/LEAGUE.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GetData/MySQLHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/MySQLHelper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GetData/SOCCER_MODELS.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/SOCCER_MODELS.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TodayGameList.py" beforeDir="false" afterPath="$PROJECT_DIR$/TodayGameList.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -246,7 +252,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.GET_TODAY_PAN_DISORDER">
+  <component name="RunManager" selected="Python.TEST_GET_PAN_LIST">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -391,7 +397,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/GetData/GET_PAN_LIST.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/GetData/GET_GAME_PAN_ODD_DATA.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -589,7 +595,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/GetData/GET_PAN_LIST.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/GetData/GET_GAME_PAN_ODD_DATA.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -612,6 +618,28 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/GetData/MySQLHelper.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TEST_TIME" type="PythonConfigurationType" factoryName="Python">
+      <module name="Soccer" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/opt/python@3.11/bin/python3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GetData" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/GetData/TIME_TOOL.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -913,6 +941,7 @@
       <item itemvalue="Python.DEBUG_GET_PANLIST" />
       <item itemvalue="Python.GET_HISTORY_CUP_GAMES" />
       <item itemvalue="Python.GET_TODAY_PAN_DISORDER" />
+      <item itemvalue="Python.TEST_TIME" />
       <item itemvalue="Python.TEST_MYSQL" />
       <item itemvalue="Python.Excel_Test" />
       <item itemvalue="Python.GetLeagueList" />
@@ -1373,16 +1402,16 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/GetData/MySQLHelper.py</url>
-          <line>258</line>
+          <line>309</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/GetData/GET_PAN_LIST.py</url>
+          <url>file://$PROJECT_DIR$/GetData/GET_GAME_PAN_ODD_DATA.py</url>
           <line>408</line>
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/GetData/GET_PAN_LIST.py</url>
+          <url>file://$PROJECT_DIR$/GetData/GET_GAME_PAN_ODD_DATA.py</url>
           <line>185</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
@@ -1390,6 +1419,21 @@
           <url>file://$PROJECT_DIR$/GetData/LEAGUE.py</url>
           <line>241</line>
           <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/GetData/GET_GAME_PAN_ODD_DATA.py</url>
+          <line>705</line>
+          <option name="timeStamp" value="62" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/GetData/LEAGUE.py</url>
+          <line>191</line>
+          <option name="timeStamp" value="63" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/GetData/GET_GAME_PAN_ODD_DATA.py</url>
+          <line>950</line>
+          <option name="timeStamp" value="73" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

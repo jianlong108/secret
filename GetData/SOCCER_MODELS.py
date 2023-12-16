@@ -165,6 +165,35 @@ class BetCompany(object):
             else:
                 return '降'
 
+class BaseFootballGame(object):
+    def __init__(self, gameid=0):
+        # 比赛ID
+        self.soccerID = gameid
+        # 所属联赛
+        self.leauge = ''
+        self.leaugeid = 0
+        # 赛季
+        self.season = ''
+        # 开赛时间
+        self.beginTime = ''
+        self.beginTimestamp = 0
+        # 主队名称
+        self.homeTeam = ''
+        # 主队id
+        self.homeTeamId = 0
+        # 客队
+        self.friendTeam = ''
+        # 客队id
+        self.friendTeamId = 0
+        # 主队得分
+        self.allHome = 0
+        # 客队得分
+        self.allFriend = 0
+        # 半场主队得分
+        self.halfHome = 0
+        # 半场客队得分
+        self.halfFriend = 0
+        self.panResult = ''
 
 '''
 单场比赛
@@ -567,58 +596,75 @@ class TeamPanLu:
             return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
         else:
             return f"赛季:{self.season} 球队id:{self.teamID}:{self.teamName}"
-
+# 1主场 2客场 3半场 4半场主 5半场客
+class TeamPointsUnit:
+    def __init__(self):
+        self.type = 0
+        # 所属联赛
+        self.league = ''
+        self.leagueid = 0
+        # 当前赛季
+        self.season = ''
+        # 球队名称
+        self.teamName = ''
+        self.teamID = 0
+        self.ranking = 0
+        self.gamecount = 0
+        self.winCount = 0
+        self.drawCount = 0
+        self.loseCount = 0
+        self.goalcount = 0
+        self.losegoalcount = 0
+        self.goaloffset = 0
+        self.winRate = 0
+        self.drawRate = 0
+        self.loseRate = 0
+        self.avgGoal = 0.0
+        self.avgLostGoal = 0.0
+        self.points = 0
+    def __str__(self, print_all=False):
+        if print_all:
+            return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
+        else:
+            return f"赛季:{self.season} 球队id:{self.teamID}:{self.teamName} 积分:{self.points}/{self.winCount}/{self.drawCount}/{self.loseCount}"
 
 # 球队积分模型
 class TeamPoints:
     def __init__(self):
         # 所属联赛
         self.league = ''
+        self.leagueid = 0
         # 当前赛季
         self.season = ''
-        # 赛季总轮数
-        self.seasonRound = 0
         # 球队名称
         self.teamName = ''
         self.teamID = 0
         # 排名
         self.ranking = 0
-        self.halfRanking = 0
-        self.homeRanking = 0
-        self.friendRanking = 0
-        # 获胜的场次数量
+        self.gamecount = 0
         self.winCount = 0
-        self.halfWinCount = 0
-        self.homeWinCount = 0
-        self.friendWinCount = 0
-        # 平掉的场次数量
         self.drawCount = 0
-        self.halfDrawCount = 0
-        self.homeDrawCount = 0
-        self.friendDrawCount = 0
-        # 输掉的场次数量
         self.loseCount = 0
-        self.halfLoseCount = 0
-        self.homeLoseCount = 0
-        self.friendLoseCount = 0
-        # 进球数
-        self.getScore = 0
-        self.homeGetScore = 0
-        self.friendGetScore = 0
-        self.halfGetScore = 0
-        # 失球数
-        self.loseScore = 0
-        self.halfLoseScore = 0
-        self.homeLoseScore = 0
-        self.friendLoseScore = 0
-        # 赛季积分
+        self.goalcount = 0
+        self.losegoalcount = 0
+        self.goaloffset = 0
+        self.winRate = 0.0
+        self.drawRate = 0.0
+        self.loseRate = 0.0
+        self.avgGoal = 0.0
+        self.avgLostGoal = 0.0
         self.points = 0
-        # 赛季半场积分
-        self.halfPoints = 0
-        # 主场积分
-        self.homePoints = 0
-        # 客场积分
-        self.friendPoints = 0
+        self.homePoints = None
+        self.awayPoints = None
+        self.halfPoints = None
+        self.halfHomePoints = None
+        self.halfAwayPoints = None
+    def __str__(self, print_all=False):
+        if print_all:
+            return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
+        else:
+            return f"赛季:{self.season} 球队id:{self.teamID}:{self.teamName} 积分:{self.points}/{self.winCount}/{self.drawCount}/{self.loseCount}"
+
 
 class GameParserFromProtobuf(object):
     def __init__(self, oristr = None, league_id=0, league_name=''):
