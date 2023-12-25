@@ -15,13 +15,14 @@ import requests
 from lxml import etree
 import time
 from GetData.TIME_TOOL import get_current_timestr_YMDH
-import js2py
+# import js2py
 from colorama import Fore,init
 import re
 import ast
 from GetData.MySQLHelper import *
 import random
 import traceback
+import os
 
 companydic = {
     "ids": [281,80,1129,82,81,90,104,16,370,110,499,474,432,517],
@@ -401,7 +402,7 @@ def qiutan_get_history_games(daystr="20231125"):
         return 300, []
 
 
-def parseJifen(season='2023-2024', leagueid=36,leaguename='英超', minCount=6,subleagueid=None):
+def parseJifen(season='2023-2024', leagueid=36,leaguename='英超', minCount=6,subleagueid=None,writeFile=False):
     # url = f"http://api.letarrow.com/ios/Phone/FBDataBase/LeaguePoints.aspx?lang=0&pointsKind=0&sclassid=36&season=2023-2024&subid=0&from=48&_t=1702645393"
     timestr = get_current_timestr_YMDH()
     print(Fore.GREEN + f"正在进行{season} {timestr}")
@@ -419,7 +420,6 @@ def parseJifen(season='2023-2024', leagueid=36,leaguename='英超', minCount=6,s
     response = requests.get(url, headers=HEADERS, timeout=7)
     if response.status_code == 200:
         js_code = response.text
-        print('数据：',js_code)
         # 使用正则表达式提取变量值
         pattern = re.compile(r'var (\w+)\s*=\s*(.*?);', re.DOTALL)
         matches = pattern.findall(js_code)
@@ -477,7 +477,25 @@ def parseJifen(season='2023-2024', leagueid=36,leaguename='英超', minCount=6,s
                 team.avgGoal = p[14]
                 team.avgLostGoal = p[15]
                 team.points = p[16]
-
+        if writeFile:
+            teamlist.sort(key=lambda x: x.ranking)
+            try:
+                for team in teamlist:
+                    with open(os.path.expanduser(f'~/Desktop/{season}_{leagueid}.txt'), "a+") as f:
+                        print(team.teamName, "主场")
+                        homeratestrlist = getOneTeamPanlu(season=season, teamid=team.teamID, leagueid=leagueid, lutype=1)
+                        f.writelines(homeratestrlist)
+                        time.sleep(2)
+                        print(team.teamName, "客场")
+                        friendratestrlist = getOneTeamPanlu(season=season, teamid=team.teamID, leagueid=leagueid, lutype=2)
+                        f.writelines(friendratestrlist)
+                        time.sleep(2)
+                        f.close()
+            except BaseException as e:
+                print(e)
+            finally:
+              pass
+            return
         for p in HomeJifenArr:
             team = next((team for team in teamlist if team.teamID == p[1]), None)
             if team:
@@ -503,7 +521,6 @@ def parseJifen(season='2023-2024', leagueid=36,leaguename='英超', minCount=6,s
                 obj.avgLostGoal = p[13]
                 obj.points = p[14]
                 team.homePoints = obj
-
         for p in guestJifenArr:
             team = next((team for team in teamlist if team.teamID == p[1]), None)
             if team:
@@ -529,7 +546,6 @@ def parseJifen(season='2023-2024', leagueid=36,leaguename='英超', minCount=6,s
                 obj.avgLostGoal = p[13]
                 obj.points = p[14]
                 team.awayPoints = obj
-
         for p in halfScoreArr:
             team = next((team for team in teamlist if team.teamID == p[1]), None)
             if team:
@@ -555,7 +571,6 @@ def parseJifen(season='2023-2024', leagueid=36,leaguename='英超', minCount=6,s
                 obj.avgLostGoal = p[13]
                 obj.points = p[14]
                 team.halfPoints = obj
-
         for p in halfHomeScoreArr:
             team = next((team for team in teamlist if team.teamID == p[1]), None)
             if team:
@@ -980,6 +995,8 @@ def getOneTeamPanlu(season='2022-2023', teamid=46, leagueid=37, lutype=0):
 
     count = 0
     gameobjlist.reverse()
+    panlustrlist = []
+
     for gameobj in gameobjlist:
         if lutype == 1 or lutype == 4:
             if gameobj.homeTeamId != teamid:
@@ -996,14 +1013,18 @@ def getOneTeamPanlu(season='2022-2023', teamid=46, leagueid=37, lutype=0):
             losecount += 1
         else:
             pass
-        print(f"{gameobj.panResult}/{wincount}/{losecount} 净胜{wincount-losecount} 胜率:{round(wincount/count,2)} 输率:{round(losecount/count,2)}")
+        onet = f"{season}{gameobj.homeTeam}:{gameobj.friendTeam} {gameobj.panResult}/{wincount}/{losecount} 净胜{wincount-losecount} 胜率:{round(wincount/count,2)} 输率:{round(losecount/count,2)}"
+        panlustrlist.append(onet)
+        panlustrlist.append("\n")
 
+    return panlustrlist
 
 if __name__ == '__main__':
     # game = FootballGame(2464818)
     # getOneGameHandiList(game)
     # qiutan_get_history_games()
-    parsePanlu(season='2018-2019',leagueid=12,leaguename='法乙',subleagueid=1778)
+    # parsePanlu(season='2021-2022',leagueid=36,leaguename='英超')
     # getOneGameOddList(game)
     # getOneTeamPanlu(season='2020-2021', teamid=53, leagueid=37, lutype=1)
     # parseJifen(season="2021-2022",leagueid=17,leaguename='荷乙',subleagueid=94)
+    parseJifen(season="2021-2022",leagueid=36,leaguename='英超',writeFile=True)
