@@ -27,6 +27,7 @@ companydic = {
     "ids": [281,80,1129,82,81,90,104,16,370,110,499,474,432,517],
     "281":["365","英国"],
     "80":["澳门","澳门"],
+    "115":["威廉希尔","英国"],
     "81":["伟德","直布罗陀"],
     "82":["立博","英国"],
     "1129":["竞彩","中国"],
@@ -114,16 +115,17 @@ def getOneGameHandiList(gameObj):
                 nowawayshui = ''.join([str(s) for s in nowawayshui])
                 company = BetCompany(p_gameid=gameObj.soccerID, p_companyid=companyid)
                 company.companyTitle = name
-                time_s = time.strptime(oriTime, '%Y-%m-%d %H:%M')
                 company.oriTimeStr = oriTime
-                company.oriTimeStamp = time.mktime(time_s)
-                if earlyest_company is None:
-                    earlyest_company = company
-                    earlyest_timestamp = company.oriTimeStamp
+                if '0001-01-01 00:00' != oriTime:
+                    time_s = time.strptime(oriTime, '%Y-%m-%d %H:%M')
+                    company.oriTimeStamp = time.mktime(time_s)
+                    if earlyest_company is None:
+                        earlyest_company = company
+                        earlyest_timestamp = company.oriTimeStamp
 
-                if earlyest_company is not None and company.oriTimeStamp < earlyest_timestamp:
-                    earlyest_timestamp = company.oriTimeStamp
-                    earlyest_company = company
+                    if earlyest_company is not None and company.oriTimeStamp < earlyest_timestamp:
+                        earlyest_timestamp = company.oriTimeStamp
+                        earlyest_company = company
 
                 company.orignal_Handicap = float(oripan)
                 company.orignal_top = orihomeshui
@@ -213,11 +215,6 @@ def getOneGameOddList(gameObj):
         response = requests.get(url, headers=HEADERS, timeout=7)
         if response.status_code == 200:
             js_code = response.text
-            # print('数据：', js_code)
-            # result = js2py.eval_js(js_code)
-            # # 在这里处理执行后的结果
-            # print(result)
-
             # 使用正则表达式提取变量值
             pattern = re.compile(r'var (\w+)\s*=\s*(.*?);', re.DOTALL)
             matches = pattern.findall(js_code)
@@ -251,7 +248,7 @@ def getOneGameOddList(gameObj):
 
                 company = BetCompany(p_gameid=gameObj.soccerID, p_companyid=cid)
                 company.isOdd = True
-                company.companyTitle = companydic.get(onecompanyList[0], onecompanyList[2])
+                company.companyTitle = companydic.get(onecompanyList[0], [onecompanyList[2]])[0]
                 company.orignal_winOdd = float(onecompanyList[3])
                 company.orignal_drawOdd = float(onecompanyList[4])
                 company.orignal_loseOdd = float(onecompanyList[5])
@@ -261,18 +258,10 @@ def getOneGameOddList(gameObj):
                 oddcompanyObjlist.append(company)
                 if cid == 1129:
                     jingcai = company
-                if cid == 370:
+                elif cid == 370:
                     oddset = company
-                # time_s = time.strptime(oriTime, '%Y-%m-%d %H:%M')
-                # company.oriTimeStr = oriTime
-                # company.oriTimeStamp = time.mktime(time_s)
-                # if earlyest_company is None:
-                #     earlyest_company = company
-                #     earlyest_timestamp = company.oriTimeStamp
-
-                # if earlyest_company is not None and company.oriTimeStamp < earlyest_timestamp:
-                #     earlyest_timestamp = company.oriTimeStamp
-                #     earlyest_company = company
+                elif cid == 80:
+                    gameObj.aomenOddCompany = company
             gameObj.oddCompanies = oddcompanyObjlist
             if jingcai is not None and oddset is not None:
                 ishome = jingcai.orignal_winOdd < jingcai.orignal_loseOdd
@@ -637,7 +626,7 @@ def parseJifen(season='2023-2024', leagueid=36,leaguename='英超', minCount=6,s
 # 欧冠小组赛6场
 def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
     random_number = random.random()
-    print(Fore.GREEN + f"正在进行{season} {random_number}")
+    # print(Fore.GREEN + f"parsePanlu 正在进行{season} {random_number}")
     url = f'https://zq.titan007.com/jsData/letGoal/{season}/l{leagueid}.js?flesh={random_number}'
     HEADERS = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
@@ -646,12 +635,10 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
         'referer':f'https://zq.titan007.com/cn/League/{leagueid}.html'
     }
     response = requests.get(url, headers=HEADERS, timeout=7)
+
+    specialDic = {}
     if response.status_code == 200:
         js_code = response.text
-        print('数据：',js_code)
-        # result = js2py.eval_js(js_code)
-        # # 在这里处理执行后的结果
-        # print(result)
 
         # 使用正则表达式提取变量值
         pattern = re.compile(r'var (\w+)\s*=\s*(.*?);', re.DOTALL)
@@ -679,7 +666,6 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
         GuestHalfPanLuArr = variables.get('GuestHalfPanLu', [])
         addUpArr = variables.get('addUp', [])
         addUpHalfArr = variables.get('addUpHalf', [])
-
 
         if len(teamArr) == 0:
             for var_name, var_value in variables.items():
@@ -720,6 +706,14 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
                 detail.loseRate = p[12]
                 team.rounds = detail.numberOfGame
                 team.allDetail = detail
+                if detail.winRate >= 70 or detail.winRate >= 70 or  detail.loseRate >= 70:
+                    # print("全部盘路", team, detail)
+                    curlist = specialDic.get("全部盘路", None)
+                    if curlist is not None:
+                        curlist.append(detail)
+                        specialDic["全部盘路"] = curlist
+                    else:
+                        specialDic["全部盘路"] = [detail]
         for p in HomePanLuArr:
             team = next((team for team in teamlist if team.teamID == p[1]), None)
             if team:
@@ -744,6 +738,14 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
                 detail.drawRate = p[11]
                 detail.loseRate = p[12]
                 team.homeDetail = detail
+                if detail.winRate >= 70 or detail.winRate >= 70 or  detail.loseRate >= 70:
+                    # print("主场盘路",team,detail)
+                    curlist = specialDic.get("主场盘路", None)
+                    if curlist is not None:
+                        curlist.append(detail)
+                        specialDic["主场盘路"] = curlist
+                    else:
+                        specialDic["主场盘路"] = [detail]
 
         for p in awayPanLuArr:
             team = next((team for team in teamlist if team.teamID == p[1]), None)
@@ -769,6 +771,14 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
                 detail.drawRate = p[11]
                 detail.loseRate = p[12]
                 team.awayDetail = detail
+                if detail.winRate >= 70 or detail.winRate >= 70 or  detail.loseRate >= 70:
+                    # print("客场盘路",team,detail)
+                    curlist = specialDic.get("客场盘路", None)
+                    if curlist is not None:
+                        curlist.append(detail)
+                        specialDic["客场盘路"] = curlist
+                    else:
+                        specialDic["客场盘路"] = [detail]
         for p in TotalHalfPanLuArr:
             team = next((team for team in teamlist if team.teamID == p[1]), None)
             if team:
@@ -793,6 +803,14 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
                 detail.drawRate = p[11]
                 detail.loseRate = p[12]
                 team.halfAllDetail = detail
+                if detail.winRate >= 70 or detail.winRate >= 70 or  detail.loseRate >= 70:
+                    # print("半场盘路",team,detail)
+                    curlist = specialDic.get("半场盘路", None)
+                    if curlist is not None:
+                        curlist.append(detail)
+                        specialDic["半场盘路"] = curlist
+                    else:
+                        specialDic["半场盘路"] = [detail]
         for p in HomeHalfPanLuArr:
             team = next((team for team in teamlist if team.teamID == p[1]), None)
             if team:
@@ -817,6 +835,14 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
                 detail.drawRate = p[11]
                 detail.loseRate = p[12]
                 team.halfHomeDetail = detail
+                if detail.winRate >= 70 or detail.winRate >= 70 or  detail.loseRate >= 70:
+                    # print("半场主场盘路",team,detail)
+                    curlist = specialDic.get("半场主场盘路", None)
+                    if curlist is not None:
+                        curlist.append(detail)
+                        specialDic["半场主场盘路"] = curlist
+                    else:
+                        specialDic["半场主场盘路"] = [detail]
         for p in GuestHalfPanLuArr:
             team = next((team for team in teamlist if team.teamID == p[1]), None)
             if team:
@@ -841,6 +867,14 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
                 detail.drawRate = p[11]
                 detail.loseRate = p[12]
                 team.halfAwayDetail = detail
+                if detail.winRate >= 70 or detail.winRate >= 70 or  detail.loseRate >= 70:
+                    # print("半场客场盘路",team,detail)
+                    curlist = specialDic.get("半场客场盘路", None)
+                    if curlist is not None:
+                        curlist.append(detail)
+                        specialDic["半场客场盘路"] = curlist
+                    else:
+                        specialDic["半场客场盘路"] = [detail]
         winsutibetlist = addUpArr[6]
         for i in range(len(winsutibetlist)-1):
             team = next((team for team in teamlist if team.teamID == winsutibetlist[i+1]), None)
@@ -880,7 +914,6 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
             print(Fore.RED + '没有数据 结束')
             return
         for t in teamlist:
-            print(t)
             if t.allDetail is not None and t.allDetail.numberOfGame >= minCount:
                 mysql_insert_game_to_seasonpanlu(t)
             else:
@@ -890,6 +923,7 @@ def parsePanlu(season='2022-2023', leagueid=8,leaguename='德甲', minCount=6):
     else:
         print(Fore.RED + f'parsePanlu出错:{url}')
         traceback.print_exc()
+    return specialDic
 
 # 获取一个队伍的盘路历史
 # type :0全场盘路 1主场盘路 2客场盘路 3半场盘路 4半场主场盘路 5半场客场盘路
@@ -901,10 +935,8 @@ def getOneTeamPanlu(season='2022-2023', teamid=46, leagueid=37, lutype=0):
         'Content-type':'text/html; charset=utf-8',
         'Referer': f'https://zq.titan007.com/cn/SubLeague/{season}/{leagueid}_87.html'
     }
-    print(url)
     webpage = requests.get(url, headers=HEADERS)
     webpage.encoding = 'utf-8'
-    # webpage.encoding = 'gb2312'
     dom = etree.HTML(webpage.text)
 
     script_text = dom.xpath("//script[last()]/text()")[0]
@@ -971,7 +1003,7 @@ if __name__ == '__main__':
     # game = FootballGame(2464818)
     # getOneGameHandiList(game)
     # qiutan_get_history_games()
-    # parsePanlu(season="2023-2024",leagueid=16,leaguename='荷甲')
+    parsePanlu(season='2018-2019',leagueid=12,leaguename='法乙',subleagueid=1778)
     # getOneGameOddList(game)
-    getOneTeamPanlu(season='2020-2021', teamid=243, leagueid=17, lutype=1)
+    # getOneTeamPanlu(season='2020-2021', teamid=53, leagueid=37, lutype=1)
     # parseJifen(season="2021-2022",leagueid=17,leaguename='荷乙',subleagueid=94)

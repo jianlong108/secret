@@ -133,25 +133,25 @@ def getTodaySoccer(soccer_type = 0):
             can_insert_db = False
             print('---------')
             if gameobj.handiIsFilp:
-                print(Fore.GREEN + "盘口翻转",gameobj)
+                print(Fore.GREEN + f"盘口翻转:{gameobj}")
                 can_insert_db = True
             if gameobj.earlyestCompany is not None and gameobj.earlyestCompany.companyID == '1':
-                print(Fore.YELLOW + "澳盘开盘早", gameobj.earlyestCompany)
+                print(Fore.YELLOW + f"澳盘开盘早:{gameobj.earlyestCompany}")
                 can_insert_db = True
 
             if len(gameobj.orignalHandiList) > 2:
                 if gameobj.maxHandiCompany.companyID != '1' and mean(gameobj.orignalHandiList) > mean(
                         gameobj.nowHandiList):
-                    print(Fore.BLUE + "初盘混乱 后续降盘 澳盘不是最大盘", gameobj)
+                    print(Fore.BLUE + f"初盘混乱 后续降盘 澳盘不是最大盘:{gameobj}")
                     can_insert_db = True
 
                 if gameobj.maxHandiCompany.companyID != '1' and mean(gameobj.orignalHandiList) < mean(
                         gameobj.nowHandiList):
-                    print(Fore.BLUE + "初盘混乱 后续升盘 澳盘不是最大盘", gameobj)
+                    print(Fore.BLUE + f"初盘混乱 后续升盘 澳盘不是最大盘, {gameobj}")
                     can_insert_db = True
             if can_insert_db:
                 if gameobj.now_aomenHandi > 0 and gameobj.now_aomenHandi > gameobj.orignal_aomenHandi:
-                    print(Fore.RED + f"{gameobj}")
+                    print(Fore.RED + f"澳门终盘主队强，且澳门升盘：{gameobj}")
             time.sleep(3)
             getOneGameOddList(gameobj)
             time.sleep(3)

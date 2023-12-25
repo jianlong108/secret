@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import time
+import traceback
+
 from DBHELPER import (insert_game_list_to_db, insertNewGameList, GET_LEAGUE_DETAIL_FROM_DB,
                       InsertLeagueJiFenALL, InsertLeagueDaXiao, InsertLeaguePanLu,
                       get_team_history_panlu_fromdb_with_teamid,insert_game_to_db)
@@ -10,7 +12,7 @@ from NETWORKS_TOOLS import get_resultstr_with_url
 from SOCCER_MODELS import TeamPanLu,TeamPoints,League
 # from EXCEL_HELPER import write_excel
 # import sys
-
+import re
 # reload(sys)
 # sys.setdefaultencoding('utf-8')
 
@@ -21,6 +23,15 @@ import requests
 import time
 from GetData.SOCCER_MODELS import *
 from GetData.GET_GAME_PAN_ODD_DATA import *
+
+import re
+
+
+def is_valid_format(season):
+    pattern = re.compile(r'^\d{4}-\d{4}$')
+    return bool(pattern.match(season))
+
+
 
 class GetCup:
     def __init__(self, model):
@@ -516,7 +527,6 @@ def GetLeagueDetailFromDB(leagueid = -1,getDataType = 0 ,isCup = False):
                 # write_excel(team_panlu_list)
 
 
-
 def getSeasonGamelist(season, leagueid=36, league='英超'):
     headers = {
     'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
@@ -550,8 +560,68 @@ def getSeasonGamelist(season, leagueid=36, league='英超'):
         time.sleep(3)
         round -= 1
 
+def getRoundGames(season, leagueid=36, league='英超', round = 0):
+    round_game_url = f"http://api.letarrow.com/ios/Phone/FBDataBase/LeagueSchedules.aspx?lang=0&round={round}&sclassid={leagueid}&season={season}&subid=0&from=48&_t={str(int(time.time()))}"
+    round_game_headers = {
+    'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
+    'cookie': 'aiappfrom=48'
+    }
+    try:
+        round_game_response = requests.get(round_game_url, headers=round_game_headers)
+        if round_game_response.ok:
+            round_game_content_type = round_game_response.headers.get('Content-Type')
+            # print(content_type)
+            if 'application/x-protobuf' == round_game_content_type:
+                round_game_resultStr = round_game_response.content
+                obj = GameParserFromProtobuf(oristr=round_game_resultStr, league_id=leagueid, league_name=league)
+                obj.parser()
+                return obj.games
+    except Exception as a_e:
+        print('获取联赛数据', url, a_e)
+        traceback.print_exc()
+
+
+def updateCurrentSeasonPanlu():
+    league_dic = {"8":"德甲","9":"德乙","11":"法甲","12":"法乙",
+               "16":"荷甲","17":"荷乙","23":"葡超","27":"瑞超",
+                "29":"苏超","31":"西甲","33":"西乙","36":"英超",
+               "37":"英冠","39":"英乙","34":"意甲","40":"意乙",
+                "700":"泰超"}
+    try:
+        for key,value in league_dic.items():
+            specialDic = parsePanlu(season='2023-2024', leagueid=key, leaguename=value)
+            time.sleep(1)
+            games = getRoundGames(season='2023-2024', leagueid=key, league=value)
+            if specialDic is None:
+                continue
+            homelist = specialDic.get("主场盘路", [])
+            awaylist = specialDic.get("客场盘路", [])
+            halfhomelist = specialDic.get("半场主场盘路", [])
+            halfawaylist = specialDic.get("半场客场盘路", [])
+            for g in games:
+                for detail in homelist:
+                    if detail.teamName == g.homeTeam:
+                        print("主场盘路",detail,g)
+
+                for detail in awaylist:
+                    if detail.teamName == g.friendTeam:
+                        print("客场盘路",detail,g)
+
+                for detail in halfhomelist:
+                    if detail.teamName == g.homeTeam:
+                        print("半场主场盘路",detail,g)
+
+                for detail in halfawaylist:
+                    if detail.teamName == g.friendTeam:
+                        print("半场客场盘路",detail,g)
+            time.sleep(5)
+    except BaseException as oneE:
+        print(oneE)
+        traceback.print_exc()
 
 if __name__ == '__main__':
+    updateCurrentSeasonPanlu()
+    exit(0)
     #英超 联赛 盘路 积分 已完成 36
     #英冠 盘路  已完成 37
     #德甲 盘路  已完成 8
@@ -565,9 +635,12 @@ if __name__ == '__main__':
     #葡超 盘路 已完成 23
     #荷甲 盘路 已完成 16
     #荷乙 盘路 积分 已完成 17/94
-    _league_id = 17
-    _sub_league_id = 94
-    _league_name = '荷乙'
+    #苏超 盘路 完成 29
+    # 瑞超 盘路 完成 27
+    #
+    _league_id = 700
+    _sub_league_id = None
+    _league_name = '泰超'
     headers = {
         'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
         'cookie': 'aiappfrom=48'
@@ -592,9 +665,10 @@ if __name__ == '__main__':
                 leaguename = leaguedic.get('2', '')
                 seasons = leaguedic.get('4', [])
                 for s in seasons:
+
                     # getSeasonGamelist(s, league_id, _league_name)
-                    # parsePanlu(season=s,leagueid=league_id,leaguename=_league_name)
-                    parseJifen(season=s,leagueid=league_id,leaguename=_league_name,subleagueid=_sub_league_id)
+                    parsePanlu(season=s,leagueid=league_id,leaguename=_league_name)
+                    # parseJifen(season=s,leagueid=league_id,leaguename=_league_name,subleagueid=_sub_league_id)
                     time.sleep(8)
 
     except Exception as e:

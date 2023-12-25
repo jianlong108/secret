@@ -71,7 +71,6 @@ class BetCompany(object):
         # 客队统计
         self.friendSamePanURL = ''
 
-
         # 胜赔
         self.winOdd = 0.00
         # 平赔
@@ -195,6 +194,36 @@ class BaseFootballGame(object):
         self.halfFriend = 0
         self.panResult = ''
 
+class DisOrderGame(BaseFootballGame):
+    def __init__(self, gameid=0):
+        super.__init__(gameid=gameid)
+        # 终盘不统一
+        self.ori_maxHandi = 10
+        self.ori_minHandi = 10
+        self.ori_maxHandiCompany = ''
+        self.ori_minHandiCompany = ''
+        self.ori_topMax = 0.00
+        self.ori_bottomMax = 0.00
+        self.ori_topMaxCompany = ''
+        self.ori_bottomMaxCompany = ''
+        self.ori_topMin = 0.00
+        self.ori_bottomMin = 0.00
+        self.ori_topMinCompany = ''
+        self.ori_bottomMinCompany = ''
+
+        self.maxHandi = 10
+        self.minHandi = 10
+        self.maxHandiCompany = ''
+        self.minHandiCompany = ''
+        # self.topMax = 0.00
+        # self.bottomMax = 0.00
+        # self.topMaxCompany = ''
+        # self.bottomMaxCompany = ''
+        # self.topMin = 0.00
+        # self.bottomMin = 0.00
+        # self.topMinCompany = ''
+        # self.bottomMinCompany = ''
+
 '''
 单场比赛
 '''
@@ -245,54 +274,25 @@ class FootballGame(object):
         self.allFriend = 0
         # 澳门即时盘口
         self.now_aomenHandi = 0
-        # 澳门即时欧赔
-        # self.now_aomenOdd = (0.0, 0.0, 0.0)
         # 澳门初始盘口
         self.orignal_aomenHandi = 0
-        # 365初始欧赔
-        # self.orignal_aomenOdd = (0.0, 0.0, 0.0)
         self.now_365Handi = 0
         # 365初始盘口
         self.orignal_365Handi = 0
+        self.aomenCompany = None
+        self.aomenOddCompany = None
 
         self.earlyestCompany = None
         # 初盘的种类
         self.orignalHandiList = []
-
         # 终盘的种类
         self.nowHandiList = []
 
-        # 终盘不统一
-        self.ori_maxHandi = 10
-        self.ori_minHandi = 10
-        self.ori_maxHandiCompany = ''
-        self.ori_minHandiCompany = ''
-        self.ori_topMax = 0.00
-        self.ori_bottomMax = 0.00
-        self.ori_topMaxCompany = ''
-        self.ori_bottomMaxCompany = ''
-        self.ori_topMin = 0.00
-        self.ori_bottomMin = 0.00
-        self.ori_topMinCompany = ''
-        self.ori_bottomMinCompany = ''
-
-        self.maxHandi = 10
-        self.minHandi = 10
-        self.maxHandiCompany = ''
-        self.minHandiCompany = ''
-        # self.topMax = 0.00
-        # self.bottomMax = 0.00
-        # self.topMaxCompany = ''
-        # self.bottomMaxCompany = ''
-        # self.topMin = 0.00
-        # self.bottomMin = 0.00
-        # self.topMinCompany = ''
-        # self.bottomMinCompany = ''
     def __str__(self, print_all=False):
         if print_all:
             return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
         else:
-            return f"id:{self.soccerID} 主:{self.homeTeam} 客:{self.friendTeam} 时间:{self.beginTime} 最早公司:{self.earlyestCompany} 最早盘:{self.orignalHandiList} 目前盘:{self.nowHandiList}"
+            return f"id:{self.soccerID} 主:{self.homeTeam} 客:{self.friendTeam} 时间:{self.beginTime} 比分:{self.allHome}-{self.allFriend}"
 
     @property
     def handiIsFilp(self):
@@ -510,6 +510,11 @@ class TeamPanLuDetail:
         self.drawRate = 0
         # 输率
         self.loseRate = 0
+    def __str__(self, print_all=False):
+        if print_all:
+            return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
+        else:
+            return f"{self.teamName} 胜:{self.winRate} 平:{self.drawRate} 负:{self.loseRate}"
 
 class TeamPanLu:
     def __init__(self):
@@ -682,7 +687,6 @@ class GameParserFromProtobuf(object):
             # print(temp_message)
             # print(typedef)
             dic = json.loads(temp_message)
-            print(dic)
             contentdic = dic.get('3')
             # round 排名
             rounddic = contentdic.get('2')
@@ -715,7 +719,7 @@ class GameParserFromProtobuf(object):
                 gameobj.friendTeamLevel = int(gamedic.get('13', '0'))
                 self.games.append(gameobj)
         except Exception as e:
-            print(e)
+            print(e,dic)
 
 class GameParserFromPlainText(object):
     def __init__(self, contentStr = ''):

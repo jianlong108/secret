@@ -114,10 +114,10 @@ def creatTable():
 
     creatGamesTabelSQL = """
         CREATE TABLE IF NOT EXISTS Games (
-            soccerid       INT PRIMARY KEY  NOT NULL,
+            soccerid       INT              NOT NULL,
             leagueid       INT              NOT NULL,
             league         VARCHAR(15)          NOT NULL,
-            starttime      VARCHAR(15)          NOT NULL,
+            starttime      VARCHAR(30)          NOT NULL,
             season         VARCHAR(15)          ,
             round          INT,
             hometeamrank   INT,
@@ -135,7 +135,8 @@ def creatTable():
             oriloseodds FLOAT,
             nowwinodds  FLOAT,
             nowtieodds  FLOAT,
-            nowloseodds FLOAT)
+            nowloseodds FLOAT,
+            PRIMARY KEY soccerid)
         """
     cursor.execute(creatGamesTabelSQL)
     creatPanLuDetailTabelSQL = """
@@ -242,6 +243,129 @@ def creatTable():
     # 关闭连接
     cursor.close()
     conn.close()
+
+
+def mysql_insert_game_to_season_games(gameobj):
+    # if not isinstance(gameobj, FootballGame):
+    #     return
+    try:
+        global conn
+        global cursor
+
+        conn = pymysql.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database_name
+        )
+        cursor = conn.cursor()
+        # 数据
+        data = (
+            gameobj.soccerID, gameobj.leaugeid, gameobj.leauge, gameobj.beginTime,
+            gameobj.season, 0, gameobj.homeTeamLevel, gameobj.homeTeam, gameobj.friendTeamLevel,
+            gameobj.friendTeam, gameobj.allHome, gameobj.allFriend, gameobj.halfHome,
+            gameobj.halfFriend, gameobj.orignal_aomenHandi, gameobj.now_aomenHandi,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.orignal_winOdd,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.orignal_drawOdd,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.orignal_loseOdd,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.winOdd,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.drawOdd,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.loseOdd,
+            gameobj.orignal_aomenHandi, gameobj.now_aomenHandi,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.orignal_winOdd,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.orignal_drawOdd,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.orignal_loseOdd,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.winOdd,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.drawOdd,
+            0 if gameobj.aomenOddCompany is None else gameobj.aomenOddCompany.loseOdd,
+            gameobj.season,gameobj.beginTime
+        )
+
+        # 插入或更新数据
+        insert_query = """
+        INSERT INTO Games (soccerid, leagueid, league, starttime, 
+                           season, round, hometeamrank, hometeam,
+                           awayteamrank, awayteam, homescore, awayscore,
+                           homehalfscore, awayhalfscore, aomenoripan, aomennowpan, 
+                           oriwinodds, oritieodds, oriloseodds, nowwinodds,
+                           nowtieodds, nowloseodds)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE 
+            aomenoripan = %s, aomennowpan = %s, oriwinodds = %s, oritieodds = %s, 
+            oriloseodds = %s, nowwinodds = %s, nowtieodds = %s, nowloseodds = %s, season = %s, starttime = %s;
+        """
+
+        cursor.execute(insert_query, data)
+
+        companies = gameobj.yapanCompanies
+        if companies is not None and len(companies) > 0:
+            for company in companies:
+                if gameobj.soccerID != company.soccerGameId:
+                    continue
+                # 数据
+                data_company = (
+                    company.soccerGameId,company.companyID,company.companyTitle,company.oriTimeStr,
+                    company.oriTimeStamp,company.highest,company.lowest,company.earlyest,
+                    company.orignal_top,company.orignal_Handicap, company.orignal_bottom,company.now_top,
+                    company.now_Handicap, company.now_bottom,gameobj.homeTeamId,gameobj.friendTeamId,company.oriTimeStr,
+                    company.oriTimeStamp,company.highest,company.lowest,company.earlyest,
+                    company.orignal_top,company.orignal_Handicap, company.orignal_bottom,company.now_top,
+                    company.now_Handicap, company.now_bottom,gameobj.homeTeamId,gameobj.friendTeamId
+                )
+
+                # 插入数据
+                insert_company_query = """
+                INSERT INTO CompanyHandi (soccerID, companyid, company, oripantime, 
+                                          oripantimest, ishighest, islowest, isearlyest,
+                                          homeoriwater, oripan, awayoriwater, homenowwater, 
+                                          nowpan, awaynowwater, hometeamid, awayteamid)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, %s, %s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE 
+                    oripantime = %s, oripantimest = %s, ishighest = %s, islowest = %s, 
+                    isearlyest = %s, homeoriwater = %s, oripan = %s, awayoriwater = %s,
+                    homenowwater = %s, nowpan = %s, awaynowwater = %s, hometeamid = %s, awayteamid= %s;
+                """
+
+                cursor.execute(insert_company_query, data_company)
+
+
+        oddcompanies = gameobj.oddCompanies
+        if oddcompanies is not None and len(oddcompanies) > 0:
+            for company in oddcompanies:
+                if gameobj.soccerID != company.soccerGameId:
+                    continue
+                # 数据
+                data_odd_company = (
+                    company.soccerGameId, company.companyID, company.companyTitle, company.orignal_winOdd,
+                    company.orignal_drawOdd, company.orignal_loseOdd, company.winOdd, company.drawOdd,
+                    company.loseOdd, gameobj.homeTeamId, gameobj.friendTeamId, company.orignal_winOdd,
+                    company.orignal_drawOdd, company.orignal_loseOdd, company.winOdd, company.drawOdd,
+                    company.loseOdd
+                )
+                insert_odd_company_query = """
+                                INSERT INTO CompanyOdd (soccerID, companyid, company, oriwin, 
+                                                          oridraw, orilose, win, draw,
+                                                          lose, hometeamid, awayteamid)
+                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                                ON DUPLICATE KEY UPDATE 
+                                     oriwin = %s, oridraw = %s, orilose = %s, win = %s, draw = %s, lose = %s;
+                                """
+                # 插入数据
+                cursor.execute(insert_odd_company_query, data_odd_company)
+
+        conn.commit()
+
+        print("插入成功")
+    except Exception as e:
+        print(e)
+        conn.rollback()
+        traceback.print_exc()
+    finally:
+        # 关闭连接
+        cursor.close()
+        conn.close()
+
 
 def mysql_insert_game_to_disorder(gameobj):
     # if not isinstance(gameobj, FootballGame):
@@ -538,7 +662,6 @@ def mysql_insert_game_to_seasonpanlu(teamPanlu):
 
         conn.commit()
 
-        print("插入成功")
     except Exception as e:
         print(e)
         conn.rollback()

@@ -15,126 +15,139 @@ import blackboxprotobuf
 import os
 import json
 from GetData.TIME_TOOL import get_current_timestr_YMDH
+from GetData.SOCCER_MODELS import *
+from GetData.GET_GAME_PAN_ODD_DATA import *
 from colorama import Fore, init
 import re
 import ast
 
-
-def getCupSeasonGamelist(season='2022-2023', leagueid=103, leaguename='欧冠', minCount=6, subleagueid=None):
-	# url = https://zq.titan007.com/jsData/matchResult/2022-2023/c103.js?version=2023121823
-	timestr = get_current_timestr_YMDH()
-	print(Fore.GREEN + f"正在进行{season} {timestr}")
-	url = f'https://zq.titan007.com/jsData/matchResult/{season}/c{leagueid}.js?version={timestr}'
-
-	HEADERS = {
-		'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-		'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-		'Content-type': 'application/javascript',
-		'referer': f'https://zq.titan007.com/cn/CupMatch/{season}/{leagueid}.html'
+def getSubCupSeasonGamelist(season='2022-2023', leagueID=103, leaguename='欧冠',subid='',subname=''):
+	s_headers = {
+		'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
+		'cookie': 'aiappfrom=48'
 	}
-	response = requests.get(url, headers=HEADERS, timeout=7)
-	if response.status_code == 200:
-		js_code = response.text
-		print('数据：', js_code)
-		# 使用正则表达式提取变量值
-		pattern = re.compile(r'var (\w+)\s*=\s*(.*?);', re.DOTALL)
-		matches = pattern.findall(js_code)
+	suburl = f"http://api.letarrow.com/ios/Phone/FBDataBase/CupInfo.aspx?groupid={subid}&id={leagueID}&lang=0&season={season}&from=48&_t={str(int(time.time()))}"
+	sub_response = requests.get(suburl, headers=s_headers)
+	sub_content_type = sub_response.headers.get('Content-Type')
+	gameobjlist = []
+	if sub_response.ok and 'application/x-protobuf' == sub_content_type:
+		subResultStr = sub_response.content
+		print(suburl)
+		message, subtypedef = blackboxprotobuf.protobuf_to_json(subResultStr)
+		pro_gamedic = json.loads(message)
+		maybe_gamelist = pro_gamedic.get('3', {}).get('3', None)
+		if maybe_gamelist is None:
+			print(Fore.RED + f"{pro_gamedic}")
+			return []
 
-		# 创建一个字典，用于存储变量名和对应的值
-		variables = {}
+		gamediclist = []
+		if isinstance(maybe_gamelist, list):
+			for groupdic in maybe_gamelist:
+				groupgamelist = groupdic.get('2', [])
+				gamediclist.extend(groupgamelist)
+		else:
+			gamelist = maybe_gamelist.get('2', None)
+			if isinstance(gamelist, dict):
+				gamediclist.append(gamelist)
+			elif isinstance(gamelist, list):
+				gamediclist.extend(gamelist)
+		for onegamedic in gamediclist:
+			game_id = int(onegamedic.get('1', '0'))
+			gameobj = FootballGame(gameid=game_id)
+			gameobj.season = season
+			gameobj.leauge = leaguename + subname
+			gameobj.leaugeid = leagueID
+			gameobj.beginTimestamp = int(onegamedic.get('2', '0'))
+			time_struct = time.localtime(gameobj.beginTimestamp)
+			gameobj.beginTime = time.strftime("%Y-%m-%d %H:%M:%S", time_struct)
+			gameobj.homeTeamId = int(onegamedic.get('3', '0'))
+			gameobj.friendTeamId = int(onegamedic.get('4', '0'))
+			gameobj.homeTeam = onegamedic.get('5', '')
+			gameobj.friendTeam = onegamedic.get('6', '')
+			gameobj.allHome = int(onegamedic.get('8', '0'))
+			gameobj.allFriend = int(onegamedic.get('9', '0'))
+			gameobj.halfHome = int(onegamedic.get('10', '0'))
+			gameobj.halfFriend = int(onegamedic.get('11', '0'))
+			gameobjlist.append(gameobj)
 
-		# 将提取的变量值转化为 Python 对象
-		for match in matches:
-			var_name, var_value = match
-			try:
-				var_value = ast.literal_eval(var_value)
-				variables[var_name] = var_value
-			except (ValueError, SyntaxError):
-				variables[var_name] = var_value
+	print(f'{season} {subname}:采集到比赛数:{len(gameobjlist)}')
+	for gameobj in gameobjlist:
+		getOneGameHandiList(gameobj)
+		time.sleep(2)
+		getOneGameOddList(gameobj)
+		time.sleep(3)
+		mysql_insert_game_to_season_games(gameobj)
+	return gameobjlist
 
-		pattern = re.compile(r'jh\["([^"]+)"\]\s*=\s*(.*?);', re.DOTALL)
-		matches = pattern.findall(js_code)
-		for match in matches:
-			var_name, var_value = match
-			try:
-				var_value = ast.literal_eval(var_value)
-				variables[var_name] = var_value
-				print(var_name)
-			except (ValueError, SyntaxError):
-				variables[var_name] = var_value
-		print(variables)
-	# teamArr = variables.get('arrTeam', [])
-	# totoalJifenArr = variables.get('arrCupKind', [])
-	# print(variables)
-	# HomeJifenArr = variables.get('homeScore', [])
-	# guestJifenArr = variables.get('guestScore', [])
-	# halfScoreArr = variables.get('halfScore', [])
-	# halfHomeScoreArr = variables.get('homeHalfScore', [])
-	# halfGuestScoreArr = variables.get('guestHalfScore', [])
+def getCupSeasonGamelist(season='2022-2023', leagueID=103, leaguename='欧冠'):
+	c_headers = {
+		'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
+		'cookie': 'aiappfrom=48'
+	}
+	timestr = str(int(time.time()))
+	t_gameobjlist = []
+	url = f"http://api.letarrow.com/ios/Phone/FBDataBase/CupInfo.aspx?id={leagueID}&lang=0&season={season}&from=48&_t={timestr}"
+	try:
+		response = requests.get(url, headers=c_headers)
+		content_type = response.headers.get('Content-Type')
+		if response.ok and 'application/x-protobuf' == content_type:
+			resultStr = response.content
+			temp_message, typedef = blackboxprotobuf.protobuf_to_json(resultStr)
+			p = os.path.expanduser(f'~/Desktop/{season}欧冠.json')
+			with open(p, 'w+') as f:
+				f.write(temp_message)
+				f.close()
+			protobufdic = json.loads(temp_message)
+			gamecateList = protobufdic.get("3", {}).get("1", [])
+			for one in gamecateList:
+				cateName = one.get("2", {}).get("2", "")
+				subid= one.get("1", "")
+				if cateName != "" and subid != "" and cateName in ['分组赛']:#,'十六强','半准决赛','准决赛','决赛']:
+					print(cateName, subid)
+					l = getSubCupSeasonGamelist(season=season, leagueID=leagueID, leaguename=leaguename,subid=subid,subname=cateName)
+					t_gameobjlist.extend(l)
+	except Exception as e:
+		print('获取杯赛数据', url, e)
+	finally:
+		print(f'{season}:采集到比赛数:{len(t_gameobjlist)}')
+
 
 
 if __name__ == '__main__':
-	# getCupSeasonGamelist()
-	# # 欧冠   已完成 103
-	# _league_id = 103
-	# # _sub_league_id = 94
-	# _league_name = '欧冠'
-	# headers = {
-	# 	'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
-	# 	'cookie': 'aiappfrom=48'
-	# }
-	# timestr = str(int(time.time()))
-	# url = f"http://api.letarrow.com/pcf/bfmatch/api/database/v1/leaguedetail?kind=1&lang=0&sid={_league_id}&_t={timestr}"
-	# try:
-	# 	response = requests.get(url, headers=headers)
-	# 	if response.ok:
-	# 		content_type = response.headers.get('Content-Type')
-	# 		# print(content_type)
-	# 		if 'application/x-protobuf' == content_type:
-	# 			resultStr = response.content
-	# 			print(url, resultStr)
-	# 			temp_message, typedef = blackboxprotobuf.protobuf_to_json(resultStr)
-	# 			print(temp_message)
-	# 			leaguedic = json.loads(temp_message)
-	# 			league_id = int(leaguedic.get('1', '0'))
-	# 			if league_id != _league_id:
-	# 				raise ValueError("联赛id异常")
-	#
-	# 			leaguename = leaguedic.get('2', '')
-	# 			seasons = leaguedic.get('4', [])
-	# 			for s in seasons:
-	# 				print(s)
-				# parsePanlu(season=s,leagueid=league_id,leaguename=_league_name)
-				# parseJifen(season=s, leagueid=league_id, leaguename=_league_name, subleagueid=_sub_league_id)
-				# time.sleep(8)
-	# except Exception as e:
-	# 	print('获取杯赛数据', url, e)
-
+	_league_id = 103
+	_sub_league_id = None
+	_league_name = '欧冠'
+	getCupSeasonGamelist('2022-2023', _league_id, _league_name)
+	exit(0)
 	headers = {
 		'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
 		'cookie': 'aiappfrom=48'
 	}
-	# 获取欧洲杯赛程概括 包括外围赛
-	# season = '2002-2004'
-	#67 欧洲杯
-	#103 欧冠
-	leagueID = 103
-	season = '2022-2023'
-	timestr = str(int(time.time()))
-	url = f"http://api.letarrow.com/ios/Phone/FBDataBase/CupInfo.aspx?id={103}&lang=0&season={season}&from=48&_t={timestr}"
+	url = f"http://api.letarrow.com/pcf/bfmatch/api/database/v1/leaguedetail?kind=1&lang=0&sid={_league_id}&_t={str(int(time.time()))}"
 	try:
 		response = requests.get(url, headers=headers)
 		if response.ok:
 			content_type = response.headers.get('Content-Type')
-			print(content_type)
 			if 'application/x-protobuf' == content_type:
 				resultStr = response.content
 				print(url, resultStr)
 				temp_message, typedef = blackboxprotobuf.protobuf_to_json(resultStr)
-				p = os.path.expanduser(f'~/Desktop/{season}欧冠.json')
-				with open(p, 'w+') as f:
-					f.write(temp_message)
-					f.close()
-				protobufdic = json.loads(temp_message)
+				print(temp_message)
+				leaguedic = json.loads(temp_message)
+				league_id = int(leaguedic.get('1', '0'))
+				if league_id != _league_id:
+					raise ValueError("杯赛id异常")
+
+				leaguename = leaguedic.get('2', '')
+				seasons = leaguedic.get('4', [])
+				for s in seasons:
+					if s != '2022-2023':
+						continue
+					getCupSeasonGamelist(s, league_id, _league_name)
+					# parsePanlu(season=s, leagueid=league_id, leaguename=_league_name)
+					# parseJifen(season=s,leagueid=league_id,leaguename=_league_name,subleagueid=_sub_league_id)
+					time.sleep(5)
 	except Exception as e:
-		print('获取杯赛数据', url, e)
+		print('获取杯赛数据异常:', e, url)
+
+
