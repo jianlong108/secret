@@ -15,7 +15,7 @@ from SOCCER_MODELS import TeamPanLu,TeamPoints,League
 import re
 # reload(sys)
 # sys.setdefaultencoding('utf-8')
-
+import functools
 
 import blackboxprotobuf
 import json
@@ -581,43 +581,79 @@ def getRoundGames(season, leagueid=36, league='英超', round = 0):
         traceback.print_exc()
 
 
+def compare_game(x,y):
+    if x.beginTimestamp > y.beginTimestamp:
+        return 1
+    elif x.beginTimestamp < y.beginTimestamp:
+        return -1
+    else:
+        return 0
+
 def updateCurrentSeasonPanlu():
     league_dic = {"8":"德甲","9":"德乙","11":"法甲","12":"法乙",
                "16":"荷甲","17":"荷乙","23":"葡超","27":"瑞超",
                 "29":"苏超","31":"西甲","33":"西乙","36":"英超",
-               "37":"英冠","39":"英乙","34":"意甲","40":"意乙",
+               "37":"英冠","39":"英甲","34":"意甲","40":"意乙",
                 "700":"泰超"}
+    furture_game_list = []
     try:
         for key,value in league_dic.items():
             specialDic = parsePanlu(season='2023-2024', leagueid=key, leaguename=value)
-            time.sleep(1)
-            games = getRoundGames(season='2023-2024', leagueid=key, league=value)
             if specialDic is None:
-                continue
+                specialDic = parsePanlu(season='2023-2024', leagueid=key, leaguename=value)
+                if specialDic is None:
+                    time.sleep(3)
+                    print(value,'没有specialDic')
+                    continue
+            time.sleep(3)
+            games = getRoundGames(season='2023-2024', leagueid=key, league=value)
+            if len(games) == 0:
+                games = getRoundGames(season='2023-2024', leagueid=key, league=value)
+                if len(games) == 0:
+                    time.sleep(3)
+                    print(value,'没有games')
+                    continue
             homelist = specialDic.get("主场盘路", [])
             awaylist = specialDic.get("客场盘路", [])
             halfhomelist = specialDic.get("半场主场盘路", [])
             halfawaylist = specialDic.get("半场客场盘路", [])
+            print(value)
             for g in games:
                 for detail in homelist:
                     if detail.teamName == g.homeTeam:
-                        print("主场盘路",detail,g)
+                        g.historypanluStr = g.historypanluStr + "{}主场盘路:{}".format(value,detail)
+                        furture_game_list.append(g)
+                    else:
+                        pass
 
                 for detail in awaylist:
                     if detail.teamName == g.friendTeam:
-                        print("客场盘路",detail,g)
+                        g.historypanluStr = g.historypanluStr + "{}客场盘路:{}".format(value,detail)
+                        furture_game_list.append(g)
+                    else:
+                        pass
 
                 for detail in halfhomelist:
                     if detail.teamName == g.homeTeam:
-                        print("半场主场盘路",detail,g)
+                        g.historypanluStr = g.historypanluStr + "{}半场主场盘路:{}".format(value,detail)
+                        furture_game_list.append(g)
+                    else:
+                        pass
 
                 for detail in halfawaylist:
                     if detail.teamName == g.friendTeam:
-                        print("半场客场盘路",detail,g)
+                        g.historypanluStr = g.historypanluStr + "{}半场客场盘路:{}".format(value,detail)
+                        furture_game_list.append(g)
+                    else:
+                        pass
             time.sleep(5)
     except BaseException as oneE:
-        print(oneE)
+        print('updateCurrentSeasonPanlu', oneE)
         traceback.print_exc()
+
+    furture_game_list.sort(key=functools.cmp_to_key(compare_game))
+    for g in furture_game_list:
+        print(g)
 
 if __name__ == '__main__':
     updateCurrentSeasonPanlu()

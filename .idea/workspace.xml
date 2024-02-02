@@ -3,13 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ec47dca5-8a87-4e54-8a33-8e910b749104" name="Default" comment="积分数据获取">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/Cup.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/Cup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GetData/GET_GAME_PAN_ODD_DATA.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/GET_GAME_PAN_ODD_DATA.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GetData/LEAGUE.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/LEAGUE.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GetData/MySQLHelper.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/MySQLHelper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GetData/SOCCER_MODELS.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetData/SOCCER_MODELS.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SendMail.py" beforeDir="false" afterPath="$PROJECT_DIR$/SendMail.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TodayGameList.py" beforeDir="false" afterPath="$PROJECT_DIR$/TodayGameList.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -251,7 +247,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.sendMail">
+  <component name="RunManager" selected="Python.GET_HISTORY_LEAGUE_GAME">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -1434,11 +1430,6 @@
           <option name="timeStamp" value="20" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/GetData/GET_GAME_PAN_ODD_DATA.py</url>
-          <line>397</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/GetData/LEAGUE.py</url>
           <line>243</line>
           <option name="timeStamp" value="33" />
@@ -1447,11 +1438,6 @@
           <url>file://$PROJECT_DIR$/GetData/LEAGUE.py</url>
           <line>193</line>
           <option name="timeStamp" value="63" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/GetData/GET_GAME_PAN_ODD_DATA.py</url>
-          <line>982</line>
-          <option name="timeStamp" value="73" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/GetData/MySQLHelper.py</url>
