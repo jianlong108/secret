@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pymysql
-from GetData.SOCCER_MODELS import *
+from GetData import SOCCER_MODELS
 
 import traceback
 # 替换以下变量为你的数据库信息
@@ -10,13 +10,16 @@ host = 'localhost'
 user = 'root'
 password = 'longge108'
 database_name = 'JL'
+try:
 # 连接 MySQL 服务器
-conn = pymysql.connect(
-    host=host,
-    user=user,
-    password=password
-)
-cursor = conn.cursor()
+    conn = pymysql.connect(
+        host=host,
+        user=user,
+        password=password
+    )
+    cursor = conn.cursor()
+except BaseException as e:
+    print(e)
 
 def creatDataBase():
     global conn

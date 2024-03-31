@@ -19,7 +19,7 @@ from GetData.TIME_TOOL import get_current_timestr_YMDH
 from colorama import Fore, init
 import re
 import ast
-from GetData.MySQLHelper import *
+from GetData.MySQLHelper import mysql_insert_game_to_seasonjifen,mysql_insert_game_to_seasonpanlu
 import random
 import traceback
 import os
@@ -402,7 +402,7 @@ def qiutan_get_history_games(daystr="20231125"):
 		return 300, []
 
 
-def parseJifen(season='2023-2024', leagueid=36, leaguename='英超', minCount=6, subleagueid=None, writeFile=False):
+def parseJifen(season='2023-2024', leagueid=36, leaguename='英超', minCount=6, subleagueid=None, writeFile=False,writeSQL=False):
 	# url = f"http://api.letarrow.com/ios/Phone/FBDataBase/LeaguePoints.aspx?lang=0&pointsKind=0&sclassid=36&season=2023-2024&subid=0&from=48&_t=1702645393"
 	timestr = get_current_timestr_YMDH()
 	print(Fore.GREEN + f"正在进行{season} {timestr}")
@@ -627,7 +627,10 @@ def parseJifen(season='2023-2024', leagueid=36, leaguename='英超', minCount=6,
 		for t in teamlist:
 			print(t, t.homePoints, t.awayPoints, t.halfPoints, t.halfHomePoints, t.halfAwayPoints)
 			if t.homePoints is not None and t.homePoints.gamecount >= minCount:
-				mysql_insert_game_to_seasonjifen(t)
+				if writeSQL:
+					mysql_insert_game_to_seasonjifen(t)
+				else:
+					print('不更新数据库')
 				pass
 			else:
 				print(Fore.RED + '该队伍参赛比赛太少，没有价值')
@@ -638,7 +641,7 @@ def parseJifen(season='2023-2024', leagueid=36, leaguename='英超', minCount=6,
 
 
 # 欧冠小组赛6场
-def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=6):
+def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=6, writeSQL= True):
 	random_number = random.random()
 	# print(Fore.GREEN + f"parsePanlu 正在进行{season} {random_number}")
 	url = f'https://zq.titan007.com/jsData/letGoal/{season}/l{leagueid}.js?flesh={random_number}'
@@ -929,7 +932,10 @@ def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=6):
 			return
 		for t in teamlist:
 			if t.allDetail is not None and t.allDetail.numberOfGame >= minCount:
-				mysql_insert_game_to_seasonpanlu(t)
+				if writeSQL:
+					mysql_insert_game_to_seasonpanlu(t)
+				else:
+					print('不更新数据库')
 			else:
 				print(Fore.RED + '该队伍参赛比赛太少，没有价值')
 				continue

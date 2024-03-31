@@ -3,7 +3,7 @@
 
 import time
 from NETWORKS_TOOLS import get_resultstr_with_url
-from SOCCER_MODELS import BetCompany,FootballGame
+from GetData.SOCCER_MODELS import BetCompany,FootballGame
 
 def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
     resultStr = ''

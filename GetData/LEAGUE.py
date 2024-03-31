@@ -1,27 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time
-import traceback
-
 from DBHELPER import (insert_game_list_to_db, insertNewGameList, GET_LEAGUE_DETAIL_FROM_DB,
                       InsertLeagueJiFenALL, InsertLeagueDaXiao, InsertLeaguePanLu,
                       get_team_history_panlu_fromdb_with_teamid,insert_game_to_db)
 from SOCCER_ROUND import GetRound,creatCupGameModelWithComplexStr
 from NETWORKS_TOOLS import get_resultstr_with_url
-from SOCCER_MODELS import TeamPanLu,TeamPoints,League
-# from EXCEL_HELPER import write_excel
-# import sys
-import re
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
 import functools
 
-import blackboxprotobuf
-import json
-import requests
-import time
-from GetData.SOCCER_MODELS import *
 from GetData.GET_GAME_PAN_ODD_DATA import *
 
 import re
@@ -589,7 +575,8 @@ def compare_game(x,y):
     else:
         return 0
 
-def updateCurrentSeasonPanlu():
+# 如果没有连接本地数据库，就不能更新，故增加了这个属性进行控制
+def updateCurrentSeasonPanlu(func_write_SQL = True):
     league_dic = {"8":"德甲","9":"德乙","11":"法甲","12":"法乙",
                "16":"荷甲","17":"荷乙","23":"葡超","27":"瑞超",
                 "29":"苏超","31":"西甲","33":"西乙","36":"英超",
@@ -598,9 +585,9 @@ def updateCurrentSeasonPanlu():
     furture_game_list = []
     try:
         for key,value in league_dic.items():
-            specialDic = parsePanlu(season='2023-2024', leagueid=key, leaguename=value)
+            specialDic = parsePanlu(season='2023-2024', leagueid=key, leaguename=value,writeSQL=func_write_SQL)
             if specialDic is None:
-                specialDic = parsePanlu(season='2023-2024', leagueid=key, leaguename=value)
+                specialDic = parsePanlu(season='2023-2024', leagueid=key, leaguename=value,writeSQL=func_write_SQL)
                 if specialDic is None:
                     time.sleep(3)
                     print(value,'没有specialDic')
@@ -656,7 +643,7 @@ def updateCurrentSeasonPanlu():
         print(g)
 
 if __name__ == '__main__':
-    updateCurrentSeasonPanlu()
+    updateCurrentSeasonPanlu(func_write_SQL=False)
     exit(0)
     #英超 联赛 盘路 积分 已完成 36
     #英冠 盘路  已完成 37
