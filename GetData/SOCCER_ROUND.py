@@ -10,8 +10,7 @@ def GetRound(leaguename, leagueID, leagueSubID, gameRound, reason):
 
     try:
         if gameRound == 0:
-            url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(
-                leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
+            url = "http://ios.win007.com/phone/SaiCheng2.aspx?sclassid=" + str(leagueID).encode('utf-8') + "&season=" + reason + "&subid=" + str(
                 leagueSubID).encode('utf-8') + "&apiversion=1&from=2"
         else:
 

@@ -544,7 +544,8 @@ def getSeasonGamelist(season, leagueid=36, league='英超'):
         time.sleep(3)
         round -= 1
 
-def getRoundGames(season, leagueid=36, league='英超', round = 0):
+# 0 代表最新一轮； >=1 实际赛程
+def getRoundGames(season='2023-2024', leagueid=36, league='英超', round = 0):
     round_game_url = f"http://api.letarrow.com/ios/Phone/FBDataBase/LeagueSchedules.aspx?lang=0&round={round}&sclassid={leagueid}&season={season}&subid=0&from=48&_t={str(int(time.time()))}"
     round_game_headers = {
     'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
@@ -564,6 +565,14 @@ def getRoundGames(season, leagueid=36, league='英超', round = 0):
         print('获取联赛数据', url, a_e)
         traceback.print_exc()
 
+
+def compare_game_begintime(x,y):
+    if x.beginTimestamp > y.beginTimestamp:
+        return 1
+    elif x.beginTimestamp < y.beginTimestamp:
+        return -1
+    else:
+        return 0
 
 def compare_game(x,y):
     if x.beginTimestamp > y.beginTimestamp:
@@ -646,12 +655,81 @@ def updateCurrentSeasonPanlu(par_write_SQL = True):
         print('updateCurrentSeasonPanlu', oneE)
         traceback.print_exc()
 
-    furture_game_list.sort(key=functools.cmp_to_key(compare_game))
+    furture_game_list.sort(key=functools.cmp_to_key(compare_game_begintime))
     for g in furture_game_list:
         print(g)
 
+def getLeagueHistoryPanlu(p_league_id = 36, p_league_name = '英超'):
+    furture_game_list = []
+    try:
+        specialDic = parsePanlu(season='2023-2024', leagueid=p_league_id, leaguename=p_league_name,writeSQL=False)
+        if specialDic is None:
+            specialDic = parsePanlu(season='2023-2024', leagueid=p_league_id, leaguename=p_league_name,writeSQL=False)
+            if specialDic is None:
+                time.sleep(3)
+                print('{}没有获取到盘路情况' % {p_league_name})
+                return
+        time.sleep(3)
+        roundnum = 27
+        games = getRoundGames(season='2023-2024', leagueid=p_league_id, league=p_league_name, round=str(roundnum))
+        if len(games) == 0:
+            games = getRoundGames(season='2023-2024', leagueid=p_league_id, league=p_league_name, round=str(roundnum))
+            if len(games) == 0:
+                time.sleep(3)
+                print('{}第{}轮没有获取到games' % {p_league_name,roundnum})
+                return
+        homelist = specialDic.get("主场盘路", [])
+        awaylist = specialDic.get("客场盘路", [])
+        halfhomelist = specialDic.get("半场主场盘路", [])
+        halfawaylist = specialDic.get("半场客场盘路", [])
+        print('正在获取{} 第{}轮的比赛情况'.format(p_league_name,roundnum))
+        for g in games:
+            getOneGameHandiList(g)
+            for detail in homelist:
+                if detail.teamName == g.homeTeam:
+                    # 主队 赢盘率高，期望 输
+                    g.historypanluStr = g.historypanluStr + "{}主场盘路:{} 期望:{}盘".format(p_league_name,detail,'输'if detail.winRate>detail.loseRate else "赢")
+                    furture_game_list.append(g)
+                else:
+                    pass
+
+            for detail in awaylist:
+                if detail.teamName == g.friendTeam:
+                    # 客队 赢盘率高 期望 主队赢盘
+                    g.historypanluStr = g.historypanluStr + "{}客场盘路:{} 期望:{}盘".format(p_league_name,detail,'赢'if detail.winRate>detail.loseRate else "输")
+                    furture_game_list.append(g)
+                else:
+                    pass
+
+            for detail in halfhomelist:
+                if detail.teamName == g.homeTeam:
+                    g.historypanluStr = g.historypanluStr + "{}半场主场盘路:{} 期望:{}盘".format(p_league_name,detail,'输'if detail.winRate>detail.loseRate else "赢")
+                    furture_game_list.append(g)
+                else:
+                    pass
+
+            for detail in halfawaylist:
+                if detail.teamName == g.friendTeam:
+                    g.historypanluStr = g.historypanluStr + "{}半场客场盘路:{} 期望:{}盘".format(p_league_name,detail,'赢'if detail.winRate>detail.loseRate else "输")
+                    furture_game_list.append(g)
+                else:
+                    pass
+        time.sleep(5)
+    except BaseException as oneE:
+        print('updateCurrentSeasonPanlu', oneE)
+        traceback.print_exc()
+
+    furture_game_list.sort(key=functools.cmp_to_key(compare_game))
+    for g in furture_game_list:
+        print(g, f"终盘:{g.now_365Handi}赛果：", g.win365Handi, f"初盘:{g.orignal_365Handi}赛果：", g.ori365Winhandi)
+
 if __name__ == '__main__':
-    updateCurrentSeasonPanlu(par_write_SQL=False)
+    # updateCurrentSeasonPanlu(par_write_SQL=False)
+    # getLeagueHistoryPanlu()
+    games = getRoundGames(round=1)
+    for g in games:
+        getOneGameHandiList(g)
+
     exit(0)
     #英超 联赛 盘路 积分 已完成 36
     #英冠 盘路  已完成 37

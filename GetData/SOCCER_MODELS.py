@@ -5,6 +5,7 @@ from BEAUTIFUL_SOUP_HELPER import *
 import time
 import blackboxprotobuf
 import json
+from BaseTool.TimeTool import *
 '''
 博彩公司
 '''
@@ -294,7 +295,11 @@ class FootballGame(object):
         if print_all:
             return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
         else:
-            return f"365盘:{self.now_365Handi} id:{self.soccerID} 主:{self.homeTeam} 客:{self.friendTeam} 时间:{self.beginTime} 比分:{self.allHome}-{self.allFriend} 描述:{self.historypanluStr}"
+            if is_early_time_for_now(self.beginTime):
+                return f"365盘:{self.now_365Handi} id:{self.soccerID} 主:{self.homeTeam} 客:{self.friendTeam} 时间:{self.beginTime} 比分:{self.allHome}-{self.allFriend} 描述:{self.historypanluStr}"
+            else:
+                return f"365盘:{self.now_365Handi} id:{self.soccerID} 主:{self.homeTeam} 客:{self.friendTeam} 时间:{self.beginTime} 比分:未开赛 描述:{self.historypanluStr}"
+
 
     @property
     def handiIsFilp(self):
@@ -336,6 +341,43 @@ class FootballGame(object):
         # tmp = ','.join(str_list)
         # return '[' + tmp + ']'
 
+    @property
+    def win365Handi(self):
+        if self.now_365Handi >= 0:
+            gap = self.allHome - self.allFriend - self.now_365Handi
+            if gap > 0.1:
+                return '赢'
+            elif gap < 0:
+                return '输'
+            else:
+                return '走'
+        else:
+            gap = self.allFriend - self.allHome + self.now_365Handi
+            if gap > 0.1:
+                return '输'
+            elif gap < 0:
+                return '赢'
+            else:
+                return '走'
+
+    @property
+    def ori365Winhandi(self):
+        if self.orignal_365Handi >= 0:
+            gap = self.allHome - self.allFriend - self.orignal_365Handi
+            if gap > 0.1:
+                return '赢'
+            elif gap < 0:
+                return '输'
+            else:
+                return '走'
+        else:
+            gap = self.allFriend - self.allHome + self.orignal_365Handi
+            if gap > 0.1:
+                return '输'
+            elif gap < 0:
+                return '赢'
+            else:
+                return '走'
 
     @property
     def winhandi(self):
@@ -512,6 +554,7 @@ class TeamPanLuDetail:
         self.drawRate = 0
         # 输率
         self.loseRate = 0
+
     def __str__(self, print_all=False):
         if print_all:
             return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
