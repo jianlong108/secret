@@ -82,8 +82,6 @@ class GetCup:
                             if len(newDic) > 0:
                                 self.GamesArray.append(newDic)
 
-
-
             elif '$$' in resultStr:
                 # 小组赛
                 array = resultStr.split('$$')
@@ -576,26 +574,35 @@ def compare_game(x,y):
         return 0
 
 # 如果没有连接本地数据库，就不能更新，故增加了这个属性进行控制
-def updateCurrentSeasonPanlu(func_write_SQL = True):
+def updateCurrentSeasonPanlu(par_write_SQL = True):
     league_dic = {"8":"德甲","9":"德乙","11":"法甲","12":"法乙",
                "16":"荷甲","17":"荷乙","23":"葡超","27":"瑞超",
                 "29":"苏超","31":"西甲","33":"西乙","36":"英超",
-               "37":"英冠","39":"英甲","34":"意甲","40":"意乙",
-                "700":"泰超"}
+               "37":"英冠","39":"英甲","34":"意甲","40":"意乙"}
+    round_dic = {}
+    # round_dic = {"德甲":"25","德乙":"25","法甲":"25","法乙":"28",
+    #            "荷甲":"25","荷乙":"29","葡超":"25","瑞超":"27",
+    #             "苏超":"19","西甲":"28","西乙":"30","英超":"28",
+    #            "英冠":"39","英甲":"41","意甲":"28","意乙":"29"}
     furture_game_list = []
     try:
         for key,value in league_dic.items():
-            specialDic = parsePanlu(season='2023-2024', leagueid=key, leaguename=value,writeSQL=func_write_SQL)
+            specialDic = parsePanlu(season='2023-2024', leagueid=key, leaguename=value,writeSQL=par_write_SQL)
             if specialDic is None:
-                specialDic = parsePanlu(season='2023-2024', leagueid=key, leaguename=value,writeSQL=func_write_SQL)
+                specialDic = parsePanlu(season='2023-2024', leagueid=key, leaguename=value,writeSQL=par_write_SQL)
                 if specialDic is None:
                     time.sleep(3)
                     print(value,'没有specialDic')
                     continue
             time.sleep(3)
-            games = getRoundGames(season='2023-2024', leagueid=key, league=value)
+            roundnum = 0
+            if value in round_dic:
+                roundnum = int(round_dic[value]) - 1
+            if roundnum < 0:
+                roundnum = 0
+            games = getRoundGames(season='2023-2024', leagueid=key, league=value, round=str(roundnum))
             if len(games) == 0:
-                games = getRoundGames(season='2023-2024', leagueid=key, league=value)
+                games = getRoundGames(season='2023-2024', leagueid=key, league=value, round=str(roundnum))
                 if len(games) == 0:
                     time.sleep(3)
                     print(value,'没有games')
@@ -606,6 +613,7 @@ def updateCurrentSeasonPanlu(func_write_SQL = True):
             halfawaylist = specialDic.get("半场客场盘路", [])
             print(value)
             for g in games:
+                getOneGameHandiList(g)
                 for detail in homelist:
                     if detail.teamName == g.homeTeam:
                         g.historypanluStr = g.historypanluStr + "{}主场盘路:{}".format(value,detail)
@@ -643,7 +651,7 @@ def updateCurrentSeasonPanlu(func_write_SQL = True):
         print(g)
 
 if __name__ == '__main__':
-    updateCurrentSeasonPanlu(func_write_SQL=False)
+    updateCurrentSeasonPanlu(par_write_SQL=False)
     exit(0)
     #英超 联赛 盘路 积分 已完成 36
     #英冠 盘路  已完成 37

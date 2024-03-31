@@ -294,7 +294,7 @@ class FootballGame(object):
         if print_all:
             return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
         else:
-            return f"id:{self.soccerID} 主:{self.homeTeam} 客:{self.friendTeam} 时间:{self.beginTime} 比分:{self.allHome}-{self.allFriend} 描述:{self.historypanluStr}"
+            return f"365盘:{self.now_365Handi} id:{self.soccerID} 主:{self.homeTeam} 客:{self.friendTeam} 时间:{self.beginTime} 比分:{self.allHome}-{self.allFriend} 描述:{self.historypanluStr}"
 
     @property
     def handiIsFilp(self):

@@ -73,7 +73,7 @@ def getOneGameHandiList(gameObj):
 		now_pan_list = []
 		max_handi = 0.0
 		max_company = None
-
+		company_365 = None
 		min_handi = 0.0
 		min_company = None
 
@@ -84,7 +84,7 @@ def getOneGameHandiList(gameObj):
 			if len(dome_list) < 1:
 				continue
 
-			# 真TMB坑，需要加个点 https://blog.csdn.net/weixin_44749897/article/details/93637740
+			# 真TMB坑，需要加个.  https://blog.csdn.net/weixin_44749897/article/details/93637740
 			span_dom_right = tr_dom.xpath('.//td[2]/span/@companyid')
 			if span_dom_right is not None and len(span_dom_right) > 0:
 				# print(type(span_dom_right), span_dom_right)
