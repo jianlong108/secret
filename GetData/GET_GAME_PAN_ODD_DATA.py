@@ -9,7 +9,7 @@
 @software: PyCharm 
 """
 
-from GetData.SOCCER_MODELS import *
+from SOCCER_MODELS import *
 import math
 import requests
 from lxml import etree
@@ -1036,6 +1036,6 @@ if __name__ == '__main__':
 	# qiutan_get_history_games()
 	# parsePanlu(season='2021-2022',leagueid=36,leaguename='英超')
 	# getOneGameOddList(game)
-	# getOneTeamPanlu(season='2020-2021', teamid=53, leagueid=37, lutype=1)
+	print(getOneTeamPanlu(season='2023-2024', teamid=20, leagueid=36, lutype=1))
 	# parseJifen(season="2021-2022",leagueid=17,leaguename='荷乙',subleagueid=94)
-	parseJifen(season="2022-2023", leagueid=31, leaguename='西甲', writeFile=True)
+	# parseJifen(season="2022-2023", leagueid=31, leaguename='西甲', writeFile=True)

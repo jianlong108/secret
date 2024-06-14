@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from BEAUTIFUL_SOUP_HELPER import *
+# from BEAUTIFUL_SOUP_HELPER import *
 import time
 import blackboxprotobuf
 import json
