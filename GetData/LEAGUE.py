@@ -4,6 +4,8 @@
 from DBHELPER import (insert_game_list_to_db, insertNewGameList, GET_LEAGUE_DETAIL_FROM_DB,
                       InsertLeagueJiFenALL, InsertLeagueDaXiao, InsertLeaguePanLu,
                       get_team_history_panlu_fromdb_with_teamid,insert_game_to_db)
+
+from MySQLHelper import mysql_insert_game_to_season_games
 from SOCCER_ROUND import GetRound,creatCupGameModelWithComplexStr
 from NETWORKS_TOOLS import get_resultstr_with_url
 import functools
@@ -511,11 +513,12 @@ def GetLeagueDetailFromDB(leagueid = -1,getDataType = 0 ,isCup = False):
                 # write_excel(team_panlu_list)
 
 
-def getSeasonGamelist(season, leagueid=36, league='英超'):
-    cur_round = 38
+def getSeasonGamelist(season, leagueid=36, league='英超', maxround= 38):
+    cur_round = maxround
     if season == '2023-2024':
         cur_round = 16
     while cur_round > 0:
+        print(f"获取联赛数据 {league} 赛季:{season} 轮次:{cur_round}")
         games = getRoundGames(season=season, leagueid=leagueid, league=league, round=cur_round)
         for game in games:
             game.season = season
@@ -523,7 +526,8 @@ def getSeasonGamelist(season, leagueid=36, league='英超'):
             time.sleep(3)
             getOneGameOddList(game)
             time.sleep(3)
-        insert_game_list_to_db(games)
+            mysql_insert_game_to_season_games(game)
+        # insert_game_list_to_db(games)
         time.sleep(3)
         cur_round -= 1
 
@@ -644,7 +648,15 @@ def updateCurrentSeasonPanlu(par_write_SQL = True):
     for g in furture_game_list:
         print(g)
 
+
+
 def getLeagueHistoryPanluFrom5Round(p_league_id = 36, p_league_name = '英超', p_season = '2023-2024'):
+    """
+        获取联赛 前5轮的历史盘路
+        :param p_league_id:
+        :param p_league_name:
+        :param p_season:
+    """
     for i in range(1, 6):
         games = getRoundGames(season=p_season, league=p_league_name, leagueid=p_league_id, round=1)
         for g in games:
@@ -712,11 +724,29 @@ def getLeagueHistoryPanluFrom5Round(p_league_id = 36, p_league_name = '英超', 
     # for g in furture_game_list:
     #     print(g, f"终盘:{g.now_365Handi}赛果：", g.win365Handi, f"初盘:{g.orignal_365Handi}赛果：", g.ori365Winhandi)
 
+
+global_league_dic = {"8":"德甲","9":"德乙","11":"法甲","12":"法乙",
+               "16":"荷甲","17":"荷乙","23":"葡超","27":"瑞超",
+                "29":"苏超","31":"西甲","33":"西乙","36":"英超",
+               "37":"英冠","39":"英甲","34":"意甲","40":"意乙","25":"日职联"}
+
+class GetLeagueGameObject:
+    # 类属性定义
+    # maxround = 34
+    def __init__(self, lid,lname):
+        self.leagueid = lid
+        self.leaguename = lname
+        self.maxround = 34
+        self.currentSeason = '2024'
+        self.subleague = None
+
+
+
+
 if __name__ == '__main__':
     # updateCurrentSeasonPanlu(par_write_SQL=False)
-    getLeagueHistoryPanluFrom5Round()
-
-    exit(0)
+    # getLeagueHistoryPanluFrom5Round()
+    # exit(0)
     #英超 联赛 盘路 积分 已完成 36
     #英冠 盘路  已完成 37
     #德甲 盘路  已完成 8
@@ -733,15 +763,15 @@ if __name__ == '__main__':
     #苏超 盘路 完成 29
     # 瑞超 盘路 完成 27
     #
-    _league_id = 700
-    _sub_league_id = None
-    _league_name = '泰超'
+    getleaguegameobj = GetLeagueGameObject(lid=60, lname='中超')
+    getleaguegameobj.currentSeason = '2024'
+    getleaguegameobj.maxround = 30
     headers = {
         'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
         'cookie': 'aiappfrom=48'
     }
     timestr = str(int(time.time()))
-    url = f"http://api.letarrow.com/pcf/bfmatch/api/database/v1/leaguedetail?kind=1&lang=0&sid={_league_id}&_t={timestr}"
+    url = f"http://api.letarrow.com/pcf/bfmatch/api/database/v1/leaguedetail?kind=1&lang=0&sid={getleaguegameobj.leagueid}&_t={timestr}"
     try:
         response = requests.get(url, headers=headers)
         if response.ok:
@@ -754,15 +784,18 @@ if __name__ == '__main__':
                 print(temp_message)
                 leaguedic = json.loads(temp_message)
                 league_id = int(leaguedic.get('1', '0'))
-                if league_id != _league_id:
+                if league_id != getleaguegameobj.leagueid:
                     raise ValueError("联赛id异常")
 
                 leaguename = leaguedic.get('2', '')
                 seasons = leaguedic.get('4', [])
                 for s in seasons:
-
-                    # getSeasonGamelist(s, league_id, _league_name)
-                    parsePanlu(season=s,leagueid=league_id,leaguename=_league_name)
+                    if getleaguegameobj.currentSeason == s:
+                        continue
+                    if s not in ['2023']:
+                        continue
+                    getSeasonGamelist(s, league_id, leaguename, getleaguegameobj.maxround)
+                    # parsePanlu(season=s,leagueid=league_id,leaguename=_league_name)
                     # parseJifen(season=s,leagueid=league_id,leaguename=_league_name,subleagueid=_sub_league_id)
                     time.sleep(8)
 

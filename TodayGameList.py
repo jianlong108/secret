@@ -8,6 +8,9 @@ import requests
 import time
 from numpy import *
 from GetData.GET_GAME_PAN_ODD_DATA import getOneGameHandiList,getOneGameOddList
+from SendMail import MailHelper
+from GetData.TIME_TOOL import get_current_timestr_YMDHms
+
 '''
 找出今天澳*最早开盘的比赛
 response.text：
@@ -59,7 +62,7 @@ def getTodaySoccer(soccer_type = 0):
     # print(url)
 
     headers = {
-        'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
+        'User-Agent': 'QTimesApp/3.4 (Letarrow.QTimes; build:42; iOS 17.5.1) Alamofire/5.4.3',
         'cookie': 'aiappfrom=48'
     }
     response = requests.get(url,headers=headers)
@@ -95,6 +98,7 @@ def getTodaySoccer(soccer_type = 0):
         # print(time_s, time.mktime(time_s))
         # 2018-09-30 11:00:00
         # print(time.strftime("%Y-%m-%d %H:%M:%S", time_s))
+        mailBody = ""
         for game in games:
             # if game is not firstobject:
             #     continue;
@@ -109,7 +113,6 @@ def getTodaySoccer(soccer_type = 0):
             gameobj.friendTeamId = int(teamid_str_list[1])
             gameing = int(oneGameArray[2])
             if gameing != 0:
-                # print "比赛已经开始或结束"
                 continue
             gameobj.soccerID = int(oneGameArray[0])
             gameobj.leauge = dic.get(oneGameArray[1])
@@ -128,33 +131,60 @@ def getTodaySoccer(soccer_type = 0):
 
             # print(f"ID:{gameObj.soccerID} 时间:{gameObj.beginTime} 联赛:{gameObj.leauge} 主队:id:{gameObj.homeTeamId} {gameObj.homeTeam} 客队:id:{gameObj.friendTeamId} {gameObj.friendTeam}")
             getOneGameHandiList(gameobj)
+
             if not gameobj.haveAomen:
                 continue
             can_insert_db = False
             print('---------')
             if gameobj.handiIsFilp:
+                mailBody += f"盘口翻转:{gameobj}"
+                mailBody += "\n"
+                mailBody += "\n"
                 print(Fore.GREEN + f"盘口翻转:{gameobj}")
                 can_insert_db = True
             if gameobj.earlyestCompany is not None and gameobj.earlyestCompany.companyID == '1':
                 print(Fore.YELLOW + f"澳盘开盘早:{gameobj.earlyestCompany}")
+                mailBody += f"澳盘开盘早:{gameobj.earlyestCompany}"
+                mailBody += "\n"
+                mailBody += "\n"
                 can_insert_db = True
 
-            if len(gameobj.orignalHandiList) > 2:
+            # if len(gameobj.orignalHandiList) > 2:
+            if len(gameobj.fix_orignalHandiList) > 2:
+                print(gameobj.fix_orignalHandiList)
+                for company in gameobj.yapanCompanies:
+                    mailBody += f"name:{company.companyTitle} {company.early_fix_change}"
+                    mailBody += "\n"
+
                 if gameobj.maxHandiCompany.companyID != '1' and mean(gameobj.orignalHandiList) > mean(
                         gameobj.nowHandiList):
-                    print(Fore.BLUE + f"初盘混乱 后续降盘 澳盘不是最大盘:{gameobj}")
+                    mailBody += f"初盘混乱 后续降盘 澳盘不是最大盘 出下盘:{gameobj}"
+                    mailBody += "\n"
+                    mailBody += "\n"
+                    print(Fore.BLUE + f"初盘混乱 后续降盘 澳盘不是最大盘 出下盘:{gameobj}")
                     can_insert_db = True
 
                 if gameobj.maxHandiCompany.companyID != '1' and mean(gameobj.orignalHandiList) < mean(
                         gameobj.nowHandiList):
-                    print(Fore.BLUE + f"初盘混乱 后续升盘 澳盘不是最大盘, {gameobj}")
+                    mailBody += f"初盘混乱 后续升盘 澳盘不是最大盘  出下盘, {gameobj}"
+                    mailBody += "\n"
+                    mailBody += "\n"
+                    print(Fore.BLUE + f"初盘混乱 后续升盘 澳盘不是最大盘  出下盘, {gameobj}")
                     can_insert_db = True
             if can_insert_db:
                 if gameobj.now_aomenHandi > 0 and gameobj.now_aomenHandi > gameobj.orignal_aomenHandi:
+                    mailBody += f"澳门终盘主队强，且澳门升盘：{gameobj}"
+                    mailBody += "\n"
+                    mailBody += "\n"
                     print(Fore.RED + f"澳门终盘主队强，且澳门升盘：{gameobj}")
             time.sleep(3)
-            getOneGameOddList(gameobj)
+            oddmailstr = getOneGameOddList(gameobj)
+            if oddmailstr != "":
+                mailBody += oddmailstr
             time.sleep(3)
+        if mailBody != "":
+            mailobj = MailHelper()
+            mailobj.sendMailWithPlainText(get_current_timestr_YMDHms(), mailBody)
 
 if __name__ == '__main__':
     getTodaySoccer(1)

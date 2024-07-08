@@ -9,20 +9,22 @@
 @software: PyCharm 
 """
 
-from SOCCER_MODELS import *
 import math
 import requests
 from lxml import etree
 import time
-from GetData.TIME_TOOL import get_current_timestr_YMDH
 # import js2py
 from colorama import Fore, init
 import re
 import ast
-from GetData.MySQLHelper import mysql_insert_game_to_seasonjifen,mysql_insert_game_to_seasonpanlu
 import random
 import traceback
 import os
+
+from GetData.MySQLHelper import mysql_insert_game_to_seasonjifen,mysql_insert_game_to_seasonpanlu
+from GetData.TIME_TOOL import get_current_timestr_YMDH
+from GetData.SOCCER_MODELS import *
+from GetData.SOCCER_TOOL import switchHandicap
 
 companydic = {
 	"ids": [281, 80, 1129, 82, 81, 90, 104, 16, 370, 110, 499, 474, 432, 517],
@@ -61,15 +63,14 @@ def getOneGameHandiList(gameObj):
 		}
 		webpage = requests.get(url, headers=HEADERS)
 		webpage.encoding = 'utf-8'
-		# soup = BeautifulSoup(webpage.content, "html.parser")
 		dom = etree.HTML(webpage.text)
 		table_dom = dom.xpath('//table[@id="odds"]')[0]
-		# print(type(table_dom), table_dom)
 		tr_list = table_dom.xpath('//tr')
 		companies = []
 		earlyest_timestamp = 0
 		earlyest_company = None
 		ori_pan_list = []
+		fix_ori_pan_list = []
 		now_pan_list = []
 		max_handi = 0.0
 		max_company = None
@@ -120,6 +121,8 @@ def getOneGameHandiList(gameObj):
 				if '0001-01-01 00:00' != oriTime:
 					time_s = time.strptime(oriTime, '%Y-%m-%d %H:%M')
 					company.oriTimeStamp = time.mktime(time_s)
+					changelist = getOneGameOneCompangHandiChangeDetail(gameObj=gameObj, companyid= companyid, year=time_s.tm_year)
+					company.panchangelist = changelist
 					if earlyest_company is None:
 						earlyest_company = company
 						earlyest_timestamp = company.oriTimeStamp
@@ -127,7 +130,8 @@ def getOneGameHandiList(gameObj):
 					if earlyest_company is not None and company.oriTimeStamp < earlyest_timestamp:
 						earlyest_timestamp = company.oriTimeStamp
 						earlyest_company = company
-
+				else:
+					print('比赛没有初盘时间')
 				company.orignal_Handicap = float(oripan)
 				company.orignal_top = orihomeshui
 				company.orignal_bottom = oriawayshui
@@ -180,6 +184,13 @@ def getOneGameHandiList(gameObj):
 			earlyest_company.earlyest = True
 			gameObj.earlyestCompany = earlyest_company
 		gameObj.yapanCompanies = companies
+
+		fixCompanyKaipanTime(gameObj)
+		for company in gameObj.yapanCompanies:
+			if str(company.early_fix_change.pan) not in fix_ori_pan_list:
+				fix_ori_pan_list.append(str(company.early_fix_change.pan))
+
+		gameObj.fix_orignalHandiList = fix_ori_pan_list
 		gameObj.orignalHandiList = ori_pan_list
 		gameObj.nowHandiList = now_pan_list
 		gameObj.maxHandi = max_handi
@@ -187,11 +198,196 @@ def getOneGameHandiList(gameObj):
 		gameObj.minHandi = min_handi
 		gameObj.minHandiCompany = min_company
 	except BaseException as e:
-		print(e, url, webpage.text)
+		print(e, url, 'getOneGameHandiList')
 		traceback.print_exc()
 
+def fixCompanyKaipanTime(p_gameobj):
+	try:
+		if not isinstance(p_gameobj, FootballGame):
+			raise Exception('{}传参不正确'.format(p_gameobj.__class__.__name__))
+		if len(p_gameobj.yapanCompanies) < 1:
+			raise Exception('亚盘公司数量为空')
+		earlyestCompany = p_gameobj.earlyestCompany
+		print('最早的：',earlyestCompany.companyTitle,earlyestCompany.panchangelist[0])
+		if len(earlyestCompany.panchangelist) < 1:
+			print(p_gameobj)
+			return
+		for company in p_gameobj.yapanCompanies:
+			if earlyestCompany.companyID == company.companyID:
+				earlyestCompany.early_fix_change = earlyestCompany.panchangelist[0]
+				continue
+			changedetail = company.panchangelist[0]
+			first_time_s = time.strptime(company.panchangelist[0].changetime, "%Y-%m-%d %H:%M")
+			first_timestamp = time.mktime(first_time_s)
+			for change in earlyestCompany.panchangelist:
+				time_s = time.strptime(change.changetime, "%Y-%m-%d %H:%M")
+				timestatmp = time.mktime(time_s)
+				if first_timestamp >= timestatmp:
+					changedetail.upwater = change.upwater
+					changedetail.downwater = change.downwater
+					changedetail.panstr = change.panstr
+				else:
+					continue
+			company.early_fix_change = changedetail
+			# print('fix:',company.early_fix_change)
+	except Exception as e:
+		print(e)
+	finally:
+		pass
+
+
+def getOneGameOneCompangHandiChangeDetail(gameObj, companyid, year=2024):
+	# https://vip.titan007.com/changeDetail/handicap.aspx?id=2536570&companyID=9&l=0
+	changelist = []
+	try:
+		if not isinstance(gameObj, FootballGame):
+			print("传参不正确", gameObj.__class__.__name__)
+			return
+		url = f"https://vip.titan007.com/changeDetail/handicap.aspx?id={gameObj.soccerID}&companyID={companyid}&l=0"
+		HEADERS = {
+			'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+			'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8'
+		}
+		webpage = requests.get(url, headers=HEADERS)
+		webpage.encoding = 'GB2312'
+		dom = etree.HTML(webpage.text)
+		span_dom = dom.xpath('//span[@id="odds2"]')[-1]
+		table_dom = span_dom.xpath('//table')[-1]
+		trlist_dom = table_dom.xpath('//tr')
+		trlist_dom.reverse()
+		lastchangetime = None
+
+		for tr_dom in trlist_dom:
+			# td_count = tr_dom.xpath('count(.//td)')
+			# print(int(td_count))  # 输出: 5
+			lasttd = tr_dom.xpath('.//td[last()]//text()')
+			state = ''.join(lasttd)
+			if state != '即' and state != '早':
+				continue
+
+			# 提取第一个 <td> 元素中的文本
+			td1 = tr_dom.xpath('.//td[position() = last() - 4]//text()')
+			upwater = ''.join(td1)
+
+			# 提取第二个 <td> 元素中的文本
+			td2 = tr_dom.xpath('.//td[position() = last() - 3]//text()')
+			panstr = ''.join(td2)
+
+			# 提取第三个 <td> 元素中的文本
+			td3 = tr_dom.xpath('.//td[position() = last() - 2]//text()')
+			downwater = ''.join(td3)
+
+			# 提取第四个 <td> 元素中的文本
+			td4 = tr_dom.xpath('.//td[position() = last() - 1]//text()')
+			changetime = ''.join(td4)
+
+			onechange = FootballGameHandiChange(gameid=gameObj.soccerID, companyid=companyid)
+			onechange.hometeam = gameObj.homeTeam
+			onechange.awayteam = gameObj.friendTeam
+			onechange.panstr = panstr
+			onechange.pan = switchHandicap(panstr)
+			onechange.upwater = upwater
+			onechange.downwater = downwater
+			timestr = f"{year}-{changetime}"
+			if changetime == '' or changetime is None:
+				continue
+
+			if lastchangetime is not None:
+				last_time_s = time.strptime(lastchangetime, '%Y-%m-%d %H:%M')
+				time_s = time.strptime(timestr, '%Y-%m-%d %H:%M')
+				if time.mktime(time_s) < time.mktime(last_time_s):
+					timestr = f"{year+1}-{changetime}"
+			onechange.changetime = timestr
+			lastchangetime = timestr
+			# print(onechange)
+			changelist.append(onechange)
+
+	except Exception as e:
+		print(e)
+	finally:
+		return changelist
+
+# TODO: 蓝箭的数据暂时没找到途径
+def getOneGameOddListFromLanjian():
+	url = f"http://txt.letarrow.com/phone/tx/zqanalysis/cn/89/84/1194898.txt?from=48&_t={str(int(time.time()))}"
+	print(url)
+
+	headers = {
+		'User-Agent': 'QTimesApp/3.4 (Letarrow.QTimes; build:52; iOS 17.5.1) Alamofire/5.4.3',
+		'Accept': '*/*'
+	}
+	response = requests.get(url, headers=headers)
+	if response.ok:
+		content_type = response.headers.get('Content-Type')
+		# print(content_type)
+		if 'text/html' == content_type:
+			print(response.content)
+		# if 'application/x-protobuf' == content_type:
+		# 	resultStr = response.content
+		# 	# print(url, resultStr)
+		# 	temp_message, typedef = blackboxprotobuf.protobuf_to_json(resultStr)
+		# 	# print(temp_message)
+		# 	protobufdic = json.loads(temp_message)
+		# 	leaguedic = protobufdic.get('3', {})
+		# 	gamelist = leaguedic.get('1', [])
+		# 	seasonlist = leaguedic.get('2', [])
+		# 	if len(gamelist) == 0 or len(seasonlist) == 0:
+		# 		print("不存在合法数据")
+		# 		return 108
+		# 	importantseasonidlist = []
+		# 	importantseasoniddic = {}
+		# 	gameobjlist = []
+		# 	for season in seasonlist:
+		# 		if season.get('3', '') == '':
+		# 			continue
+		# 		importantseasonidlist.append(season.get('1', ''))
+		# 		importantseasoniddic[season.get('1', '')] = season.get('2', '')
+		#
+		# 	for game in gamelist:
+		# 		seasonid = game.get('2', '')
+		# 		if seasonid not in importantseasonidlist:
+		# 			continue
+		# 		print(game.get('6', {}).get('2', ''), 'vs', game.get('7', {}).get('2', ''))
+		# 		game_id = game.get('1', '0')
+		# 		leagueidstr = game.get('2', '0')
+		# 		leaguename = importantseasoniddic.get(leagueidstr, '')
+		# 		if game_id == '0' or leagueidstr == '0' or leaguename == '':
+		# 			continue
+		#
+		# 		hometeamdic = game.get('6', {})
+		# 		if hometeamdic == {}:
+		# 			continue
+		#
+		# 		friendteamdic = game.get('7', {})
+		# 		if friendteamdic == {}:
+		# 			continue
+		# 		gameobj = FootballGame(gameid=int(game_id))
+		# 		gameobj.leauge = leaguename
+		# 		gameobj.leaugeid = int(leagueidstr)
+		# 		# gameobj.round = round
+		# 		gameobj.beginTimestamp = int(game.get('4', '0'))
+		# 		time_struct = time.localtime(gameobj.beginTimestamp)
+		# 		gameobj.beginTime = time.strftime("%Y-%m-%d %H:%M:%S", time_struct)
+		# 		gameobj.homeTeamId = int(hometeamdic.get('1', '0'))
+		# 		gameobj.friendTeamId = int(friendteamdic.get('1', '0'))
+		# 		gameobj.homeTeam = hometeamdic.get('2', '')
+		# 		gameobj.friendTeam = friendteamdic.get('2', '')
+		# 		gameobj.homeTeamLevel = int(hometeamdic.get('3', '0'))
+		# 		gameobj.friendTeamLevel = int(friendteamdic.get('3', '0'))
+		# 		gameobj.allHome = int(hometeamdic.get('4', '0'))
+		# 		gameobj.allFriend = int(friendteamdic.get('4', '0'))
+		# 		gameobj.halfHome = int(hometeamdic.get('5', '0'))
+		# 		gameobj.halfFriend = int(friendteamdic.get('5', '0'))
+		# 		gameobjlist.append(gameobj)
+		# 	return 0, gameobjlist
+		else:
+			return 0, []
+	else:
+		print(response)
+		return 404, []
 
 def getOneGameOddList(gameObj):
+	mailstr = ''
 	try:
 		if not isinstance(gameObj, FootballGame):
 			print("传参不正确", gameObj.__class__.__name__)
@@ -204,7 +400,7 @@ def getOneGameOddList(gameObj):
 
 		# 将列表转换为字符串
 		random_string = ''.join(random_numbers)
-		print(Fore.GREEN + f"正在进行 {random_string}")
+		print(Fore.GREEN + f"正在进行 {gameObj.soccerID}")
 
 		companyies = [281, 80, 1129, 82, 81, 90, 104, 16, 370, 110, 499, 474, 432, 517]
 		url = f"https://1x2d.titan007.com/{gameObj.soccerID}.js?r={random_string}"
@@ -235,6 +431,9 @@ def getOneGameOddList(gameObj):
 					# 转化失败时，将值保持为字符串
 					variables[var_name] = var_value
 			oddstr = variables.get('game', [])
+			if not oddstr:
+				print(f'无法获取对应比赛的欧赔数据{gameObj.soccerID}')
+				return
 			start_index = oddstr.find('"') + 1
 			end_index = oddstr.rfind('"')
 			sub_strings = oddstr[start_index:end_index].split('","')
@@ -246,6 +445,9 @@ def getOneGameOddList(gameObj):
 				onecompanyList = oneoddstr.split('|')
 				cid = int(onecompanyList[0])
 				if cid not in companyies:
+					continue
+				if '' in onecompanyList:
+					print(Fore.RED + f'获取赔率数据不完整 {gameObj.soccerID} {oneoddstr}')
 					continue
 
 				company = BetCompany(p_gameid=gameObj.soccerID, p_companyid=cid)
@@ -267,16 +469,36 @@ def getOneGameOddList(gameObj):
 			gameObj.oddCompanies = oddcompanyObjlist
 			if jingcai is not None and oddset is not None:
 				ishome = jingcai.orignal_winOdd < jingcai.orignal_loseOdd
+				'''
+				Oddset让球方初赔高于竞彩时
+				1.
+				西甲、英超、德甲主场让出深盘时，下盘概率高;
+				2.
+				西甲、英超、德甲主场让出浅盘时，主场胜率高，上盘盈利能力强;
+				3.
+				英超客场让球方容易赢盘;
+				4.
+				德甲客场让球方不易打出，下盘占多数。
+				'''
+
 				if ishome:
 					if oddset.orignal_winOdd > jingcai.orignal_winOdd:
 						print(Fore.RED + f"oddset高于竞彩{gameObj}")
+						mailstr += f"oddset高于竞彩{gameObj}"
+						mailstr += "\n"
+						mailstr += "\n"
 				else:
 					if oddset.orignal_loseOdd > jingcai.orignal_loseOdd:
 						print(Fore.RED + f"oddset高于竞彩{gameObj}")
+						mailstr += f"oddset高于竞彩{gameObj}"
+						mailstr += "\n"
+						mailstr += "\n"
 
 	except BaseException as e:
-		print(e, url, js_code)
+		print(e, gameObj.soccerID,url, oneoddstr)
 		traceback.print_exc()
+	finally:
+		return mailstr
 
 
 def verify_datetime(datetime_str):
@@ -292,7 +514,6 @@ def verify_datetime(datetime_str):
 	except ValueError:
 		print("输入日期的格式不合法哦，请重新检查")
 		return False
-
 
 def qiutan_get_history_games(daystr="20231125"):
 	try:
@@ -400,7 +621,6 @@ def qiutan_get_history_games(daystr="20231125"):
 		print(e)
 		traceback.print_exc()
 		return 300, []
-
 
 def parseJifen(season='2023-2024', leagueid=36, leaguename='英超', minCount=6, subleagueid=None, writeFile=False,writeSQL=False):
 	# url = f"http://api.letarrow.com/ios/Phone/FBDataBase/LeaguePoints.aspx?lang=0&pointsKind=0&sclassid=36&season=2023-2024&subid=0&from=48&_t=1702645393"
@@ -638,7 +858,6 @@ def parseJifen(season='2023-2024', leagueid=36, leaguename='英超', minCount=6,
 	else:
 		print(Fore.RED + f'parsePanlu出错:{url}')
 		traceback.print_exc()
-
 
 # 欧冠小组赛6场
 def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=6, writeSQL= True):
@@ -945,9 +1164,8 @@ def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=6, 
 		traceback.print_exc()
 	return specialDic
 
-
 # 获取一个队伍的盘路历史
-# type :0全场盘路 1主场盘路 2客场盘路 3半场盘路 4半场主场盘路 5半场客场盘路
+# lutype :0全场盘路 1主场盘路 2客场盘路 3半场盘路 4半场主场盘路 5半场客场盘路
 def getOneTeamPanlu(season='2022-2023', teamid=46, leagueid=37, lutype=0):
 	url = f"https://zq.titan007.com/cn/Team/HandicapDetail.aspx?sclassid={leagueid}&teamid={teamid}&matchseason={season}&halfOrAll={lutype}"
 	HEADERS = {
@@ -1029,13 +1247,14 @@ def getOneTeamPanlu(season='2022-2023', teamid=46, leagueid=37, lutype=0):
 
 	return panlustrlist
 
-
 if __name__ == '__main__':
-	# game = FootballGame(2464818)
-	# getOneGameHandiList(game)
+	game = FootballGame(2399250)
+	# getOneGameOneCompangHandiChangeDetail(game, 1, year=2023)
+	getOneGameHandiList(game)
 	# qiutan_get_history_games()
 	# parsePanlu(season='2021-2022',leagueid=36,leaguename='英超')
 	# getOneGameOddList(game)
-	print(getOneTeamPanlu(season='2023-2024', teamid=20, leagueid=36, lutype=1))
+	# print(getOneTeamPanlu(season='2023-2024', teamid=20, leagueid=36, lutype=1))
 	# parseJifen(season="2021-2022",leagueid=17,leaguename='荷乙',subleagueid=94)
 	# parseJifen(season="2022-2023", leagueid=31, leaguename='西甲', writeFile=True)
+	# getOneGameOddListFromLanjian()

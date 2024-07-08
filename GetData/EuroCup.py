@@ -22,12 +22,12 @@ from MySQLHelper import mysql_insert_game_to_season_games
 import re
 import ast
 
-def getSubEuroCupSeasonGamelist(season='2023-2025', leagueID=67, leaguename='欧洲杯',subid='',subname=''):
+def getSubEuroCupSeasonGamelist(fseason=2023, toseason=2025, leagueID=67, leaguename='欧洲杯',subid='',subname=''):
 	s_headers = {
-		'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
+		'User-Agent': 'QTimesApp/3.4 (Letarrow.QTimes; build:52; iOS 17.5.1) Alamofire/5.4.',
 		'cookie': 'aiappfrom=48'
 	}
-	suburl = f"http://api.letarrow.com/ios/Phone/FBDataBase/CupInfo.aspx?groupid={subid}&id={leagueID}&lang=0&season={season}&from=48&_t={str(int(time.time()))}"
+	suburl = f"http://api.letarrow.com/ios/Phone/FBDataBase/CupInfo.aspx?groupid={subid}&id={leagueID}&lang=0&season={fseason}-{toseason}&from=48&_t={str(int(time.time()))}"
 	sub_response = requests.get(suburl, headers=s_headers)
 	sub_content_type = sub_response.headers.get('Content-Type')
 	gameobjlist = []
@@ -55,7 +55,7 @@ def getSubEuroCupSeasonGamelist(season='2023-2025', leagueID=67, leaguename='欧
 		for onegamedic in gamediclist:
 			game_id = int(onegamedic.get('1', '0'))
 			gameobj = FootballGame(gameid=game_id)
-			gameobj.season = season
+			gameobj.season = f'{fseason}-{toseason}'
 			gameobj.leauge = leaguename + subname
 			gameobj.leaugeid = leagueID
 			gameobj.beginTimestamp = int(onegamedic.get('2', '0'))
@@ -71,30 +71,31 @@ def getSubEuroCupSeasonGamelist(season='2023-2025', leagueID=67, leaguename='欧
 			gameobj.halfFriend = int(onegamedic.get('11', '0'))
 			gameobjlist.append(gameobj)
 
-	print(f'{season} {subname}:采集到比赛数:{len(gameobjlist)}')
-	# for gameobj in gameobjlist:
-	# 	getOneGameHandiList(gameobj)
-	# 	time.sleep(2)
-	# 	getOneGameOddList(gameobj)
-	# 	time.sleep(3)
-	# 	mysql_insert_game_to_season_games(gameobj)
+	print(f'{fseason}-{toseason} {subname}:采集到比赛数:{len(gameobjlist)}')
+	for gameobj in gameobjlist:
+		print(gameobj)
+		getOneGameHandiList(gameobj)
+		time.sleep(2)
+		getOneGameOddList(gameobj)
+		time.sleep(2)
+		mysql_insert_game_to_season_games(gameobj)
 	return gameobjlist
 
-def getEuroCupSeasonGamelist(season='2022-2023', leagueID=103, leaguename='欧洲杯'):
+def getEuroCupSeasonGamelist(fseason=2023, toseason=2025, leagueID=103, leaguename='欧洲杯'):
 	c_headers = {
-		'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
+		'User-Agent': 'QTimesApp/3.4 (Letarrow.QTimes; build:52; iOS 17.5.1) Alamofire/5.4.',
 		'cookie': 'aiappfrom=48'
 	}
 	timestr = str(int(time.time()))
 	t_gameobjlist = []
-	url = f"http://api.letarrow.com/ios/Phone/FBDataBase/CupInfo.aspx?id={leagueID}&lang=0&season={season}&from=48&_t={timestr}"
+	url = f"http://api.letarrow.com/ios/Phone/FBDataBase/CupInfo.aspx?id={leagueID}&lang=0&season={fseason}-{toseason}&from=48&_t={timestr}"
 	try:
 		response = requests.get(url, headers=c_headers)
 		content_type = response.headers.get('Content-Type')
 		if response.ok and 'application/x-protobuf' == content_type:
 			resultStr = response.content
 			temp_message, typedef = blackboxprotobuf.protobuf_to_json(resultStr)
-			p = os.path.expanduser(f'~/Desktop/{season}{leaguename}.json')
+			p = os.path.expanduser(f'~/Desktop/{fseason}-{toseason}_{leaguename}.json')
 			with open(p, 'w+') as f:
 				f.write(temp_message)
 				f.close()
@@ -103,20 +104,20 @@ def getEuroCupSeasonGamelist(season='2022-2023', leagueID=103, leaguename='欧�
 			for one in gamecateList:
 				cateName = one.get("2", {}).get("2", "")
 				subid= one.get("1", "")
-				if cateName != "" and subid != "" and cateName in ['分组赛']:#,'十六强','外围赛','附加赛','附加赛决赛','十六强','半准决赛','准决赛','决赛']:
+				if cateName != "" and subid != "" and cateName in ['外围赛','附加赛','分组赛','半准决赛','准决赛','决赛']:#'外围赛','外围准决赛','外围决赛','附加赛','附加赛决赛','分组赛','十六强','半准决赛','准决赛','决赛']:
 					print(cateName, subid)
-					l = getSubEuroCupSeasonGamelist(season=season, leagueID=leagueID, leaguename=leaguename,subid=subid,subname=cateName)
+					l = getSubEuroCupSeasonGamelist(fseason=fseason, toseason=toseason, leagueID=leagueID, leaguename=leaguename,subid=subid,subname=cateName)
 					t_gameobjlist.extend(l)
 	except Exception as e:
 		print(f'获取{leaguename}杯赛数据', url, e)
 	finally:
-		print(f'{season}:采集到比赛数:{len(t_gameobjlist)}')
+		print(f'{fseason}-{toseason}:采集到比赛数:{len(t_gameobjlist)}')
 
 
 
 if __name__ == '__main__':
-	_season = '2023-2025',#'2019-2021','2014-2016','2010-2012','2006-2008'
+	_fseason = 2010 #'2019-2021','2014-2016','2010-2012','2006-2008'
+	_toseason = 2012
 	_league_id = 67
-	_sub_league_id = 22741
 	_league_name = '欧洲杯'
-	getEuroCupSeasonGamelist(_season, _league_id, _league_name)
+	getEuroCupSeasonGamelist(_fseason,_toseason, _league_id, _league_name)

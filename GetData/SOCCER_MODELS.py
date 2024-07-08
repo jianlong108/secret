@@ -53,6 +53,10 @@ class BetCompany(object):
         # **********end***********
         # ************************
 
+        # 盘路变化详情
+        self.panchangelist: list[FootballGameHandiChange] = []
+        self.early_fix_change: FootballGameHandiChange = None
+
         # 是否是最高盘口
         self.lowest = False
         # 是否是最低盘口
@@ -225,6 +229,24 @@ class DisOrderGame(BaseFootballGame):
         # self.topMinCompany = ''
         # self.bottomMinCompany = ''
 
+
+class FootballGameHandiChange(object):
+    def __init__(self, gameid=0, companyid = 0):
+        self.soccerID = gameid
+        self.companyID = companyid
+        self.hometeam = ''
+        self.awayteam = ''
+        self.panstr = ''
+        self.upwater = ''
+        self.downwater = ''
+        self.pan = 0.0
+        self.changetime = ''
+
+    def __str__(self):
+        return f"{self.companyID} {self.changetime} {self.hometeam} {self.upwater} {self.panstr} : {self.downwater} {self.awayteam} "
+
+
+
 '''
 单场比赛
 '''
@@ -236,7 +258,7 @@ class FootballGame(object):
         self.haveAomen = True
         # 博彩公司列表
         self.oddCompanies = []
-        self.yapanCompanies = []
+        self.yapanCompanies: list[BetCompany] = []
         # 所属联赛
         self.leauge = ''
         self.leaugeid = 0
@@ -283,9 +305,10 @@ class FootballGame(object):
         self.aomenCompany = None
         self.aomenOddCompany = None
 
-        self.earlyestCompany = None
+        self.earlyestCompany: BetCompany = None
         # 初盘的种类
         self.orignalHandiList = []
+        self.fix_orignalHandiList = []
         # 终盘的种类
         self.nowHandiList = []
 
@@ -354,9 +377,9 @@ class FootballGame(object):
         else:
             gap = self.allFriend - self.allHome + self.now_365Handi
             if gap > 0.1:
-                return '输'
-            elif gap < 0:
                 return '赢'
+            elif gap < 0:
+                return '输'
             else:
                 return '走'
 
@@ -373,9 +396,9 @@ class FootballGame(object):
         else:
             gap = self.allFriend - self.allHome + self.orignal_365Handi
             if gap > 0.1:
-                return '输'
-            elif gap < 0:
                 return '赢'
+            elif gap < 0:
+                return '输'
             else:
                 return '走'
 
@@ -392,9 +415,9 @@ class FootballGame(object):
         else:
             gap = self.allFriend - self.allHome + self.now_aomenHandi
             if gap > 0.1:
-                return '输'
-            elif gap < 0:
                 return '赢'
+            elif gap < 0:
+                return '输'
             else:
                 return '走'
 
@@ -411,9 +434,9 @@ class FootballGame(object):
         else:
             gap = self.allFriend - self.allHome + self.orignal_aomenHandi
             if gap > 0.1:
-                return '输'
-            elif gap < 0:
                 return '赢'
+            elif gap < 0:
+                return '输'
             else:
                 return '走'
 '''
