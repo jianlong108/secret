@@ -29,5 +29,14 @@ def get_current_timestr_YMDH():
 	formatted_time = time.strftime('%Y%m%d%H', time_struct)
 	return formatted_time
 
+def get_timestr_YMDHms_with_timestamp(timestamp = 0):
+	# 时间戳
+	# 使用time.localtime()方法将时间戳转换为struct_time对象
+	time_struct = time.localtime(timestamp)
+	# 使用time.strftime()方法将struct_time对象格式化为字符串
+	formatted_time = time.strftime('%Y-%m-%d %H:%M:%S', time_struct)
+	return formatted_time
+
+
 if __name__ == '__main__':
-	print(get_current_timestr_YMDH(),get_current_timestr_YMDHms())
+	print(get_current_timestr_YMDH(),get_current_timestr_YMDHms(),get_timestr_YMDHms_with_timestamp(1726855200))

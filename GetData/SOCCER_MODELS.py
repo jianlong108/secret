@@ -6,6 +6,8 @@ import time
 import blackboxprotobuf
 import json
 from BaseTool.TimeTool import *
+
+from TIME_TOOL import get_timestr_YMDHms_with_timestamp
 '''
 博彩公司
 '''
@@ -246,14 +248,41 @@ class FootballGameHandiChange(object):
         return f"{self.companyID} {self.changetime} {self.hometeam} {self.upwater} {self.panstr} : {self.downwater} {self.awayteam} "
 
 
+class BaseGame(object):
+    def __init__(self, gameid=0):
+        # 比赛ID
+        self.soccerID = gameid
+        # 开赛时间
+        self.beginTimestamp = 0
+        # 主队排名
+        self.homeTeamLevel = 0
+        # 客队排名
+        self.friendTeamLevel = 0
+        # 主队id
+        self.homeTeamId = 0
+        # 主队名称
+        self.homeTeam = ''
+        # 客队id
+        self.friendTeamId = 0
+        # 客队
+        self.friendTeam = ''
+
+    def __hash__(self):
+        return hash(self.soccerID)
+
+    def __eq__(self, other):
+        return self.soccerID == other.soccerID
+
+
+    def __str__(self, print_all=False):
+        return f"时间:{get_timestr_YMDHms_with_timestamp(self.beginTimestamp)} id:{self.soccerID} 主:{self.homeTeam} 客:{self.friendTeam}"
 
 '''
 单场比赛
 '''
-class FootballGame(object):
+class FootballGame(BaseGame):
     def __init__(self, gameid=0):
-        # 比赛ID
-        self.soccerID = gameid
+        super(FootballGame, self).__init__(gameid)
         # 澳门是否开盘
         self.haveAomen = True
         # 博彩公司列表
@@ -270,23 +299,13 @@ class FootballGame(object):
         self.beginTime = ''
         self.beginTimestamp = 0
         # 主队排名
-        self.homeTeamLevel = 0
         self.homeTeamLevelStr = ''
         # 客队排名
-        self.friendTeamLevel = 0
         self.friendTeamLevelStr = ''
-        # 主队名称
-        self.homeTeam = ''
-        # 主队id
-        self.homeTeamId = 0
         # 主队简称
         self.homeTeam2 = ''
-        # 客队
-        self.friendTeam = ''
         # 客队简称
         self.friendTeam2 = ''
-        # 客队id
-        self.friendTeamId = 0
         # 半场主队得分
         self.halfHome = 0
         # 半场客队得分
@@ -582,7 +601,7 @@ class TeamPanLuDetail:
         if print_all:
             return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
         else:
-            return f"{self.teamName} 胜:{self.winRate} 平:{self.drawRate} 负:{self.loseRate}"
+            return f"{self.teamName} 总场次:{self.numberOfGame} 胜:{self.winRate} 平:{self.drawRate} 负:{self.loseRate}"
 
 class TeamPanLu:
     def __init__(self):

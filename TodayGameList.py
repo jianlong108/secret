@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""这是解析每天比赛的文件。每天会被定时执行。
 
+"""
 from GetData.SOCCER_MODELS import FootballGame,BetCompany
 from colorama import Fore,init
 import requests
@@ -10,6 +12,15 @@ from numpy import *
 from GetData.GET_GAME_PAN_ODD_DATA import getOneGameHandiList,getOneGameOddList
 from SendMail import MailHelper
 from GetData.TIME_TOOL import get_current_timestr_YMDHms
+from loguru import logger
+
+# logger.trace("Executing program")
+# logger.debug("Processing data...")
+# logger.info("Server started successfully.")
+# logger.success("Data processing completed successfully.")
+# logger.warning("Invalid configuration detected.")
+# logger.error("Failed to connect to the database.")
+# logger.critical("Unexpected system error occurred. Shutting down.")
 
 '''
 找出今天澳*最早开盘的比赛
@@ -48,18 +59,23 @@ init(autoreset=True)
 
 
 def getTodaySoccer(soccer_type = 0):
+    """获取当天的比赛.
+        ----------
+        arg1 : soccer_type
+             type == 3 竞彩 ；type == 1 精简 ；type == 2 十四场
+        返回值
+        -------
+        void
+    """
     typeStr = ''
     if isinstance(soccer_type,int):
         typeStr = str(soccer_type)
-    # type == 3 竞彩
-    # type == 1 精简
-    # type == 2 十四场
     # url = "http://61.143.224.166:8071/phone/schedule_0_" + typeStr + ".txt?an=iosQiuTan&av=2.4&from=2&r=" + str(int(time.time()))
     # url = "http://112.91.160.49:8071/phone/schedule_0_" + str(type) + ".txt?an=iosQiuTan&av=5.9&from=2&r=1494229747"
 
     # http://txt.letarrow.com/phone/schedule_0_1.txt?from=48&_t=1701143016
     url = f"http://txt.letarrow.com/phone/schedule_0_{typeStr}.txt?from=48&_t={str(int(time.time()))}"
-    # print(url)
+    logger.debug(url)
 
     headers = {
         'User-Agent': 'QTimesApp/3.4 (Letarrow.QTimes; build:42; iOS 17.5.1) Alamofire/5.4.3',
@@ -68,7 +84,9 @@ def getTodaySoccer(soccer_type = 0):
     response = requests.get(url,headers=headers)
     if response.ok:
         resultStr = response.content.decode('utf-8')
-    print(resultStr)
+        logger.debug(resultStr)
+    else:
+        logger.error("Failed to connect to url.")
 
     if resultStr != '':
 
@@ -100,8 +118,6 @@ def getTodaySoccer(soccer_type = 0):
         # print(time.strftime("%Y-%m-%d %H:%M:%S", time_s))
         mailBody = ""
         for game in games:
-            # if game is not firstobject:
-            #     continue;
             gameobj = FootballGame()
             oneGameArray = game.split('^')
             oneGameArray.remove('')
@@ -129,21 +145,19 @@ def getTodaySoccer(soccer_type = 0):
                 gameobj.homeTeam = oneGameArray[4]
                 gameobj.friendTeam = oneGameArray[5]
 
-            # print(f"ID:{gameObj.soccerID} 时间:{gameObj.beginTime} 联赛:{gameObj.leauge} 主队:id:{gameObj.homeTeamId} {gameObj.homeTeam} 客队:id:{gameObj.friendTeamId} {gameObj.friendTeam}")
             getOneGameHandiList(gameobj)
 
             if not gameobj.haveAomen:
                 continue
             can_insert_db = False
-            print('---------')
             if gameobj.handiIsFilp:
                 mailBody += f"盘口翻转:{gameobj}"
                 mailBody += "\n"
                 mailBody += "\n"
-                print(Fore.GREEN + f"盘口翻转:{gameobj}")
+                logger.info(f"盘口翻转:{gameobj}")
                 can_insert_db = True
             if gameobj.earlyestCompany is not None and gameobj.earlyestCompany.companyID == '1':
-                print(Fore.YELLOW + f"澳盘开盘早:{gameobj.earlyestCompany}")
+                logger.info(f"澳盘开盘早:{gameobj.earlyestCompany}")
                 mailBody += f"澳盘开盘早:{gameobj.earlyestCompany}"
                 mailBody += "\n"
                 mailBody += "\n"
@@ -151,7 +165,7 @@ def getTodaySoccer(soccer_type = 0):
 
             # if len(gameobj.orignalHandiList) > 2:
             if len(gameobj.fix_orignalHandiList) > 2:
-                print(gameobj.fix_orignalHandiList)
+                # print(gameobj.fix_orignalHandiList)
                 for company in gameobj.yapanCompanies:
                     mailBody += f"name:{company.companyTitle} {company.early_fix_change}"
                     mailBody += "\n"
@@ -161,7 +175,7 @@ def getTodaySoccer(soccer_type = 0):
                     mailBody += f"初盘混乱 后续降盘 澳盘不是最大盘 出下盘:{gameobj}"
                     mailBody += "\n"
                     mailBody += "\n"
-                    print(Fore.BLUE + f"初盘混乱 后续降盘 澳盘不是最大盘 出下盘:{gameobj}")
+                    logger.info(f"初盘混乱 后续降盘 澳盘不是最大盘 出下盘:{gameobj}")
                     can_insert_db = True
 
                 if gameobj.maxHandiCompany.companyID != '1' and mean(gameobj.orignalHandiList) < mean(
@@ -169,14 +183,14 @@ def getTodaySoccer(soccer_type = 0):
                     mailBody += f"初盘混乱 后续升盘 澳盘不是最大盘  出下盘, {gameobj}"
                     mailBody += "\n"
                     mailBody += "\n"
-                    print(Fore.BLUE + f"初盘混乱 后续升盘 澳盘不是最大盘  出下盘, {gameobj}")
+                    logger.info(f"初盘混乱 后续升盘 澳盘不是最大盘  出下盘, {gameobj}")
                     can_insert_db = True
             if can_insert_db:
                 if gameobj.now_aomenHandi > 0 and gameobj.now_aomenHandi > gameobj.orignal_aomenHandi:
                     mailBody += f"澳门终盘主队强，且澳门升盘：{gameobj}"
                     mailBody += "\n"
                     mailBody += "\n"
-                    print(Fore.RED + f"澳门终盘主队强，且澳门升盘：{gameobj}")
+                    logger.info(f"澳门终盘主队强，且澳门升盘：{gameobj}")
             time.sleep(3)
             oddmailstr = getOneGameOddList(gameobj)
             if oddmailstr != "":
@@ -187,4 +201,5 @@ def getTodaySoccer(soccer_type = 0):
             mailobj.sendMailWithPlainText(get_current_timestr_YMDHms(), mailBody)
 
 if __name__ == '__main__':
+    logger.add("/Users/jl/Desktop/soccer/today_socccer{}.log".format(get_current_timestr_YMDHms()))
     getTodaySoccer(1)

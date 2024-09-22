@@ -12,8 +12,7 @@
 import math
 import requests
 from lxml import etree
-import time
-# import js2py
+from loguru import logger
 from colorama import Fore, init
 import re
 import ast
@@ -148,6 +147,10 @@ def getOneGameHandiList(gameObj):
 				if companyid == '8':
 					gameObj.now_365Handi = company.now_Handicap
 					gameObj.orignal_365Handi = company.orignal_Handicap
+
+				if companyid == '9':
+					if math.fabs(float(company.orignal_top) - float(company.orignal_bottom)) > 0.3:
+						print("GET_GAME_PAN_ODD 威廉存在水位异常")
 
 				if max_company is None:
 					max_company = company
@@ -860,7 +863,8 @@ def parseJifen(season='2023-2024', leagueid=36, leaguename='英超', minCount=6,
 		traceback.print_exc()
 
 # 欧冠小组赛6场
-def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=6, writeSQL= True):
+def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=3, alertThresholdValue=80, writeSQL= True):
+
 	random_number = random.random()
 	# print(Fore.GREEN + f"parsePanlu 正在进行{season} {random_number}")
 	url = f'https://zq.titan007.com/jsData/letGoal/{season}/l{leagueid}.js?flesh={random_number}'
@@ -871,7 +875,7 @@ def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=6, 
 		'referer': f'https://zq.titan007.com/cn/League/{leagueid}.html'
 	}
 	response = requests.get(url, headers=HEADERS, timeout=7)
-
+	logger.debug(url,HEADERS)
 	specialDic = {}
 	if response.status_code == 200:
 		js_code = response.text
@@ -893,6 +897,7 @@ def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=6, 
 			except (ValueError, SyntaxError):
 				# 转化失败时，将值保持为字符串
 				variables[var_name] = var_value
+				logger.error("转换失败",var_value)
 		teamArr = variables.get('arrTeam', [])
 		totoalPanluArr = variables.get('TotalPanLu', [])
 		HomePanLuArr = variables.get('HomePanLu', [])
@@ -900,12 +905,14 @@ def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=6, 
 		TotalHalfPanLuArr = variables.get('TotalHalfPanLu', [])
 		HomeHalfPanLuArr = variables.get('HomeHalfPanLu', [])
 		GuestHalfPanLuArr = variables.get('GuestHalfPanLu', [])
+		# 全场让球盘路数据统计
 		addUpArr = variables.get('addUp', [])
+		# 半场让球盘路数据统计
 		addUpHalfArr = variables.get('addUpHalf', [])
 
 		if len(teamArr) == 0:
 			for var_name, var_value in variables.items():
-				print(f"数据出现异常 {var_name}: {var_value}")
+				logger.error(f"数据出现异常 teamArr==0: {var_name}: {var_value}")
 			return
 		teamlist = []
 		for t in teamArr:
@@ -917,200 +924,69 @@ def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=6, 
 			team.teamName = t[1]
 			teamlist.append(team)
 
-		for p in totoalPanluArr:
-			team = next((team for team in teamlist if team.teamID == p[1]), None)
-			if team:
-				team.ranking = p[0]
-				detail = TeamPanLuDetail()
-				detail.season = team.season
-				detail.belongLeagueName = team.belongLeagueName
-				detail.belongLeagueID = team.belongLeagueID
-				detail.teamID = team.teamID
-				detail.teamName = team.teamName
-				detail.type = 1
-				detail.numberOfGame = p[2]
-				detail.upNumberOfGame = p[3]
-				detail.drawNumberOfGame = p[4]
-				detail.downNumberOfGame = p[5]
-				detail.winNumberOfGame = p[6]
-				detail.zouNumberOfGame = p[7]
-				detail.loseNumberOfGame = p[8]
-				# [9]是净值
-				detail.offset = p[9]
-				detail.winRate = p[10]
-				detail.drawRate = p[11]
-				detail.loseRate = p[12]
-				team.rounds = detail.numberOfGame
-				team.allDetail = detail
-				if detail.winRate >= 70 or detail.winRate >= 70 or detail.loseRate >= 70:
-					# print("全部盘路", team, detail)
-					curlist = specialDic.get("全部盘路", None)
-					if curlist is not None:
-						curlist.append(detail)
-						specialDic["全部盘路"] = curlist
+		def handlePanluDetail(panluArr, panluType):
+			for p in panluArr:
+				oneteam = next((team for team in teamlist if team.teamID == p[1]), None)
+				if oneteam:
+					oneteam.ranking = p[0]
+					detail = TeamPanLuDetail()
+					detail.season = oneteam.season
+					detail.belongLeagueName = oneteam.belongLeagueName
+					detail.belongLeagueID = oneteam.belongLeagueID
+					detail.teamID = oneteam.teamID
+					detail.teamName = oneteam.teamName
+					detail.type = panluType
+					detail.numberOfGame = p[2]
+					detail.upNumberOfGame = p[3]
+					detail.drawNumberOfGame = p[4]
+					detail.downNumberOfGame = p[5]
+					detail.winNumberOfGame = p[6]
+					detail.zouNumberOfGame = p[7]
+					detail.loseNumberOfGame = p[8]
+					# [9]是净值
+					detail.offset = p[9]
+					detail.winRate = p[10]
+					detail.drawRate = p[11]
+					detail.loseRate = p[12]
+					oneteam.rounds = detail.numberOfGame
+					luKey = ''
+					if panluType == 1:
+						oneteam.allDetail = detail
+						luKey = "全部盘路"
+					elif panluType == 2:
+						oneteam.homeDetail = detail
+						luKey = "主场盘路"
+					elif panluType == 3:
+						oneteam.awayDetail = detail
+						luKey = "客场盘路"
+					elif panluType == 4:
+						oneteam.halfAllDetail = detail
+						luKey = "半场盘路"
+					elif panluType == 5:
+						oneteam.halfHomeDetail = detail
+						luKey = "半场主场盘路"
+					elif panluType == 6:
+						oneteam.halfAwayDetail = detail
+						luKey = "半场客场盘路"
 					else:
-						specialDic["全部盘路"] = [detail]
-		for p in HomePanLuArr:
-			team = next((team for team in teamlist if team.teamID == p[1]), None)
-			if team:
-				team.ranking = p[0]
-				detail = TeamPanLuDetail()
-				detail.season = team.season
-				detail.belongLeagueName = team.belongLeagueName
-				detail.belongLeagueID = team.belongLeagueID
-				detail.teamID = team.teamID
-				detail.teamName = team.teamName
-				detail.type = 2
-				detail.numberOfGame = p[2]
-				detail.upNumberOfGame = p[3]
-				detail.drawNumberOfGame = p[4]
-				detail.downNumberOfGame = p[5]
-				detail.winNumberOfGame = p[6]
-				detail.zouNumberOfGame = p[7]
-				detail.loseNumberOfGame = p[8]
-				# [9]是净值
-				detail.offset = p[9]
-				detail.winRate = p[10]
-				detail.drawRate = p[11]
-				detail.loseRate = p[12]
-				team.homeDetail = detail
-				if detail.winRate >= 70 or detail.winRate >= 70 or detail.loseRate >= 70:
-					# print("主场盘路",team,detail)
-					curlist = specialDic.get("主场盘路", None)
-					if curlist is not None:
-						curlist.append(detail)
-						specialDic["主场盘路"] = curlist
-					else:
-						specialDic["主场盘路"] = [detail]
+						pass
 
-		for p in awayPanLuArr:
-			team = next((team for team in teamlist if team.teamID == p[1]), None)
-			if team:
-				team.ranking = p[0]
-				detail = TeamPanLuDetail()
-				detail.season = team.season
-				detail.belongLeagueName = team.belongLeagueName
-				detail.belongLeagueID = team.belongLeagueID
-				detail.teamID = team.teamID
-				detail.teamName = team.teamName
-				detail.type = 3
-				detail.numberOfGame = p[2]
-				detail.upNumberOfGame = p[3]
-				detail.drawNumberOfGame = p[4]
-				detail.downNumberOfGame = p[5]
-				detail.winNumberOfGame = p[6]
-				detail.zouNumberOfGame = p[7]
-				detail.loseNumberOfGame = p[8]
-				# [9]是净值
-				detail.offset = p[9]
-				detail.winRate = p[10]
-				detail.drawRate = p[11]
-				detail.loseRate = p[12]
-				team.awayDetail = detail
-				if detail.winRate >= 70 or detail.winRate >= 70 or detail.loseRate >= 70:
-					# print("客场盘路",team,detail)
-					curlist = specialDic.get("客场盘路", None)
-					if curlist is not None:
-						curlist.append(detail)
-						specialDic["客场盘路"] = curlist
-					else:
-						specialDic["客场盘路"] = [detail]
-		for p in TotalHalfPanLuArr:
-			team = next((team for team in teamlist if team.teamID == p[1]), None)
-			if team:
-				team.ranking = p[0]
-				detail = TeamPanLuDetail()
-				detail.season = team.season
-				detail.belongLeagueName = team.belongLeagueName
-				detail.belongLeagueID = team.belongLeagueID
-				detail.teamID = team.teamID
-				detail.teamName = team.teamName
-				detail.type = 4
-				detail.numberOfGame = p[2]
-				detail.upNumberOfGame = p[3]
-				detail.drawNumberOfGame = p[4]
-				detail.downNumberOfGame = p[5]
-				detail.winNumberOfGame = p[6]
-				detail.zouNumberOfGame = p[7]
-				detail.loseNumberOfGame = p[8]
-				# [9]是净值
-				detail.offset = p[9]
-				detail.winRate = p[10]
-				detail.drawRate = p[11]
-				detail.loseRate = p[12]
-				team.halfAllDetail = detail
-				if detail.winRate >= 70 or detail.winRate >= 70 or detail.loseRate >= 70:
-					# print("半场盘路",team,detail)
-					curlist = specialDic.get("半场盘路", None)
-					if curlist is not None:
-						curlist.append(detail)
-						specialDic["半场盘路"] = curlist
-					else:
-						specialDic["半场盘路"] = [detail]
-		for p in HomeHalfPanLuArr:
-			team = next((team for team in teamlist if team.teamID == p[1]), None)
-			if team:
-				team.ranking = p[0]
-				detail = TeamPanLuDetail()
-				detail.season = team.season
-				detail.belongLeagueName = team.belongLeagueName
-				detail.belongLeagueID = team.belongLeagueID
-				detail.teamID = team.teamID
-				detail.teamName = team.teamName
-				detail.type = 5
-				detail.numberOfGame = p[2]
-				detail.upNumberOfGame = p[3]
-				detail.drawNumberOfGame = p[4]
-				detail.downNumberOfGame = p[5]
-				detail.winNumberOfGame = p[6]
-				detail.zouNumberOfGame = p[7]
-				detail.loseNumberOfGame = p[8]
-				# [9]是净值
-				detail.offset = p[9]
-				detail.winRate = p[10]
-				detail.drawRate = p[11]
-				detail.loseRate = p[12]
-				team.halfHomeDetail = detail
-				if detail.winRate >= 70 or detail.winRate >= 70 or detail.loseRate >= 70:
-					# print("半场主场盘路",team,detail)
-					curlist = specialDic.get("半场主场盘路", None)
-					if curlist is not None:
-						curlist.append(detail)
-						specialDic["半场主场盘路"] = curlist
-					else:
-						specialDic["半场主场盘路"] = [detail]
-		for p in GuestHalfPanLuArr:
-			team = next((team for team in teamlist if team.teamID == p[1]), None)
-			if team:
-				team.ranking = p[0]
-				detail = TeamPanLuDetail()
-				detail.season = team.season
-				detail.belongLeagueName = team.belongLeagueName
-				detail.belongLeagueID = team.belongLeagueID
-				detail.teamID = team.teamID
-				detail.teamName = team.teamName
-				detail.type = 6
-				detail.numberOfGame = p[2]
-				detail.upNumberOfGame = p[3]
-				detail.drawNumberOfGame = p[4]
-				detail.downNumberOfGame = p[5]
-				detail.winNumberOfGame = p[6]
-				detail.zouNumberOfGame = p[7]
-				detail.loseNumberOfGame = p[8]
-				# [9]是净值
-				detail.offset = p[9]
-				detail.winRate = p[10]
-				detail.drawRate = p[11]
-				detail.loseRate = p[12]
-				team.halfAwayDetail = detail
-				if detail.winRate >= 70 or detail.winRate >= 70 or detail.loseRate >= 70:
-					# print("半场客场盘路",team,detail)
-					curlist = specialDic.get("半场客场盘路", None)
-					if curlist is not None:
-						curlist.append(detail)
-						specialDic["半场客场盘路"] = curlist
-					else:
-						specialDic["半场客场盘路"] = [detail]
+					logger.debug(f"赛季:{season} 联赛:{leaguename} {luKey}:{detail}")
+					if detail.winRate >= alertThresholdValue or detail.loseRate >= alertThresholdValue:
+						curlist = specialDic.get(luKey, None)
+						if curlist is not None:
+							curlist.append(detail)
+							specialDic[luKey] = curlist
+						else:
+							specialDic[luKey] = [detail]
+
+		handlePanluDetail(totoalPanluArr,1)
+		handlePanluDetail(HomePanLuArr,2)
+		handlePanluDetail(awayPanLuArr,3)
+		handlePanluDetail(TotalHalfPanLuArr,4)
+		handlePanluDetail(HomeHalfPanLuArr,5)
+		handlePanluDetail(GuestHalfPanLuArr,6)
+
 		winsutibetlist = addUpArr[6]
 		for i in range(len(winsutibetlist) - 1):
 			team = next((team for team in teamlist if team.teamID == winsutibetlist[i + 1]), None)
@@ -1146,22 +1022,27 @@ def parsePanlu(season='2022-2023', leagueid=8, leaguename='德甲', minCount=6, 
 			team = next((team for team in teamlist if team.teamID == awaylosesutibetlist[i + 1]), None)
 			if team:
 				team.suitableAwayLoseBet = True
-		if len(teamlist) == 0:
-			print(Fore.RED + '没有数据 结束')
-			return
+
 		for t in teamlist:
-			if t.allDetail is not None and t.allDetail.numberOfGame >= minCount:
+			if (t.allDetail is not None and t.allDetail.numberOfGame >= minCount) or \
+				(t.homeDetail is not None and t.homeDetail.numberOfGame >= minCount) or \
+				(t.awayDetail is not None and t.awayDetail.numberOfGame >= minCount) or \
+				(t.halfAllDetail is not None and t.halfAllDetail.numberOfGame >= minCount) or \
+				(t.halfHomeDetail is not None and t.halfHomeDetail.numberOfGame >= minCount) or \
+				(t.halfAwayDetail is not None and t.halfAwayDetail.numberOfGame >= minCount):
 				if writeSQL:
 					mysql_insert_game_to_seasonpanlu(t)
+					logger.debug(f"更新数据库 {t}")
 				else:
-					print('不更新数据库')
+					logger.debug("不更新数据库")
 			else:
-				print(Fore.RED + '该队伍参赛比赛太少，没有价值')
+				logger.info("该队伍参赛比赛太少，没有价值")
 				continue
-
 	else:
-		print(Fore.RED + f'parsePanlu出错:{url}')
+		logger.error(f'parsePanlu出错:{url}')
 		traceback.print_exc()
+
+
 	return specialDic
 
 # 获取一个队伍的盘路历史

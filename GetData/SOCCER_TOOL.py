@@ -11,7 +11,7 @@ def switchHandicap(Handicap):
             return -0.75
         elif Handicap == '受让一球':
             return -1.0
-        elif Handicap == '受让一球/一球半':
+        elif Handicap == '受让一球/球半':
             return -1.25
         elif Handicap == '受让球半':
             return -1.5

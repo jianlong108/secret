@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import time
 
 from DBHELPER import (insert_game_list_to_db, insertNewGameList, GET_LEAGUE_DETAIL_FROM_DB,
                       InsertLeagueJiFenALL, InsertLeagueDaXiao, InsertLeaguePanLu,
@@ -8,11 +9,14 @@ from DBHELPER import (insert_game_list_to_db, insertNewGameList, GET_LEAGUE_DETA
 from MySQLHelper import mysql_insert_game_to_season_games
 from SOCCER_ROUND import GetRound,creatCupGameModelWithComplexStr
 from NETWORKS_TOOLS import get_resultstr_with_url
+from SendMail import MailHelper
 import functools
 
 from GetData.GET_GAME_PAN_ODD_DATA import *
-
+from loguru import logger
 import re
+
+from GetData.TIME_TOOL import get_current_timestr_YMDHms
 
 
 def is_valid_format(season):
@@ -725,25 +729,190 @@ def getLeagueHistoryPanluFrom5Round(p_league_id = 36, p_league_name = '英超', 
     #     print(g, f"终盘:{g.now_365Handi}赛果：", g.win365Handi, f"初盘:{g.orignal_365Handi}赛果：", g.ori365Winhandi)
 
 
-global_league_dic = {"8":"德甲","9":"德乙","11":"法甲","12":"法乙",
-               "16":"荷甲","17":"荷乙","23":"葡超","27":"瑞超",
-                "29":"苏超","31":"西甲","33":"西乙","36":"英超",
-               "37":"英冠","39":"英甲","34":"意甲","40":"意乙","25":"日职联"}
+global_league_arr = [
+    {"1":8, "2":"德甲" , "3":"2024-2025"},
+    {"1":9, "2":"德乙" , "3":"2024-2025"},
+    {"1":11, "2":"法甲", "3":"2024-2025"},
+    {"1":12, "2":"法乙", "3":"2024-2025"},
+    {"1":16, "2":"荷甲", "3":"2024-2025"},
+    {"1":17, "2":"荷乙", "3":"2024-2025"},
+    {"1":23, "2":"葡超", "3":"2024-2025"},
+    {"1":27, "2":"瑞超", "3":"2024-2025"},
+    {"1":29, "2":"苏超", "3":"2024-2025"},
+    {"1":31, "2":"西甲", "3":"2024-2025"},
+    {"1":33, "2":"西乙", "3":"2024-2025"},
+    {"1":36, "2":"英超", "3":"2024-2025"},
+    {"1":37, "2":"英冠", "3":"2024-2025"},
+    {"1":39, "2":"英甲", "3":"2024-2025"},
+    {"1":34, "2":"意甲", "3":"2024-2025"},
+    {"1":40, "2":"意乙", "3":"2024-2025"},
+    {"1":25, "2":"日职联", "3":"2024"},
+    {"1":60, "2":"中超", "3":"2024"}
+]
 
 class GetLeagueGameObject:
     # 类属性定义
     # maxround = 34
-    def __init__(self, lid,lname):
-        self.leagueid = lid
+    def __init__(self, lid, lname):
+        self.leagueid = int(lid)
         self.leaguename = lname
         self.maxround = 34
         self.currentSeason = '2024'
         self.subleague = None
 
+    def seasonIsvaild(self, curSeason):
+        return True
 
+class GetCurrentSeasonPanluObject(GetLeagueGameObject):
+    def seasonIsvaild(self, curSeason):
+        return self.currentSeason == curSeason
 
+def getAllSeasonPanlu(spSeasonid=0):
+    logger.add("/Users/jl/Desktop/soccer/{}_getLeaguePanlu.txt".format(get_current_timestr_YMDHms()))
+    headers = {
+        'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
+        'cookie': 'aiappfrom=48'
+    }
+    mailBody = ''
+    _allLeagueNextRoundGamedic = {}
+    try:
+        for season in global_league_arr:
+            league_id_in_dic = season.get("1", 0)
+            league_name_in_dic = season.get("2", "")
+            season_in_dic = season.get("3", "")
+            if spSeasonid != 0 and league_id_in_dic != 0 and spSeasonid != league_id_in_dic:
+                continue
+            logger.debug(f"开始获取当前赛季盘路--{league_id_in_dic} {league_name_in_dic}")
+            getPanluObj = GetCurrentSeasonPanluObject(lid=league_id_in_dic, lname=league_name_in_dic)
+            getPanluObj.currentSeason = season_in_dic
+            getPanluObj.maxround = 38
+            timestr = str(int(time.time()))
+            url = f"http://api.letarrow.com/pcf/bfmatch/api/database/v1/leaguedetail?kind=1&lang=0&sid={getPanluObj.leagueid}&_t={timestr}"
+            response = requests.get(url, headers=headers)
+            if response.ok and response.headers.get('Content-Type', '') == 'application/x-protobuf':
+                resultStr = response.content
+                temp_message, typedef = blackboxprotobuf.protobuf_to_json(resultStr)
+                # logger.info("protobuf解析后: {}".format(temp_message))
+                leaguedic = json.loads(temp_message)
+                league_id = int(leaguedic.get('1', '0'))
+                if league_id != getPanluObj.leagueid:
+                    raise ValueError(f"联赛id异常 {league_id} != {getPanluObj.leagueid}")
+                leaguename = leaguedic.get('2', '')
+
+                for s in leaguedic.get('4', []):
+                    if not getPanluObj.seasonIsvaild(s):
+                        logger.debug(f"{s} 校验不通过 continue")
+                        continue
+                    specialDic = parsePanlu(season=s, leagueid=league_id, leaguename=leaguename)
+                    time.sleep(1)
+                    allgames = getNextRoundGames(league_id, cur_season=season_in_dic)
+                    for game in allgames:
+                        body = f"{season_in_dic}:{leaguename} | {game}"
+                        gameHtmlContent = body
+                        for (k, v) in specialDic.items():
+                            if not isinstance(v, list):
+                                continue
+                            for tmpDetail in v:
+                                if not isinstance(tmpDetail, TeamPanLuDetail):
+                                    continue
+                                if game.homeTeamId == tmpDetail.teamID or game.friendTeamId == tmpDetail.teamID:
+                                    if "<ul>" not in gameHtmlContent:
+                                        gameHtmlContent += "<ul>"
+                                    body += f"\n {k} {tmpDetail}"
+                                    gameHtmlContent += f"<li> {k} : {tmpDetail} </li>"
+                        if "<ul>" in gameHtmlContent:
+                            gameHtmlContent += "</ul>"
+                            if game.beginTimestamp > time.time():
+                                if (game.beginTimestamp - time.time()) / 3600 > 8:
+                                    gameHtmlContent = f"<p style=\"color: orange;\">{gameHtmlContent}</p>"
+                                else:
+                                    gameHtmlContent = f"<p style=\"color: red;\">{gameHtmlContent}</p>"
+                            else:
+                                gameHtmlContent = f"<p style=\"color: gray;\">{gameHtmlContent}</p>"
+                        else:
+                            gameHtmlContent = f"<p style=\"color: black;\">{gameHtmlContent}</p>"
+                        _allLeagueNextRoundGamedic[game] = gameHtmlContent
+
+                        logger.info(body)
+                    time.sleep(3)
+
+            else:
+                raise Exception('请求{}:出错'.format(url))
+    except Exception as e:
+        logger.error(e)
+    finally:
+        html_content = """
+                       <html>
+                       <head></head>
+                       <body>
+                       """
+
+        html_content_end = """
+                       </body>
+                       </html>
+                       """
+        sorted_games = dict(sorted(_allLeagueNextRoundGamedic.items(), key=lambda item: item[0].beginTimestamp))
+
+        # 打印排序后的字典
+        for game, game_html_content in sorted_games.items():
+            html_content += game_html_content
+        html_content += html_content_end
+        if html_content != "":
+            mailobj = MailHelper()
+            # mailobj.sendMailWithPlainText(get_current_timestr_YMDHms(), mailBody)
+            mailobj.sendMailWithHtml(f'{get_current_timestr_YMDHms()}:盘路分析', html_content)
+
+def getNextRoundGames(leagueid, cur_season='2024-2025', roundnum=0):
+    headers = {
+        'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
+        'cookie': 'aiappfrom=48'
+    }
+    allgameObjs = []
+    try:
+        timestr = str(int(time.time()))
+        url = f"http://api.letarrow.com/ios/Phone/FBDataBase/LeagueSchedules.aspx?lang=0&round={roundnum}&sclassid={leagueid}&season={cur_season}&subid=0&from=48&_t={timestr}"
+        response = requests.get(url, headers=headers)
+        if response.ok and response.headers.get('Content-Type') == 'application/x-protobuf':
+            resultStr = response.content
+            temp_message, typedef = blackboxprotobuf.protobuf_to_json(resultStr)
+
+            leaguedic = json.loads(temp_message)
+            threeDic = leaguedic.get('3', {})
+            # '1': {'1': '1778', '2': '联赛', '3': '1', '4': '1'}
+            leagueinfo = threeDic.get('1', {})
+            # '2': {'1': '34', '2': '5', '3': '5'}
+            roundinfo = threeDic.get('2', {})
+            roundcount = roundinfo.get('1', '0')
+            curround = roundinfo.get('2', '0')
+            # '3': [{'1': '2639227', '2': '1726855200', '3': '5961', '4': '393', '5': '马蒂格', '6': '格勒诺布尔', '12': '14', '13': '8'}, {'.......
+            allgames = threeDic.get('3', [])
+
+            for gameinfo in allgames:
+                gameid = gameinfo.get('1','0')
+                if gameid == '0':
+                    continue
+                gameobj = BaseGame(gameid=int(gameid))
+                gameobj.beginTimestamp = int(gameinfo.get('2','0'))
+                gameobj.homeTeamId = int(gameinfo.get('3', '0'))
+                gameobj.homeTeam = gameinfo.get('5','')
+                gameobj.friendTeamId = int(gameinfo.get('4', '0'))
+                gameobj.friendTeam = gameinfo.get('6','')
+                gameobj.homeTeamLevel = int(gameinfo.get('12','0'))
+                gameobj.friendTeamLevel = int(gameinfo.get('13','0'))
+                allgameObjs.append(gameobj)
+                logger.debug(gameobj)
+                # print(gameobj)
+        else:
+            raise Exception('请求{}:出错'.format(response.status_code))
+    except Exception as e:
+        print(e)
+    finally:
+        return allgameObjs
 
 if __name__ == '__main__':
+    getAllSeasonPanlu()
+    exit(0)
+    # logger.add("/Users/jl/Desktop/soccer/{}getLeague.log".format(get_current_timestr_YMDHms()))
     # updateCurrentSeasonPanlu(par_write_SQL=False)
     # getLeagueHistoryPanluFrom5Round()
     # exit(0)
@@ -762,45 +931,43 @@ if __name__ == '__main__':
     #荷乙 盘路 积分 已完成 17/94
     #苏超 盘路 完成 29
     # 瑞超 盘路 完成 27
-    #
-    getleaguegameobj = GetLeagueGameObject(lid=60, lname='中超')
-    getleaguegameobj.currentSeason = '2024'
-    getleaguegameobj.maxround = 30
+    getPanluObj = GetCurrentSeasonPanluObject(lid=12, lname='英超')
+    getPanluObj.currentSeason = '2024-2025'
+    getPanluObj.maxround = 38
     headers = {
         'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
         'cookie': 'aiappfrom=48'
     }
     timestr = str(int(time.time()))
-    url = f"http://api.letarrow.com/pcf/bfmatch/api/database/v1/leaguedetail?kind=1&lang=0&sid={getleaguegameobj.leagueid}&_t={timestr}"
+    url = f"http://api.letarrow.com/pcf/bfmatch/api/database/v1/leaguedetail?kind=1&lang=0&sid={getPanluObj.leagueid}&_t={timestr}"
     try:
         response = requests.get(url, headers=headers)
         if response.ok:
             content_type = response.headers.get('Content-Type')
-            # print(content_type)
+            logger.info("{}  type: {}".format(url,content_type))
             if 'application/x-protobuf' == content_type:
                 resultStr = response.content
-                print(url, resultStr)
                 temp_message, typedef = blackboxprotobuf.protobuf_to_json(resultStr)
-                print(temp_message)
+                logger.info("protobuf解析后: {}".format(temp_message))
                 leaguedic = json.loads(temp_message)
                 league_id = int(leaguedic.get('1', '0'))
-                if league_id != getleaguegameobj.leagueid:
-                    raise ValueError("联赛id异常")
+                if league_id != getPanluObj.leagueid:
+                    raise ValueError(f"联赛id异常 {league_id} != {getPanluObj.leagueid}")
 
                 leaguename = leaguedic.get('2', '')
                 seasons = leaguedic.get('4', [])
                 for s in seasons:
-                    if getleaguegameobj.currentSeason == s:
+                    if not getPanluObj.seasonIsvaild(s):
+                        logger.debug(f"{s} 校验不通过 continue")
                         continue
-                    if s not in ['2023']:
-                        continue
-                    getSeasonGamelist(s, league_id, leaguename, getleaguegameobj.maxround)
-                    # parsePanlu(season=s,leagueid=league_id,leaguename=_league_name)
-                    # parseJifen(season=s,leagueid=league_id,leaguename=_league_name,subleagueid=_sub_league_id)
-                    time.sleep(8)
-
+                    # getSeasonGamelist(s, league_id, leaguename, getleaguegameobj.maxround)
+                    parsePanlu(season=s,leagueid=league_id,leaguename=leaguename)
+                    # parseJifen(season=s,leagueid=league_id,leaguename=leaguename,subleagueid=_sub_league_id)
+                    time.sleep(3)
+        else:
+            raise Exception('请求{}:出错'.format(url))
     except Exception as e:
-        print('获取联赛数据', url, e)
+        logger.error(e)
 
 
 
