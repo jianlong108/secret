@@ -601,7 +601,7 @@ class TeamPanLuDetail:
         if print_all:
             return '\n'.join(['%s:%s' % item for item in self.__dict__.items()])
         else:
-            return f"{self.teamName} 总场次:{self.numberOfGame} 胜:{self.winRate} 平:{self.drawRate} 负:{self.loseRate}"
+            return f"{self.teamName} 胜:{self.winRate}% 平:{self.drawRate}% 负:{self.loseRate}%  总场次:{self.numberOfGame}"
 
 class TeamPanLu:
     def __init__(self):
