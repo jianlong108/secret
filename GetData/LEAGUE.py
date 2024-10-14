@@ -803,7 +803,7 @@ def getAllSeasonPanlu(spSeasonid=0):
                     if not getPanluObj.seasonIsvaild(s):
                         logger.debug(f"{s} 校验不通过 continue")
                         continue
-                    specialDic = parsePanlu(season=s, leagueid=league_id, leaguename=leaguename)
+                    specialDic = parsePanlu(season=s, leagueid=league_id, leaguename=leaguename,minCount=5)
                     time.sleep(1)
                     allgames = getNextRoundGames(league_id, cur_season=season_in_dic)
                     for game in allgames:
@@ -823,8 +823,14 @@ def getAllSeasonPanlu(spSeasonid=0):
                         if "<ul>" in gameHtmlContent:
                             gameHtmlContent += "</ul>"
                             if game.beginTimestamp > time.time():
-                                if (game.beginTimestamp - time.time()) / 3600 > 8:
-                                    gameHtmlContent = f"<p style=\"color: orange;\">{gameHtmlContent}</p>"
+                                hour = (game.beginTimestamp - time.time()) / 3600
+                                # 增加颜色区分，便于
+                                if  hour > 48:
+                                    gameHtmlContent = f"<p style=\"color: purple;\">{gameHtmlContent}</p>"
+                                elif hour > 24:
+                                    gameHtmlContent = f"<p style=\"color: green;\">{gameHtmlContent}</p>"
+                                elif hour > 12:
+                                    gameHtmlContent = f"<p style=\"color: blue;\">{gameHtmlContent}</p>"
                                 else:
                                     gameHtmlContent = f"<p style=\"color: red;\">{gameHtmlContent}</p>"
                             else:
