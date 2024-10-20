@@ -730,24 +730,24 @@ def getLeagueHistoryPanluFrom5Round(p_league_id = 36, p_league_name = '英超', 
 
 
 global_league_arr = [
-    {"1":8, "2":"德甲" , "3":"2024-2025"},
-    {"1":9, "2":"德乙" , "3":"2024-2025"},
-    {"1":11, "2":"法甲", "3":"2024-2025"},
-    {"1":12, "2":"法乙", "3":"2024-2025"},
-    {"1":16, "2":"荷甲", "3":"2024-2025"},
-    {"1":17, "2":"荷乙", "3":"2024-2025"},
-    {"1":23, "2":"葡超", "3":"2024-2025"},
-    {"1":27, "2":"瑞超", "3":"2024-2025"},
-    {"1":29, "2":"苏超", "3":"2024-2025"},
-    {"1":31, "2":"西甲", "3":"2024-2025"},
-    {"1":33, "2":"西乙", "3":"2024-2025"},
-    {"1":36, "2":"英超", "3":"2024-2025"},
-    {"1":37, "2":"英冠", "3":"2024-2025"},
-    {"1":39, "2":"英甲", "3":"2024-2025"},
-    {"1":34, "2":"意甲", "3":"2024-2025"},
-    {"1":40, "2":"意乙", "3":"2024-2025"},
-    {"1":25, "2":"日职联", "3":"2024"},
-    {"1":60, "2":"中超", "3":"2024"}
+    {"1":8, "2":"德甲" , "3":"2024-2025","4":38,"5":8},
+    {"1":9, "2":"德乙" , "3":"2024-2025","4":38,"5":8},
+    {"1":11, "2":"法甲", "3":"2024-2025","4":38,"5":8},
+    {"1":12, "2":"法乙", "3":"2024-2025","4":38,"5":8},
+    {"1":16, "2":"荷甲", "3":"2024-2025","4":38,"5":8},
+    {"1":17, "2":"荷乙", "3":"2024-2025","4":38,"5":8},
+    {"1":23, "2":"葡超", "3":"2024-2025","4":38,"5":8},
+    {"1":27, "2":"瑞超", "3":"2024-2025","4":38,"5":8},
+    {"1":29, "2":"苏超", "3":"2024-2025","4":38,"5":8},
+    {"1":31, "2":"西甲", "3":"2024-2025","4":38,"5":8},
+    {"1":33, "2":"西乙", "3":"2024-2025","4":38,"5":8},
+    {"1":36, "2":"英超", "3":"2024-2025","4":38,"5":8},
+    {"1":37, "2":"英冠", "3":"2024-2025","4":38,"5":8},
+    {"1":39, "2":"英甲", "3":"2024-2025","4":38,"5":8},
+    {"1":34, "2":"意甲", "3":"2024-2025","4":38,"5":8},
+    {"1":40, "2":"意乙", "3":"2024-2025","4":38,"5":8},
+    {"1":25, "2":"日职联", "3":"2024"   ,"4":38, "5":8},
+    {"1":60, "2":"中超", "3":"2024"     ,"4":38,"5":8}
 ]
 
 class GetLeagueGameObject:
@@ -773,7 +773,6 @@ def getAllSeasonPanlu(spSeasonid=0):
         'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
         'cookie': 'aiappfrom=48'
     }
-    mailBody = ''
     _allLeagueNextRoundGamedic = {}
     try:
         for season in global_league_arr:
@@ -815,11 +814,12 @@ def getAllSeasonPanlu(spSeasonid=0):
                             for tmpDetail in v:
                                 if not isinstance(tmpDetail, TeamPanLuDetail):
                                     continue
-                                if game.homeTeamId == tmpDetail.teamID or game.friendTeamId == tmpDetail.teamID:
+                                if gameAndPanluDetailIsMatch(game, tmpDetail):
                                     if "<ul>" not in gameHtmlContent:
                                         gameHtmlContent += "<ul>"
                                     body += f"\n {k} {tmpDetail}"
                                     gameHtmlContent += f"<li> {k} : {tmpDetail} </li>"
+                        # 对所有 符号条件的比赛 根据开赛时间 加以颜色标识
                         if "<ul>" in gameHtmlContent:
                             gameHtmlContent += "</ul>"
                             if game.beginTimestamp > time.time():
@@ -868,6 +868,7 @@ def getAllSeasonPanlu(spSeasonid=0):
             # mailobj.sendMailWithPlainText(get_current_timestr_YMDHms(), mailBody)
             mailobj.sendMailWithHtml(f'{get_current_timestr_YMDHms()}:盘路分析', html_content)
 
+# 获取当前轮次的比赛
 def getNextRoundGames(leagueid, cur_season='2024-2025', roundnum=0):
     headers = {
         'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
@@ -914,6 +915,31 @@ def getNextRoundGames(leagueid, cur_season='2024-2025', roundnum=0):
         print(e)
     finally:
         return allgameObjs
+
+def gameAndPanluDetailIsMatch(gameObj, panluDeatil):
+    if not isinstance(gameObj, BaseGame):
+        return False
+    if not isinstance(panluDeatil, TeamPanLuDetail):
+        return False
+    # 类型：1：总盘 2：主场 3：客场 4：半场盘 5：半场主 6：半场客
+    if panluDeatil.type == 1 or panluDeatil.type == 4:
+        if gameObj.homeTeamId == panluDeatil.teamID or gameObj.friendTeamId == panluDeatil.teamID:
+            return True
+        else:
+            return False
+    elif panluDeatil.type == 2 or panluDeatil.type == 5:
+        if gameObj.homeTeamId == panluDeatil.teamID:
+            return True
+        else:
+            return False
+    elif panluDeatil.type == 3 or panluDeatil.type == 6:
+        if gameObj.friendTeamId == panluDeatil.teamID:
+            return True
+        else:
+            return False
+    else:
+        return False
+
 
 if __name__ == '__main__':
     getAllSeasonPanlu()

@@ -50,9 +50,15 @@ def merge_pdfs(pdf_list, output_path):
 	with open(output_path, "wb") as output_pdf_file:
 		writer.write(output_pdf_file)
 
+
 def mergePDF():
+	pdf_files_to_merge = ["/Users/jl/Downloads/aa.pdf", "/Users/jl/Downloads/2-1.pdf"]
+	output_merged_pdf_path = "/Users/jl/Downloads/merged_output.pdf"
+	merge_pdfs(pdf_files_to_merge, output_merged_pdf_path)
+
+def mergeEncryptedPDF():
 	# 输入文件路径
-	encrypted_pdf_path = "/Users/jl/Downloads/2.pdf"  # 加密的 PDF 文件
+	encrypted_pdf_path = "/Users/jl/Downloads/aa.pdf"  # 加密的 PDF 文件
 	decrypted_pdf_path = "/Users/jl/Downloads/2-1.pdf"  # 解密后的 PDF 文件
 	password = "TODO"  # 加密 PDF 的密码
 
@@ -94,9 +100,9 @@ def split_pdf_pages(input_pdf_path, output_dir):
 			print(f"成功保存：{output_file_path}")
 
 if __name__ == '__main__':
-	# mergePDF()
+	mergePDF()
 
-	input_pdf_path = "/Users/jl/Downloads/a.pdf"
-	output_dir = "/Users/jl/Downloads"
-
-	split_pdf_pages(input_pdf_path, output_dir)
+	# input_pdf_path = "/Users/jl/Downloads/a.pdf"
+	# output_dir = "/Users/jl/Downloads"
+	#
+	# split_pdf_pages(input_pdf_path, output_dir)
