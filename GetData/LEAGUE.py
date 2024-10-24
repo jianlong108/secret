@@ -820,23 +820,27 @@ def getAllSeasonPanlu(spSeasonid=0):
                                     body += f"\n {k} {tmpDetail}"
                                     gameHtmlContent += f"<li> {k} : {tmpDetail} </li>"
                         # 对所有 符号条件的比赛 根据开赛时间 加以颜色标识
+                        color = "black"
                         if "<ul>" in gameHtmlContent:
                             gameHtmlContent += "</ul>"
                             if game.beginTimestamp > time.time():
                                 hour = (game.beginTimestamp - time.time()) / 3600
                                 # 增加颜色区分，便于
-                                if  hour > 48:
-                                    gameHtmlContent = f"<p style=\"color: purple;\">{gameHtmlContent}</p>"
+                                if hour > 72:
+                                    color = "chocolate"
+                                elif  hour > 60:
+                                    color = "orangered"
+                                elif  hour > 48:
+                                    color = "purple"
                                 elif hour > 24:
-                                    gameHtmlContent = f"<p style=\"color: green;\">{gameHtmlContent}</p>"
+                                    color = "green"
                                 elif hour > 12:
-                                    gameHtmlContent = f"<p style=\"color: blue;\">{gameHtmlContent}</p>"
+                                    color = "blue"
                                 else:
-                                    gameHtmlContent = f"<p style=\"color: red;\">{gameHtmlContent}</p>"
+                                    color = "red"
                             else:
-                                gameHtmlContent = f"<p style=\"color: gray;\">{gameHtmlContent}</p>"
-                        else:
-                            gameHtmlContent = f"<p style=\"color: black;\">{gameHtmlContent}</p>"
+                                color = "gray"
+                        gameHtmlContent = f"<p style=\"color: {color};\">{gameHtmlContent}</p>"
                         _allLeagueNextRoundGamedic[game] = gameHtmlContent
 
                         logger.info(body)
@@ -899,6 +903,7 @@ def getNextRoundGames(leagueid, cur_season='2024-2025', roundnum=0):
                 if gameid == '0':
                     continue
                 gameobj = BaseGame(gameid=int(gameid))
+                gameobj.round = int(curround)
                 gameobj.beginTimestamp = int(gameinfo.get('2','0'))
                 gameobj.homeTeamId = int(gameinfo.get('3', '0'))
                 gameobj.homeTeam = gameinfo.get('5','')
@@ -908,7 +913,6 @@ def getNextRoundGames(leagueid, cur_season='2024-2025', roundnum=0):
                 gameobj.friendTeamLevel = int(gameinfo.get('13','0'))
                 allgameObjs.append(gameobj)
                 logger.debug(gameobj)
-                # print(gameobj)
         else:
             raise Exception('请求{}:出错'.format(response.status_code))
     except Exception as e:

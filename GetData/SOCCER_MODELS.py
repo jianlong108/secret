@@ -266,6 +266,8 @@ class BaseGame(object):
         self.friendTeamId = 0
         # 客队
         self.friendTeam = ''
+        # 当前轮次
+        self.round = 0
 
     def __hash__(self):
         return hash(self.soccerID)
@@ -275,7 +277,7 @@ class BaseGame(object):
 
 
     def __str__(self, print_all=False):
-        return f"时间:{get_timestr_YMDHms_with_timestamp(self.beginTimestamp)} id:{self.soccerID} 主:{self.homeTeam} 客:{self.friendTeam}"
+        return f"轮:{self.round} 时间:{get_timestr_YMDHms_with_timestamp(self.beginTimestamp)} id:{self.soccerID} 主:{self.homeTeam} 客:{self.friendTeam}"
 
 '''
 单场比赛
@@ -293,8 +295,6 @@ class FootballGame(BaseGame):
         self.leaugeid = 0
         # 赛季
         self.season = ''
-        # 轮次
-        self.round = 0
         # 开赛时间
         self.beginTime = ''
         self.beginTimestamp = 0
