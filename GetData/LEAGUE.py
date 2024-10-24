@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os.path
 import time
 
 from DBHELPER import (insert_game_list_to_db, insertNewGameList, GET_LEAGUE_DETAIL_FROM_DB,
@@ -730,20 +731,21 @@ def getLeagueHistoryPanluFrom5Round(p_league_id = 36, p_league_name = '英超', 
 
 
 global_league_arr = [
-    {"1":8, "2":"德甲" , "3":"2024-2025","4":38,"5":8},
-    {"1":9, "2":"德乙" , "3":"2024-2025","4":38,"5":8},
-    {"1":11, "2":"法甲", "3":"2024-2025","4":38,"5":8},
-    {"1":12, "2":"法乙", "3":"2024-2025","4":38,"5":8},
-    {"1":16, "2":"荷甲", "3":"2024-2025","4":38,"5":8},
+    {"1":8, "2":"德甲" , "3":"2024-2025","4":34,"5":8},
+    {"1":9, "2":"德乙" , "3":"2024-2025","4":34,"5":8},
+    {"1":11, "2":"法甲", "3":"2024-2025","4":34,"5":8},
+    {"1":12, "2":"法乙", "3":"2024-2025","4":34,"5":8},
+    {"1":16, "2":"荷甲", "3":"2024-2025","4":34,"5":8},
     {"1":17, "2":"荷乙", "3":"2024-2025","4":38,"5":8},
-    {"1":23, "2":"葡超", "3":"2024-2025","4":38,"5":8},
-    {"1":27, "2":"瑞超", "3":"2024-2025","4":38,"5":8},
-    {"1":29, "2":"苏超", "3":"2024-2025","4":38,"5":8},
+    {"1":23, "2":"葡超", "3":"2024-2025","4":34,"5":8},
+    # 瑞士超级
+    {"1":27, "2":"瑞超", "3":"2024-2025","4":22,"5":8},
+    {"1":29, "2":"苏超", "3":"2024-2025","4":33,"5":8},
     {"1":31, "2":"西甲", "3":"2024-2025","4":38,"5":8},
-    {"1":33, "2":"西乙", "3":"2024-2025","4":38,"5":8},
+    {"1":33, "2":"西乙", "3":"2024-2025","4":42,"5":8},
     {"1":36, "2":"英超", "3":"2024-2025","4":38,"5":8},
-    {"1":37, "2":"英冠", "3":"2024-2025","4":38,"5":8},
-    {"1":39, "2":"英甲", "3":"2024-2025","4":38,"5":8},
+    {"1":37, "2":"英冠", "3":"2024-2025","4":46,"5":8},
+    {"1":39, "2":"英甲", "3":"2024-2025","4":46,"5":8},
     {"1":34, "2":"意甲", "3":"2024-2025","4":38,"5":8},
     {"1":40, "2":"意乙", "3":"2024-2025","4":38,"5":8},
     {"1":25, "2":"日职联", "3":"2024"   ,"4":38, "5":8},
@@ -769,22 +771,33 @@ class GetCurrentSeasonPanluObject(GetLeagueGameObject):
 
 def getAllSeasonPanlu(spSeasonid=0):
     logger.add("/Users/jl/Desktop/soccer/{}_getLeaguePanlu.txt".format(get_current_timestr_YMDHms()))
+    cur_path = os.path.dirname(__file__)
+    last_path = os.path.abspath(os.path.join(cur_path, "../"))
+    json_path = os.path.join(last_path, "leagueConfig.json")
+    logger.debug(json_path,last_path,cur_path)
     headers = {
         'User-Agent': 'QTimesApp/3.0 (Letarrow.QTimes; build:39; iOS 17.1.0) Alamofire/5.4.',
         'cookie': 'aiappfrom=48'
     }
     _allLeagueNextRoundGamedic = {}
     try:
-        for season in global_league_arr:
+        with open(json_path, 'r') as read_json_file:
+            league_json = read_json_file.read()
+        all_league_dic = json.loads(league_json)
+        logger.debug(all_league_dic)
+        seasons = all_league_dic.get('league', [])
+        for idx, season in enumerate(seasons):
             league_id_in_dic = season.get("1", 0)
             league_name_in_dic = season.get("2", "")
             season_in_dic = season.get("3", "")
+            maxround_in_dic = season.get("4", 0)
+            curround_in_dic = season.get("5", 0)
             if spSeasonid != 0 and league_id_in_dic != 0 and spSeasonid != league_id_in_dic:
                 continue
             logger.debug(f"开始获取当前赛季盘路--{league_id_in_dic} {league_name_in_dic}")
             getPanluObj = GetCurrentSeasonPanluObject(lid=league_id_in_dic, lname=league_name_in_dic)
             getPanluObj.currentSeason = season_in_dic
-            getPanluObj.maxround = 38
+            getPanluObj.maxround = maxround_in_dic
             timestr = str(int(time.time()))
             url = f"http://api.letarrow.com/pcf/bfmatch/api/database/v1/leaguedetail?kind=1&lang=0&sid={getPanluObj.leagueid}&_t={timestr}"
             response = requests.get(url, headers=headers)
@@ -792,21 +805,25 @@ def getAllSeasonPanlu(spSeasonid=0):
                 resultStr = response.content
                 temp_message, typedef = blackboxprotobuf.protobuf_to_json(resultStr)
                 # logger.info("protobuf解析后: {}".format(temp_message))
-                leaguedic = json.loads(temp_message)
-                league_id = int(leaguedic.get('1', '0'))
-                if league_id != getPanluObj.leagueid:
+                _leaguedic = json.loads(temp_message)
+                _league_id = int(_leaguedic.get('1', '0'))
+                if _league_id != getPanluObj.leagueid:
                     raise ValueError(f"联赛id异常 {league_id} != {getPanluObj.leagueid}")
-                leaguename = leaguedic.get('2', '')
+                _leaguename = _leaguedic.get('2', '')
 
-                for s in leaguedic.get('4', []):
+                for s in _leaguedic.get('4', []):
                     if not getPanluObj.seasonIsvaild(s):
                         logger.debug(f"{s} 校验不通过 continue")
                         continue
-                    specialDic = parsePanlu(season=s, leagueid=league_id, leaguename=leaguename,minCount=5)
+                    specialDic = parsePanlu(season=s, leagueid=_league_id, leaguename=_leaguename, minCount=5)
                     time.sleep(1)
-                    allgames = getNextRoundGames(league_id, cur_season=season_in_dic)
+                    allgames, max_round, cur_round = getNextRoundGames(_league_id, cur_season=season_in_dic)
+                    if max_round > 0:
+                        seasons[idx]['4'] = max_round
+                    if cur_round > 0:
+                        seasons[idx]['5'] = cur_round
                     for game in allgames:
-                        body = f"{season_in_dic}:{leaguename} | {game}"
+                        body = f"{season_in_dic}:{_leaguename} | {game}"
                         gameHtmlContent = body
                         for (k, v) in specialDic.items():
                             if not isinstance(v, list):
@@ -848,6 +865,11 @@ def getAllSeasonPanlu(spSeasonid=0):
 
             else:
                 raise Exception('请求{}:出错'.format(url))
+
+        logger.debug(all_league_dic)
+        with open(json_path, 'w+', encoding='utf-8') as write_json_file:
+            jsonstr = json.dumps(all_league_dic, ensure_ascii=False, indent=4)
+            write_json_file.write(jsonstr)
     except Exception as e:
         logger.error(e)
     finally:
@@ -897,7 +919,7 @@ def getNextRoundGames(leagueid, cur_season='2024-2025', roundnum=0):
             curround = roundinfo.get('2', '0')
             # '3': [{'1': '2639227', '2': '1726855200', '3': '5961', '4': '393', '5': '马蒂格', '6': '格勒诺布尔', '12': '14', '13': '8'}, {'.......
             allgames = threeDic.get('3', [])
-
+            logger.debug(f"联赛id:{leagueid} maxround:{roundcount} curround:{curround}")
             for gameinfo in allgames:
                 gameid = gameinfo.get('1','0')
                 if gameid == '0':
@@ -918,7 +940,7 @@ def getNextRoundGames(leagueid, cur_season='2024-2025', roundnum=0):
     except Exception as e:
         print(e)
     finally:
-        return allgameObjs
+        return allgameObjs, int(roundcount), int(curround)
 
 def gameAndPanluDetailIsMatch(gameObj, panluDeatil):
     if not isinstance(gameObj, BaseGame):
